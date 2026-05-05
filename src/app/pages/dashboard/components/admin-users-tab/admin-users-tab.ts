@@ -61,8 +61,8 @@ export class AdminUsersTabComponent {
   showCreditsModal: boolean = false;
   updatingCredits: boolean = false;
   creditsForm = this.fb.group({
-    creditsPT: [0, Validators.required],
-    creditsNutri: [0, Validators.required]
+    creditsPT: [0, [Validators.required, Validators.min(0)]],
+    creditsNutri: [0, [Validators.required, Validators.min(0)]]
   });
 
   private readonly moderatorAllowedRoles = ['CLIENT', 'PERSONAL_TRAINER', 'NUTRITIONIST'];

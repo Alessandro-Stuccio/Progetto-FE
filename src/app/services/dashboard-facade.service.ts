@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable, Subject, Subscription, timer } from 'rxjs'
 import { finalize } from 'rxjs/operators';
 import { AvailabilityService } from './availability.service';
 import { ToastService } from './toast.service';
-import { ProfessionalSlot, BookingRequest, ProfessionalSummary, Booking, UserProfile } from '../models/dashboard.types';
+import { ProfessionalSlot, BookingRequest, ProfessionalSummary, Booking, UserProfile, ApiErrorResponse } from '../models/dashboard.types';
 import { HttpErrorResponse } from '@angular/common/http';
 
 export interface CalendarState {
@@ -398,10 +398,11 @@ export class DashboardFacadeService {
         this.closeBooking();
         this.actionSuccess$.next();
       },
-      error: (err) => {
+      error: (err: HttpErrorResponse) => {
         console.error(err);
         this.updateBookingState({ isLoading: false });
-        this.toast.error('Errore', 'Impossibile completare la prenotazione.');
+        const apiError = err.error as ApiErrorResponse;
+        this.toast.error('Errore', apiError?.message || 'Impossibile completare la prenotazione.');
       }
     });
   }
