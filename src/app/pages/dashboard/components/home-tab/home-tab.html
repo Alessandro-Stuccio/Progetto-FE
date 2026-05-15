@@ -48,6 +48,70 @@
       </div>
     </div>
 
+    <!-- Attiva Abbonamento (Solo Clienti senza abbonamento attivo) -->
+    <div class="bg-white rounded-2xl border border-[var(--color-border-subtle)] p-4 shadow-sm"
+      *ngIf="isClient && (!subscription || !subscription.active) && !activationSuccess && plans.length > 0">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-[1.1rem]">🎯</div>
+        <div>
+          <div class="text-[0.65rem] text-[var(--color-text-muted)] uppercase tracking-[0.10em] font-semibold">Nessun piano attivo</div>
+          <div class="text-[0.95rem] font-bold text-[var(--color-text-main)]">Attiva il tuo abbonamento</div>
+        </div>
+      </div>
+
+      <!-- Piano -->
+      <div class="mb-3">
+        <label class="text-[0.7rem] font-semibold text-[var(--color-text-muted)] uppercase tracking-wider mb-1.5 block">Scegli piano</label>
+        <div class="flex flex-col gap-2">
+          <label *ngFor="let plan of plans" class="flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-colors"
+            [class.border-[var(--color-primary-navy)]]="selectedPlanId === plan.id"
+            [class.bg-[var(--color-bg-subtle)]]="selectedPlanId === plan.id"
+            [class.border-[var(--color-border-subtle)]]="selectedPlanId !== plan.id">
+            <input type="radio" name="plan" [value]="plan.id" [(ngModel)]="selectedPlanId" class="mt-0.5 accent-[var(--color-primary-navy)]">
+            <div class="flex-1 min-w-0">
+              <div class="text-[0.85rem] font-bold text-[var(--color-text-main)]">{{ plan.name }}</div>
+              <div class="text-[0.72rem] text-[var(--color-text-muted)]">
+                {{ plan.duration === 'SEMESTRALE' ? '6 mesi' : '12 mesi' }} &bull;
+                {{ plan.monthlyCreditsPT }} cr. PT + {{ plan.monthlyCreditsNutri }} cr. Nutr. al mese
+              </div>
+              <div class="text-[0.72rem] text-[var(--color-text-muted)] mt-0.5">
+                Unica soluzione: <strong>{{ plan.fullPrice.toFixed(2) }} €</strong>
+                &nbsp;|&nbsp; Rate: <strong>{{ getInstallmentLabel(plan) }}</strong>
+              </div>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <!-- Frequenza pagamento -->
+      <div class="mb-4">
+        <label class="text-[0.7rem] font-semibold text-[var(--color-text-muted)] uppercase tracking-wider mb-1.5 block">Modalità pagamento</label>
+        <div class="flex gap-2">
+          <label class="flex-1 flex items-center justify-center gap-2 p-2.5 rounded-xl border cursor-pointer text-[0.8rem] font-semibold transition-colors"
+            [class.border-[var(--color-primary-navy)]]="selectedFrequency === 'UNICA_SOLUZIONE'"
+            [class.bg-[var(--color-bg-subtle)]]="selectedFrequency === 'UNICA_SOLUZIONE'"
+            [class.border-[var(--color-border-subtle)]]="selectedFrequency !== 'UNICA_SOLUZIONE'">
+            <input type="radio" name="freq" value="UNICA_SOLUZIONE" [(ngModel)]="selectedFrequency" class="sr-only">
+            Unica soluzione
+          </label>
+          <label class="flex-1 flex items-center justify-center gap-2 p-2.5 rounded-xl border cursor-pointer text-[0.8rem] font-semibold transition-colors"
+            [class.border-[var(--color-primary-navy)]]="selectedFrequency === 'RATE_MENSILI'"
+            [class.bg-[var(--color-bg-subtle)]]="selectedFrequency === 'RATE_MENSILI'"
+            [class.border-[var(--color-border-subtle)]]="selectedFrequency !== 'RATE_MENSILI'">
+            <input type="radio" name="freq" value="RATE_MENSILI" [(ngModel)]="selectedFrequency" class="sr-only">
+            Rate mensili
+          </label>
+        </div>
+      </div>
+
+      <p *ngIf="activationError" class="text-[0.75rem] text-red-500 mb-3">{{ activationError }}</p>
+
+      <button (click)="activatePlan()" [disabled]="activationLoading || !selectedPlanId"
+        class="w-full bg-[var(--color-primary-navy)] text-white rounded-xl py-3 text-[0.85rem] font-bold disabled:opacity-50 transition-opacity">
+        {{ activationLoading ? 'Attivazione...' : 'Attiva ora' }}
+      </button>
+    </div>
+
     <!-- Prossimo appuntamento -->
     <div class="bg-white rounded-2xl border border-[var(--color-border-subtle)] p-4 shadow-sm" *ngIf="bookings.length > 0">
       <div class="flex items-center gap-2 mb-3"><span class="text-[1.1rem]">📅</span><span class="text-[0.72rem] text-[var(--color-text-muted)] uppercase tracking-[0.10em] font-semibold">Prossimo appuntamento</span></div>

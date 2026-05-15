@@ -10,11 +10,10 @@ export class DocumentService {
   private http = inject(HttpClient);
   private apiUrl = environment.apiUrl;
 
-  uploadDocument(file: File, clientId: number, uploaderId: number, type: string): Observable<any> {
+  uploadDocument(file: File, clientId: number, type: string): Observable<any> {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('clientId', clientId.toString());
-    formData.append('uploaderId', uploaderId.toString());
     formData.append('type', type);
     return this.http.post(`${this.apiUrl}/api/documents/upload`, formData);
   }

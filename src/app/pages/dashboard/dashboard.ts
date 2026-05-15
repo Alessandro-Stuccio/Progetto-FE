@@ -173,7 +173,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     if (!this.currentUser) return;
     this.isSavingProfile = true;
 
-    this.userService.updateProfile(this.currentUser.id, this.profileEditData)
+    this.userService.updateProfile(this.profileEditData)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
@@ -234,7 +234,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.loadDashboardData();
 
       if (this.currentUser) {
-         this.chatService.init(this.currentUser.id);
+         this.chatService.init(this.currentUser.id, this.currentUser.email);
       }
 
       this.chatService.unreadCount$
@@ -284,11 +284,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     if (!this.currentUser) return;
 
-    this.userService.getDashboard(this.currentUser.id).pipe(
+    this.userService.getDashboard().pipe(
       switchMap(data => {
         this.dashboardData = data;
         if (this.isProfessional()) {
-          return this.userService.getMyClients(this.currentUser!.id);
+          return this.userService.getMyClients();
         }
         return of([] as ClientBasicInfo[]);
       }),
@@ -381,8 +381,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   private loadProStats(): void {
-    if (!this.isProfessional() || !this.currentUser?.id) return;
-    this.userService.getProfessionalStats(this.currentUser.id)
+    if (!this.isProfessional()) return;
+    this.userService.getProfessionalStats()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (stats) => {
@@ -394,8 +394,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   private loadActivityFeed(): void {
-    if (!this.currentUser?.id) return;
-    this.userService.getActivityFeed(this.currentUser.id)
+    this.userService.getActivityFeed()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (feed) => {
@@ -496,6 +495,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
   openAvailability(): void {
     if (!this.currentUser) return;
     this.dashboardFacade.openAvailability(this.currentUser.id);
+  }
+
+  onSubscriptionActivated(sub: Subscription): void {
+    if (this.dashboardData) {
+      this.dashboardData = { ...this.dashboardData, subscription: sub };
+    }
+    this.toast.success('Abbonamento attivato', `Il piano "${sub.planName}" è ora attivo.`);
+    this.cdr.detectChanges();
   }
 
   closeAvailability(): void {
@@ -636,7 +643,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.showCancelBookingModal = false;
 
     this.isLoading = true;
-    this.availabilityService.cancelBooking(this.selectedCallBooking.id, this.currentUser.id)
+    this.availabilityService.cancelBooking(this.selectedCallBooking.id)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {

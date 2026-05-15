@@ -83,7 +83,7 @@ export class ClientsTabComponent {
     if (file.type !== 'application/pdf') { this.showPopup.emit({title: 'Errore', message: 'Puoi caricare solo file PDF.', type: 'error'}); input.value = ''; return; }
     if (file.size > 10 * 1024 * 1024) { this.showPopup.emit({title: 'Errore', message: 'Il file non può superare i 10MB.', type: 'error'}); input.value = ''; return; }
     this.isUploading = true;
-    this.authService.uploadDocument(file, this.selectedClient.id, this.currentUser.id, type).subscribe({
+    this.authService.uploadDocument(file, this.selectedClient.id, type).subscribe({
       next: () => { this.isUploading = false; this.showPopup.emit({title: 'Caricato!', message: `${type === 'WORKOUT_PLAN' ? 'Scheda' : 'Dieta'} caricata con successo.`, type: 'success'}); this.loadClientDocuments(); input.value = ''; },
       error: () => { this.isUploading = false; this.showPopup.emit({title: 'Errore', message: 'Impossibile caricare il file. Riprova.', type: 'error'}); input.value = ''; }
     });
@@ -144,7 +144,7 @@ export class ClientsTabComponent {
 
     this.isUploading = true;
     this.cdr.detectChanges();
-    this.authService.uploadDocument(file, this.selectedClient.id, this.currentUser.id, type).subscribe({
+    this.authService.uploadDocument(file, this.selectedClient.id, type).subscribe({
       next: () => {
         this.isUploading = false;
         this.showPopup.emit({ title: 'Caricato!', message: `${type === 'WORKOUT_PLAN' ? 'Scheda' : 'Dieta'} caricata con successo.`, type: 'success' });

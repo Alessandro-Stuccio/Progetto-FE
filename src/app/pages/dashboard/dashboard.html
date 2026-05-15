@@ -199,10 +199,10 @@
     <div class="tab-home flex-1 overflow-y-auto" *ngIf="activeTab === 'home' && !isAdmin() && !isModerator() && !isInsuranceManager()"
       appPullToRefresh (refresh)="onPullRefresh()">
       <app-home-tab *ngIf="activeTab === 'home' && !isAdmin() && !isModerator() && !isInsuranceManager()" [currentUser]="currentUser" [profile]="profile"
-        [subscription]="subscription" [bookings]="bookings" [myClients]="myClients" [professionals]="professionals"
+        [subscription]="subscription ?? null" [bookings]="bookings" [myClients]="myClients" [professionals]="professionals"
         [isProfessional]="isProfessional()" [isClient]="isClient()" [weekBookingsCount]="countWeekBookings()"
         [proStats]="proStats" [activityFeed]="activityFeed" [isLoading]="isLoading" [dashboardData]="dashboardData" (openAvailabilityEvent)="openAvailability()"
-        (setTabEvent)="setTab($event)">
+        (setTabEvent)="setTab($event)" (subscriptionActivated)="onSubscriptionActivated($event)">
       </app-home-tab>
     </div>
 
@@ -446,15 +446,11 @@
             class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[0.75rem] font-bold uppercase tracking-wider"
             [class.bg-emerald-50]="selectedCallBooking.status === 'CONFIRMED'"
             [class.text-emerald-600]="selectedCallBooking.status === 'CONFIRMED'"
-            [class.bg-amber-50]="selectedCallBooking.status === 'PENDING'"
-            [class.text-amber-600]="selectedCallBooking.status === 'PENDING'"
             [class.bg-slate-100]="selectedCallBooking.status === 'CANCELED'"
             [class.text-slate-500]="selectedCallBooking.status === 'CANCELED'">
             <span class="w-1.5 h-1.5 rounded-full" [class.bg-emerald-500]="selectedCallBooking.status === 'CONFIRMED'"
-              [class.bg-amber-500]="selectedCallBooking.status === 'PENDING'"
               [class.bg-slate-400]="selectedCallBooking.status === 'CANCELED'"></span>
-            {{ selectedCallBooking.status === 'CONFIRMED' ? 'Confermata' : selectedCallBooking.status === 'PENDING' ?
-            'In attesa' : 'Annullata' }}
+            {{ selectedCallBooking.status === 'CONFIRMED' ? 'Confermata' : 'Annullata' }}
           </span>
         </div>
         <p class="text-[0.8rem] text-[var(--color-text-muted)] leading-relaxed mt-2"
@@ -465,10 +461,6 @@
         <p class="text-[0.8rem] text-emerald-600 font-medium leading-relaxed mt-2"
           *ngIf="selectedCallBooking.status === 'CONFIRMED' && canJoinCallNow">
           La chiamata è aperta! Puoi accedere premendo il bottone qui sotto.
-        </p>
-        <p class="text-[0.8rem] text-amber-600 font-medium leading-relaxed mt-2"
-          *ngIf="selectedCallBooking.status === 'PENDING'">
-          La chiamata deve ancora essere confermata dal professionista.
         </p>
         <button
           class="mt-4 w-full py-3.5 rounded-xl text-[0.95rem] font-bold uppercase tracking-wide transition-all flex items-center justify-center gap-2"

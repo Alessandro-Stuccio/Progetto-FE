@@ -35,7 +35,7 @@ export class ClientsListComponent implements OnInit {
   }
 
   loadClients() {
-    this.userService.getMyClients(this.professionalId).subscribe({
+    this.userService.getMyClients().subscribe({
       next: (res: ClientBasicInfo[] | any) => {
 
         this.clients = Array.isArray(res) ? res : (res && res.value) ? res.value : [];

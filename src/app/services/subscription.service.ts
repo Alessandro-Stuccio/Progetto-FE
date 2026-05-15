@@ -4,12 +4,22 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Subscription, UserManagementMode } from '../models/dashboard.types';
 
+export type PaymentFrequency = 'UNICA_SOLUZIONE' | 'RATE_MENSILI';
+
 @Injectable({
   providedIn: 'root'
 })
 export class SubscriptionService {
   private http = inject(HttpClient);
   private apiUrl = environment.apiUrl;
+
+  getSubscriptionStatus(): Observable<Subscription> {
+    return this.http.get<Subscription>(`${this.apiUrl}/api/subscriptions/status`);
+  }
+
+  activateSubscription(planId: number, paymentFrequency: PaymentFrequency): Observable<Subscription> {
+    return this.http.post<Subscription>(`${this.apiUrl}/api/subscriptions/activate`, { planId, paymentFrequency });
+  }
 
   getAllSubscriptions(): Observable<Subscription[]> {
     return this.http.get<Subscription[]>(`${this.apiUrl}/api/admin/subscriptions`);

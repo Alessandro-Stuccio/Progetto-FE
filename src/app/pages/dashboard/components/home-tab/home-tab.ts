@@ -1,19 +1,26 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { PlanService } from '../../../../services/plan.service';
+import { SubscriptionService, PaymentFrequency } from '../../../../services/subscription.service';
+import { Plan, Subscription } from '../../../../models/dashboard.types';
 
 @Component({
   selector: 'app-home-tab',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './home-tab.html',
   styleUrls: ['./home-tab.css']
 })
-export class HomeTabComponent {
+export class HomeTabComponent implements OnInit {
+  private planService = inject(PlanService);
+  private subscriptionService = inject(SubscriptionService);
+
   @Input() isLoading: boolean = true;
   @Input() dashboardData: any = null;
   @Input() currentUser: any;
   @Input() profile: any;
-  @Input() subscription: any;
+  @Input() subscription: Subscription | null = null;
   @Input() bookings: any[] = [];
   @Input() myClients: any[] = [];
   @Input() professionals: any[] = [];
@@ -27,8 +34,52 @@ export class HomeTabComponent {
   // ── Cronologia attività ──
   @Input() activityFeed: any[] = [];
 
+  // ── Subscription activation ──
+  plans: Plan[] = [];
+  selectedPlanId: number | null = null;
+  selectedFrequency: PaymentFrequency = 'UNICA_SOLUZIONE';
+  activationLoading = false;
+  activationError: string | null = null;
+  activationSuccess = false;
+
   @Output() openAvailabilityEvent = new EventEmitter<void>();
   @Output() setTabEvent = new EventEmitter<string>();
+  @Output() subscriptionActivated = new EventEmitter<Subscription>();
+
+  ngOnInit(): void {
+    if (this.isClient) {
+      this.planService.getPlans().subscribe({
+        next: (p) => {
+          this.plans = p;
+          if (p.length > 0) this.selectedPlanId = p[0].id;
+        },
+        error: () => {}
+      });
+    }
+  }
+
+  activatePlan(): void {
+    if (!this.selectedPlanId) return;
+    this.activationLoading = true;
+    this.activationError = null;
+    this.subscriptionService.activateSubscription(this.selectedPlanId, this.selectedFrequency).subscribe({
+      next: (sub) => {
+        this.activationLoading = false;
+        this.activationSuccess = true;
+        this.subscriptionActivated.emit(sub);
+      },
+      error: (err) => {
+        this.activationLoading = false;
+        this.activationError = err?.error?.message || 'Impossibile attivare il piano. Riprova.';
+      }
+    });
+  }
+
+  getInstallmentLabel(plan: Plan): string {
+    return plan.duration === 'SEMESTRALE'
+      ? `${plan.monthlyInstallmentPrice.toFixed(2)} €/mese × 6`
+      : `${plan.monthlyInstallmentPrice.toFixed(2)} €/mese × 12`;
+  }
 
   getInitials(): string {
     const f = (this.currentUser?.firstName ?? '').charAt(0);

@@ -23,14 +23,14 @@ export class AvailabilityService {
     return this.slotService.getProfessionalSlots(professionalId);
   }
 
-  /** Crea nuovi slot di disponibilità per un professionista. */
-  createSlots(professionalId: number, slots: SlotPayload[]): Observable<void> {
-    return this.slotService.createProfessionalSlots(professionalId, slots);
+  /** Crea nuovi slot di disponibilità per il professionista autenticato. */
+  createSlots(slots: SlotPayload[]): Observable<void> {
+    return this.slotService.createProfessionalSlots(slots);
   }
 
-  /** Elimina un singolo slot di un professionista. */
-  deleteSlot(professionalId: number, slotId: number): Observable<void> {
-    return this.slotService.deleteProfessionalSlot(professionalId, slotId);
+  /** Elimina un singolo slot del professionista autenticato. */
+  deleteSlot(slotId: number): Observable<void> {
+    return this.slotService.deleteProfessionalSlot(slotId);
   }
 
   // ── HTTP: Booking cliente ────────────────────────────────
@@ -59,8 +59,8 @@ export class AvailabilityService {
   }
 
   /** Annulla una prenotazione. */
-  cancelBooking(bookingId: number, userId: number): Observable<void> {
-    return this.slotService.cancelBooking(bookingId, userId);
+  cancelBooking(bookingId: number): Observable<void> {
+    return this.slotService.cancelBooking(bookingId);
   }
 
   // ── Pure: Costruzione giorni e time slots ─────────────────

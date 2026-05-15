@@ -222,7 +222,7 @@ export class DashboardFacadeService {
     });
   }
 
-  toggleSlot(day: Date, slot: string, professionalId: number): void {
+  toggleSlot(day: Date, slot: string, _professionalId: number): void {
     const state = this.currentCalendarState;
     const key = this.availabilityService.slotKey(day, slot);
 
@@ -233,7 +233,7 @@ export class DashboardFacadeService {
         const slotId = state.existingSlotIds.get(key);
         if (slotId && confirm('Vuoi rimuovere questa disponibilità?')) {
           this.updateCalendarState({ isLoading: true });
-          this.availabilityService.deleteSlot(professionalId, slotId).subscribe({
+          this.availabilityService.deleteSlot(slotId).subscribe({
             next: () => {
               const newExisting = new Set(state.existingSlots);
               const newIds = new Map(state.existingSlotIds);
@@ -266,7 +266,7 @@ export class DashboardFacadeService {
     this.updateCalendarState({ selectedSlots: newSelected });
   }
 
-  confirmAvailability(professionalId: number): void {
+  confirmAvailability(_professionalId: number): void {
     const state = this.currentCalendarState;
     if (state.selectedSlots.size === 0) {
       this.toast.warning('Attenzione', 'Nessuno slot selezionato.');
@@ -276,7 +276,7 @@ export class DashboardFacadeService {
     this.updateCalendarState({ isLoading: true });
     const slotsPayload = this.availabilityService.buildSlotPayloads(state.selectedSlots);
 
-    this.availabilityService.createSlots(professionalId, slotsPayload).subscribe({
+    this.availabilityService.createSlots(slotsPayload).subscribe({
       next: () => {
         this.toast.success('Fatto', 'Disponibilità salvate con successo.');
         this.closeAvailability();
@@ -382,13 +382,12 @@ export class DashboardFacadeService {
     }
   }
 
-  confirmBooking(userId: number): void {
+  confirmBooking(_userId: number): void {
     const state = this.currentBookingState;
     if (!state.selectedBookingSlot || !state.selectedProfessional) return;
 
     this.updateBookingState({ isLoading: true });
     const request = {
-      userId,
       slotId: state.selectedBookingSlot.id
     };
 

@@ -20,20 +20,20 @@ export class SlotService {
     return this.http.get<ProfessionalSlot[]>(`${this.apiUrl}/api/professionals/${professionalId}/slots`);
   }
 
-  createProfessionalSlots(professionalId: number, slots: SlotPayload[]): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/api/professionals/${professionalId}/slots`, slots);
+  createProfessionalSlots(slots: SlotPayload[]): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/api/professionals/slots`, slots);
   }
 
-  deleteProfessionalSlot(professionalId: number, slotId: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/api/professionals/${professionalId}/slots/${slotId}`);
+  deleteProfessionalSlot(slotId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/api/professionals/slots/${slotId}`);
   }
 
   createBooking(request: BookingRequest): Observable<void> {
     return this.http.post<void>(`${this.apiUrl}/api/bookings`, request);
   }
 
-  cancelBooking(bookingId: number, userId: number): Observable<void> {
-    return this.http.put<void>(`${this.apiUrl}/api/bookings/${bookingId}/cancel?userId=${userId}`, {});
+  cancelBooking(bookingId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/api/bookings/${bookingId}`);
   }
 
   getProfessionals(role: string): Observable<ProfessionalSummary[]> {

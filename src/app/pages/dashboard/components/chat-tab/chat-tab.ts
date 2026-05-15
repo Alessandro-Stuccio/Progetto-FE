@@ -268,7 +268,7 @@ export class ChatTabComponent implements OnInit, OnDestroy {
   loadConversations(): void {
     if (!this.currentUser) return;
     this.chatLoading = true;
-    this.chatService.getConversations(this.currentUser.id).subscribe({
+    this.chatService.getConversations().subscribe({
       next: (convs) => {
         const backendConvs = convs ?? [];
         const backendIds = new Set(backendConvs.map(c => c.otherUserId));
@@ -350,7 +350,7 @@ export class ChatTabComponent implements OnInit, OnDestroy {
 
     // Se non abbiamo ancora il chatId, dobbiamo crearlo/recuperarlo tramite backend
     if (!conv.chatId) {
-      this.chatService.createChat(this.currentUser.id, conv.otherUserId).subscribe({
+      this.chatService.createChat(conv.otherUserId).subscribe({
         next: (newChatId) => {
           conv.chatId = newChatId;
           this.loadMessagesAndJoin(conv);
@@ -370,7 +370,7 @@ export class ChatTabComponent implements OnInit, OnDestroy {
 
     this.chatService.joinRoom(conv.chatId);
 
-    this.chatService.getMessages(conv.chatId, this.currentUser.id).subscribe({
+    this.chatService.getMessages(conv.chatId).subscribe({
       next: (serverMsgs) => {
         // Mantieni i messaggi locali ottimistici (id < 0) non ancora confermati dal server
         const localOptimistic = this.chatMessages.filter(m => m.id < 0 &&
@@ -389,12 +389,12 @@ export class ChatTabComponent implements OnInit, OnDestroy {
     if (this.socketService.isConnected) {
       this.chatService.markAsReadRealTime(conv.chatId, conv.otherUserId);
     } else {
-      this.chatService.markAsRead(conv.chatId, this.currentUser.id, conv.otherUserId).subscribe();
+      this.chatService.markAsRead(conv.chatId, conv.otherUserId).subscribe();
     }
     conv.unreadCount = 0;
 
 
-    this.chatService.startMessagePolling(conv.chatId, this.currentUser.id);
+    this.chatService.startMessagePolling(conv.chatId);
   }
 
   sendChatMessage(): void {
@@ -444,7 +444,7 @@ export class ChatTabComponent implements OnInit, OnDestroy {
         this.activeConversation.lastMessageTime = localMsg.createdAt;
       }
 
-      this.chatService.sendMessage({ senderId: this.currentUser.id, chatId, content: text }).subscribe({
+      this.chatService.sendMessage({ chatId, content: text }).subscribe({
         next: (savedMsg) => {
           const exists = this.chatMessages.some(m => m.id === localMsg.id);
           if (exists) {
@@ -465,7 +465,7 @@ export class ChatTabComponent implements OnInit, OnDestroy {
       if (this.socketService.isConnected) {
         this.chatService.markAsReadRealTime(this.activeConversation.chatId, this.activeConversation.otherUserId);
       } else {
-        this.chatService.markAsRead(this.activeConversation.chatId, this.currentUser.id, this.activeConversation.otherUserId).subscribe();
+        this.chatService.markAsRead(this.activeConversation.chatId, this.activeConversation.otherUserId).subscribe();
       }
       this.activeConversation.unreadCount = 0;
       this.activeConversation = null;

@@ -21,20 +21,20 @@ export class UserService {
   private http = inject(HttpClient);
   private apiUrl = environment.apiUrl;
 
-  getDashboard(userId: number): Observable<DashboardData> {
-    return this.http.get<DashboardData>(`${this.apiUrl}/api/users/dashboard/${userId}`);
+  getDashboard(): Observable<DashboardData> {
+    return this.http.get<DashboardData>(`${this.apiUrl}/api/users/dashboard`);
   }
 
-  updateProfile(userId: number, profileData: ProfileEditData): Observable<void> {
-    return this.http.put<void>(`${this.apiUrl}/api/users/${userId}/profile`, profileData);
+  updateProfile(profileData: ProfileEditData): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/api/users/profile`, profileData);
   }
 
   getAdmin(): Observable<ClientBasicInfo> {
     return this.http.get<ClientBasicInfo>(`${this.apiUrl}/api/users/admin`);
   }
 
-  getMyClients(professionalId: number): Observable<ClientBasicInfo[]> {
-    return this.http.get<ClientBasicInfo[]>(`${this.apiUrl}/api/users/${professionalId}/clients`);
+  getMyClients(): Observable<ClientBasicInfo[]> {
+    return this.http.get<ClientBasicInfo[]>(`${this.apiUrl}/api/users/clients`);
   }
 
   getAllUsers(): Observable<UserProfile[]> {
@@ -79,12 +79,12 @@ export class UserService {
     return this.http.delete(`${this.usersBaseByMode(mode)}/${userId}`);
   }
 
-  getProfessionalStats(professionalId: number): Observable<ProStats> {
-    return this.http.get<ProStats>(`${this.apiUrl}/api/professional/stats/${professionalId}`);
+  getProfessionalStats(): Observable<ProStats> {
+    return this.http.get<ProStats>(`${this.apiUrl}/api/professional/stats`);
   }
 
-  getActivityFeed(userId: number, days: number = 14, limit: number = 15): Observable<ActivityFeedItem[]> {
-    return this.http.get<ActivityFeedItem[]>(`${this.apiUrl}/api/activity/feed/${userId}?days=${days}&limit=${limit}`);
+  getActivityFeed(days: number = 14, size: number = 15): Observable<ActivityFeedItem[]> {
+    return this.http.get<ActivityFeedItem[]>(`${this.apiUrl}/api/activity/feed?days=${days}&size=${size}`);
   }
 
   getAdminStats(): Observable<any> {

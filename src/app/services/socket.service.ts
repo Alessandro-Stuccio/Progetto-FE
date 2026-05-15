@@ -39,6 +39,7 @@ export class SocketService {
 
   private client: Client | null = null;
   private currentUserId: number | null = null;
+  private currentUserEmail: string | null = null;
 
   // ── Stato connessione ──────────────────────────────────────
   private connectedSubject = new BehaviorSubject<boolean>(false);
@@ -69,18 +70,26 @@ export class SocketService {
   /**
    * Connette al WebSocket backend.
    * Chiama questo metodo al login / dashboard init.
+   * @param email email dell'utente autenticato — usata per la subscription al canale privato.
    */
-  connect(userId: number): void {
+  connect(userId: number, email: string): void {
     if (this.client?.connected) return;
-    this.currentUserId = userId;
 
+    const token = localStorage.getItem('token');
+    if (!token) {
+      console.warn('[WS] Nessun token JWT in localStorage — connessione annullata.');
+      return;
+    }
+
+    this.currentUserId = userId;
+    this.currentUserEmail = email;
 
     const wsUrl = environment.apiUrl.replace(/^http/, 'ws') + '/ws/websocket';
 
     this.client = new Client({
       brokerURL: wsUrl,
       connectHeaders: {
-        userId: userId.toString()
+        Authorization: `Bearer ${token}`
       },
 
       heartbeatIncoming: 10000,
@@ -93,7 +102,7 @@ export class SocketService {
           this.connectedSubject.next(true);
           console.log('[WS] Connesso come userId:', userId);
 
-          this.subscribeNotifications(userId);
+          this.subscribeNotifications(email);
         });
       },
 
@@ -130,6 +139,7 @@ export class SocketService {
       this.client = null;
     }
     this.currentUserId = null;
+    this.currentUserEmail = null;
     this.connectedSubject.next(false);
   }
 
@@ -167,7 +177,7 @@ export class SocketService {
 
     this.client.publish({
       destination: '/app/chat.join',
-      body: JSON.stringify({ userId: this.currentUserId, roomId })
+      body: JSON.stringify({ roomId })
     });
 
     console.log('[WS] Joined chat room:', roomId);
@@ -184,10 +194,10 @@ export class SocketService {
       this.roomSubscription = null;
     }
 
-    if (this.activeRoomId && this.client?.connected && this.currentUserId) {
+    if (this.activeRoomId && this.client?.connected) {
       this.client.publish({
         destination: '/app/chat.leave',
-        body: JSON.stringify({ userId: this.currentUserId, roomId: this.activeRoomId })
+        body: JSON.stringify({ roomId: this.activeRoomId })
       });
       console.log('[WS] Left room:', this.activeRoomId);
     }
@@ -203,18 +213,12 @@ export class SocketService {
    * Invia un messaggio via WebSocket.
    * Il server lo inoltrer IMMEDIATAMENTE alla stanza e poi lo salver in DB in modo asincrono.
    */
-  sendMessage(chatId: number, senderId: number, content: string): void {
+  sendMessage(chatId: number, _senderId: number, content: string): void {
     if (!this.client?.connected) return;
 
-    const roomId = String(chatId);
     this.client.publish({
       destination: '/app/chat.send',
-      body: JSON.stringify({
-        senderId,
-        chatId: chatId,
-        content,
-        roomId
-      })
+      body: JSON.stringify({ chatId, content })
     });
   }
 
@@ -239,16 +243,11 @@ export class SocketService {
    * Notifica il server che i messaggi sono stati letti.
    */
   markAsRead(chatId: number): void {
-    if (!this.client?.connected || !this.currentUserId) return;
+    if (!this.client?.connected) return;
 
-    const roomId = String(chatId);
     this.client.publish({
       destination: '/app/chat.read',
-      body: JSON.stringify({
-        userId: this.currentUserId,
-        chatId: chatId,
-        roomId
-      })
+      body: JSON.stringify({ chatId })
     });
   }
 
@@ -256,12 +255,11 @@ export class SocketService {
   //  NOTIFICHE PERSONALI (canale privato)
   // ══════════════════════════════════════════════════════════════
 
-  private subscribeNotifications(userId: number): void {
+  private subscribeNotifications(_email: string): void {
     if (!this.client?.connected) return;
 
-
     this.notificationSubscription = this.client.subscribe(
-      `/user/${userId}/queue/notifications`,
+      `/user/queue/notifications`,
       (message: IMessage) => {
         this.zone.run(() => {
           const payload = JSON.parse(message.body);

@@ -17,7 +17,6 @@ export enum UserRole {
 }
 
 export type BookingStatus =
-  | 'PENDING'
   | 'CONFIRMED'
   | 'CANCELED'
   | 'COMPLETED';
@@ -66,17 +65,28 @@ export interface AuthUser {
   createdAt?: string;
 }
 
-/** Profilo utente completo (da UserResponse.java). */
+/** Profilo utente completo (da UserResponse.java e UserResponseDTO.java). */
 export interface UserProfile {
   id: number;
   firstName: string;
   lastName: string;
   email: string;
   role: UserRole;
+  // Da UserResponse (dashboard cliente/professionista)
+  active?: boolean;
+  profilePictureUrl?: string;
+  weight?: number;
+  height?: number;
   assignedPtName?: string;
   assignedNutritionistName?: string;
+  bio?: string;
+  specialization?: string;
   averageRating?: number;
   activeClientsCount?: number;
+  // Da UserResponseDTO (tabelle admin/moderator) — stessa relazione, case diverso
+  assignedPTName?: string;
+  professionalBio?: string;
+  createdAt?: string;
 }
 
 /** Info base di un cliente (da ClientBasicInfoResponse.java). */
@@ -86,8 +96,15 @@ export interface ClientBasicInfo {
   lastName: string;
   email: string;
   profilePictureUrl?: string;
-  /** Giorni dall'ultimo documento caricato (-1 = mai). Calcolato dal backend. */
-  daysSinceLastDoc?: number;
+}
+
+/** Item nell'elenco "clienti da monitorare" (da ClientAttentionItem.java in ProfessionalStatsResponse). */
+export interface ClientAttentionItem {
+  id: number;
+  firstName: string;
+  lastName: string;
+  lastDocDate?: string;
+  daysSinceLastDoc: number;
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -157,9 +174,8 @@ export interface Booking {
   canJoin: boolean;
 }
 
-/** Richiesta creazione prenotazione. */
+/** Richiesta creazione prenotazione (userId estratto dal JWT lato backend). */
 export interface BookingRequest {
-  userId: number;
   slotId: number;
 }
 
@@ -206,16 +222,33 @@ export interface DashboardData {
 // Statistiche & Activity
 // ─────────────────────────────────────────────────────────────
 
-/** Statistiche professionista (dedotto dall'uso nel template home-tab). */
-export interface ProStats {
-  todayBookingsCount: number;
-  [key: string]: unknown;
+/** Singolo appuntamento di oggi (da TodayBookingItem.java). */
+export interface TodayBookingItem {
+  id: number;
+  clientName: string;
+  clientId: number;
+  startTime: string;
+  endTime: string;
+  status: BookingStatus;
+  meetingLink?: string;
 }
 
-/** Singolo item del feed attività (dedotto dall'uso nel template home-tab). */
+/** Statistiche professionista (da ProfessionalStatsResponse.java). */
+export interface ProStats {
+  todayBookings: TodayBookingItem[];
+  todayBookingsCount: number;
+  clientsNeedingAttention: ClientAttentionItem[];
+  clientsNeedingAttentionCount: number;
+  docsUploadedThisWeek: number;
+  totalClients: number;
+}
+
+/** Singolo item del feed attività (da ActivityFeedItemResponse.java). */
 export interface ActivityFeedItem {
+  type: string;
   icon: string;
   text: string;
+  timestamp: string;
   timeAgo: string;
 }
 

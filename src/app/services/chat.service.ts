@@ -31,7 +31,6 @@ export interface Conversation {
 }
 
 export interface SendMessageRequest {
-  senderId: number;
   chatId: number;
   content: string;
 }
@@ -71,15 +70,15 @@ export class ChatService {
   //  API REST (caricamento iniziale e fallback)
   // ══════════════════════════════════════════════════════════════
 
-  getConversations(userId: number): Observable<Conversation[]> {
+  getConversations(): Observable<Conversation[]> {
     return this.http.get<Conversation[]>(
-      `${this.apiUrl}/api/chat/conversations/${userId}`
+      `${this.apiUrl}/api/chat/conversations`
     ).pipe(catchError(() => of([])));
   }
 
-  getMessages(chatId: number, userId: number, page = 0, size = 50): Observable<ChatMessage[]> {
+  getMessages(chatId: number, page = 0, size = 50): Observable<ChatMessage[]> {
     return this.http.get<ChatMessage[]>(
-      `${this.apiUrl}/api/chat/conversation/${chatId}/${userId}?page=${page}&size=${size}`
+      `${this.apiUrl}/api/chat/conversation/${chatId}?page=${page}&size=${size}`
     ).pipe(catchError(() => of([])));
   }
 
@@ -87,20 +86,20 @@ export class ChatService {
     return this.http.post<ChatMessage>(`${this.apiUrl}/api/chat/send`, request);
   }
 
-  createChat(senderId: number, receiverId: number): Observable<number> {
-    return this.http.post<number>(`${this.apiUrl}/api/chat/create/${senderId}/${receiverId}`, {});
+  createChat(receiverId: number): Observable<number> {
+    return this.http.post<number>(`${this.apiUrl}/api/chat/create/${receiverId}`, {});
   }
 
-  markAsRead(chatId: number, userId: number, otherUserId: number): Observable<any> {
+  markAsRead(chatId: number, otherUserId: number): Observable<any> {
     this.optimisticMarkAsRead(otherUserId);
     return this.http.put(
-      `${this.apiUrl}/api/chat/read/${chatId}/${userId}`, {}
+      `${this.apiUrl}/api/chat/read/${chatId}`, {}
     ).pipe(catchError(() => of(null)));
   }
 
-  getUnreadCount(userId: number): Observable<number> {
+  getUnreadCount(): Observable<number> {
     return this.http.get<number>(
-      `${this.apiUrl}/api/chat/unread/${userId}`
+      `${this.apiUrl}/api/chat/unread`
     ).pipe(catchError(() => of(0)));
   }
 
@@ -108,11 +107,11 @@ export class ChatService {
   // ══════════════════════════════════════════════════════════════
 
   /** Bootstrap real-time chat: WebSocket + event subscriptions + global polling fallback. */
-  init(userId: number): void {
+  init(userId: number, email: string): void {
     this.destroy(); // CLEANUP prevent duplicate listeners and memory leaks
 
 
-    this.socketService.connect(userId);
+    this.socketService.connect(userId, email);
 
 
     const msgSub = this.socketService.incomingMessage$.subscribe(wsMsg => {
@@ -122,14 +121,12 @@ export class ChatService {
 
 
     const unreadSub = this.socketService.unreadUpdate$.subscribe(update => {
-      if (update.userId === userId) {
-        this.unreadCountSubject.next(update.unreadCount);
-      }
+      this.unreadCountSubject.next(update.unreadCount);
     });
     this.wsSubscriptions.push(unreadSub);
 
 
-    this.startGlobalPolling(userId);
+    this.startGlobalPolling();
   }
 
   /**
@@ -290,19 +287,19 @@ export class ChatService {
   //  POLLING GLOBALE (fallback + sync periodico)
   // ══════════════════════════════════════════════════════════════
 
-  startGlobalPolling(userId: number): void {
+  startGlobalPolling(): void {
     if (this.globalPollingActive) return;
     this.globalPollingActive = true;
 
-    this.refreshUnreadCount(userId);
-    this.refreshConversations(userId);
+    this.refreshUnreadCount();
+    this.refreshConversations();
 
 
     const getInterval = () => this.socketService.isConnected ? 15000 : 5000;
     this.globalPollInterval = setInterval(() => {
       if (!this.globalPollingActive) return;
-      this.refreshUnreadCount(userId);
-      this.refreshConversations(userId);
+      this.refreshUnreadCount();
+      this.refreshConversations();
     }, getInterval());
   }
 
@@ -314,16 +311,16 @@ export class ChatService {
     }
   }
 
-  private refreshUnreadCount(userId: number): void {
-    this.getUnreadCount(userId).subscribe(count => {
+  private refreshUnreadCount(): void {
+    this.getUnreadCount().subscribe(count => {
       if (count !== this.unreadCountSubject.value) {
         this.unreadCountSubject.next(count);
       }
     });
   }
 
-  private refreshConversations(userId: number): void {
-    this.getConversations(userId).subscribe(convs => {
+  private refreshConversations(): void {
+    this.getConversations().subscribe(convs => {
       let currentConvs = convs ?? [];
 
       // Preserve active conversation not yet persisted on backend
@@ -353,13 +350,13 @@ export class ChatService {
 
   // ── Polling messaggi (fallback per quando WS non è connesso) ──
 
-  startMessagePolling(chatId: number, currentUserId: number): void {
+  startMessagePolling(chatId: number): void {
     if (this.socketService.isConnected) return;
     this.stopMessagePolling();
     this.msgPollingActive = true;
     this.msgPollInterval = setInterval(() => {
       if (!this.msgPollingActive) return;
-      this.getMessages(chatId, currentUserId).subscribe(msgs => {
+      this.getMessages(chatId).subscribe(msgs => {
         if (msgs.length > 0) {
 
           const currentMsgs = this.messagesSubject.value;

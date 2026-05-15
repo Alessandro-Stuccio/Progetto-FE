@@ -59,7 +59,7 @@ export class MyProfessionalsTabComponent implements OnChanges, OnInit {
             }
 
             // Retrieve authoritative state from backend
-            this.reviewService.canReview(this.currentUser.id, p.id).subscribe(r => {
+            this.reviewService.canReview(p.id).subscribe(r => {
                 this.canReviewMap[p.id] = r.canReview;
                 this.hasReviewedServerMap[p.id] = r.hasReviewed;
                 this.cdr.detectChanges();
@@ -99,7 +99,7 @@ export class MyProfessionalsTabComponent implements OnChanges, OnInit {
 
         this.reviewSubmitting[prof.id] = true;
         this.reviewError[prof.id] = null;
-        this.reviewService.addReview(this.currentUser.id, prof.id, rating, comment).subscribe({
+        this.reviewService.addReview(prof.id, rating, comment).subscribe({
             next: (saved) => {
                 this.reviewSuccess[prof.id] = true;
                 this.reviewSubmitting[prof.id] = false;

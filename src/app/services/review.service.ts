@@ -24,15 +24,14 @@ export class ReviewService {
         );
     }
 
-    canReview(clientId: number, professionalId: number): Observable<{ canReview: boolean; hasReviewed: boolean }> {
+    canReview(professionalId: number): Observable<{ canReview: boolean; hasReviewed: boolean }> {
         return this.http.get<{ canReview: boolean; hasReviewed: boolean }>(
-            `${this.apiUrl}/api/reviews/can-review?clientId=${clientId}&professionalId=${professionalId}`
+            `${this.apiUrl}/api/reviews/can-review?professionalId=${professionalId}`
         ).pipe(catchError(() => of({ canReview: false, hasReviewed: false })));
     }
 
-    addReview(clientId: number, professionalId: number, rating: number, comment: string): Observable<ReviewResponse> {
+    addReview(professionalId: number, rating: number, comment: string): Observable<ReviewResponse> {
         return this.http.post<ReviewResponse>(`${this.apiUrl}/api/reviews`, {
-            userId: clientId,
             professionalId,
             rating,
             comment

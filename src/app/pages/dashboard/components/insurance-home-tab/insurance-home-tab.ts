@@ -139,7 +139,7 @@ export class InsuranceHomeTabComponent {
   private uploadFile(file: File): void {
     if (!this.selectedClient || !this.currentUser) return;
     this.isUploading = true;
-    this.authService.uploadDocument(file, this.selectedClient.userId, this.currentUser.id, 'INSURANCE_POLICE').subscribe({
+    this.authService.uploadDocument(file, this.selectedClient.userId, 'INSURANCE_POLICE').subscribe({
       next: () => {
         this.isUploading = false;
         this.openClientDocs(this.selectedClient); // ricarica docs
