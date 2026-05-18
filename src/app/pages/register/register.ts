@@ -2,10 +2,10 @@ import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, Validators, ValidationErrors, FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
-import { PlanService } from '../../services/plan.service';
-import { SlotService } from '../../services/slot.service';
-import { ReviewService, ReviewResponse } from '../../services/review.service';
+import { AuthService } from '../../core/services/auth.service';
+import { PlanService } from '../../core/services/plan.service';
+import { SlotService } from '../../core/services/slot.service';
+import { ReviewService, ReviewResponse } from '../../core/services/review.service';
 
 // Validator custom: verifica che password e conferma combacino
 function passwordMatchValidator(control: AbstractControl): ValidationErrors | null {

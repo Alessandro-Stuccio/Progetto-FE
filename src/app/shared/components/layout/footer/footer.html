@@ -18,10 +18,13 @@
     <div class="footer__col">
       <h3 class="footer__col-title">Prodotto</h3>
       <ul class="footer__list">
-        <li><a routerLink="/" fragment="come-funziona" class="footer__link">Come funziona</a></li>
-        <li><a routerLink="/" fragment="piani" class="footer__link">I Piani</a></li>
-        <li><a routerLink="/" fragment="professionisti" class="footer__link">I Professionisti</a></li>
-        <li><a routerLink="/" fragment="perche-sceglierci" class="footer__link">Perché Kore</a></li>
+        <li><button class="footer__link footer__link--btn" (click)="scrollTo('come-funziona')">Come funziona</button></li>
+        <li><button class="footer__link footer__link--btn" (click)="scrollTo('piani')">I Piani</button></li>
+        <li><button class="footer__link footer__link--btn" (click)="scrollTo('professionisti')">I Professionisti</button></li>
+        <li><button class="footer__link footer__link--btn" (click)="scrollTo('perche-sceglierci')">Perché Kore</button></li>
+        <li><button class="footer__link footer__link--btn" (click)="scrollTo('experience-carousel')">Scopri l'app</button></li>
+        <li><button class="footer__link footer__link--btn" (click)="scrollTo('faq')">FAQ</button></li>
+        <li><button class="footer__link footer__link--btn" (click)="scrollTo('lavora-con-noi')">Lavora con noi</button></li>
       </ul>
     </div>
 

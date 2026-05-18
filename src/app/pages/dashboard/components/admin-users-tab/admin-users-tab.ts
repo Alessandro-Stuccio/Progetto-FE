@@ -1,10 +1,10 @@
 import { Component, Input, Output, EventEmitter, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { UserService } from '../../../../services/user.service';
-import { SubscriptionService } from '../../../../services/subscription.service';
-import { ManagedUserPayload } from '../../../../models/dashboard.types';
-import { ToastService } from '../../../../services/toast.service';
+import { UserService } from '../../../../core/services/user.service';
+import { SubscriptionService } from '../../../../core/services/subscription.service';
+import { ManagedUserPayload } from '../../../../shared/models/dashboard.model';
+import { ToastService } from '../../../../core/services/toast.service';
 
 @Component({
   selector: 'app-admin-users-tab',

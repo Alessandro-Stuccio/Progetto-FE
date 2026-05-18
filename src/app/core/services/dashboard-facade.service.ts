@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable, Subject, Subscription, timer } from 'rxjs'
 import { finalize } from 'rxjs/operators';
 import { AvailabilityService } from './availability.service';
 import { ToastService } from './toast.service';
-import { ProfessionalSlot, BookingRequest, ProfessionalSummary, Booking, UserProfile, ApiErrorResponse } from '../models/dashboard.types';
+import { ProfessionalSlot, BookingRequest, ProfessionalSummary, Booking, UserProfile, ApiErrorResponse } from '../../shared/models/dashboard.model';
 import { HttpErrorResponse } from '@angular/common/http';
 
 export interface CalendarState {

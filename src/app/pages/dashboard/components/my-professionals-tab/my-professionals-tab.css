@@ -425,8 +425,8 @@
     background: #fff;
     border-radius: 16px;
     width: 100%;
-    max-width: 500px;
-    max-height: 80vh;
+    max-width: min(500px, calc(100vw - 2rem));
+    max-height: 80dvh;
     display: flex;
     flex-direction: column;
     box-shadow: 0 20px 60px rgba(var(--color-primary-navy-rgb), .25);

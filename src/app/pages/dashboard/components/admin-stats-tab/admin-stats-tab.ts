@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { UserService } from '../../../../services/user.service';
+import { UserService } from '../../../../core/services/user.service';
 
 @Component({
   selector: 'app-admin-stats-tab',

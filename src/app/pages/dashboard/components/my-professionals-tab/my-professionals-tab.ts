@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnChanges, OnInit, SimpleChanges, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ReviewService, ReviewResponse } from '../../../../services/review.service';
+import { ReviewService, ReviewResponse } from '../../../../core/services/review.service';
 
 @Component({
     selector: 'app-my-professionals-tab',

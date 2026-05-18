@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ToastService, Toast } from '../../services/toast.service';
+import { ToastService, Toast } from '../../../../core/services/toast.service';
 import { Subscription } from 'rxjs';
 
 @Component({

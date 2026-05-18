@@ -1,8 +1,8 @@
 import { Component, Input, Output, EventEmitter, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { PlanService } from '../../../../services/plan.service';
-import { ToastService } from '../../../../services/toast.service';
+import { PlanService } from '../../../../core/services/plan.service';
+import { ToastService } from '../../../../core/services/toast.service';
 @Component({ selector: 'app-admin-plans-tab', standalone: true, imports: [CommonModule, FormsModule], templateUrl: './admin-plans-tab.html', styleUrls: ['./admin-plans-tab.css'] })
 export class AdminPlansTabComponent {
   private authService = inject(PlanService);

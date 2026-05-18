@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter, inject, ChangeDetectorRef } fro
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { DocumentService } from '../../../../services/document.service';
+import { DocumentService } from '../../../../core/services/document.service';
 
 @Component({
   selector: 'app-clients-tab',

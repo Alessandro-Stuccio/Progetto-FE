@@ -8,14 +8,14 @@ import { Router } from '@angular/router';
 import { catchError, of, switchMap, forkJoin } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 
-import { AuthService } from '../../services/auth.service';
-import { UserService } from '../../services/user.service';
-import { PlanService } from '../../services/plan.service';
-import { SubscriptionService } from '../../services/subscription.service';
-import { ChatService } from '../../services/chat.service';
-import { AvailabilityService } from '../../services/availability.service';
-import { DashboardFacadeService } from '../../services/dashboard-facade.service';
-import { ToastService } from '../../services/toast.service';
+import { AuthService } from '../../core/services/auth.service';
+import { UserService } from '../../core/services/user.service';
+import { PlanService } from '../../core/services/plan.service';
+import { SubscriptionService } from '../../core/services/subscription.service';
+import { ChatService } from '../../core/services/chat.service';
+import { AvailabilityService } from '../../core/services/availability.service';
+import { DashboardFacadeService } from '../../core/services/dashboard-facade.service';
+import { ToastService } from '../../core/services/toast.service';
 
 import { HomeTabComponent } from './components/home-tab/home-tab';
 import { CalendarTabComponent } from './components/calendar-tab/calendar-tab';
@@ -28,8 +28,8 @@ import { InsuranceHomeTabComponent } from './components/insurance-home-tab/insur
 import { MyProfessionalsTabComponent } from './components/my-professionals-tab/my-professionals-tab';
 import { MyServicesTabComponent } from './components/my-services-tab/my-services-tab';
 import { AdminStatsTabComponent } from './components/admin-stats-tab/admin-stats-tab';
-import { ToastComponent } from '../../components/toast/toast';
-import { PullToRefreshDirective } from '../../directives/pull-to-refresh.directive';
+import { ToastComponent } from '../../shared/components/ui/toast/toast';
+import { PullToRefreshDirective } from '../../shared/directives/pull-to-refresh.directive';
 
 import {
   AuthUser,
@@ -47,7 +47,7 @@ import {
   ApiErrorResponse,
   TabId,
   UserRole
-} from '../../models/dashboard.types';
+} from '../../shared/models/dashboard.model';
 
 @Component({
   selector: 'app-dashboard',

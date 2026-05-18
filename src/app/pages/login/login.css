@@ -81,7 +81,7 @@
 
 .card-title {
   font-family: var(--font-display);
-  font-size: 1.875rem;
+  font-size: clamp(1.5rem, 5vw, 1.875rem);
   font-weight: 500;
   color: var(--text-primary);
   letter-spacing: -0.02em;
@@ -152,12 +152,13 @@
 .field-input {
   width: 100%;
   font-family: var(--font-sans);
-  font-size: 0.9375rem;
+  font-size: 1rem;
   color: var(--text-primary);
   background: var(--bg-panel);
   border: 1.5px solid var(--border-medium);
   border-radius: var(--radius-sm);
-  padding: 0.625rem 0.875rem;
+  padding: 0.75rem 0.875rem;
+  min-height: 44px;
   outline: none;
   transition: border-color 0.15s, box-shadow 0.15s;
   appearance: none;
@@ -214,7 +215,7 @@
   box-shadow: var(--shadow-sm);
   transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
 }
-.btn-primary--full { width: 100%; }
+.btn-primary--full { width: 100%; min-height: 48px; }
 .btn-primary:hover:not(:disabled) {
   background: var(--navy-deep);
   transform: translateY(-1px);
@@ -277,8 +278,8 @@
   position: absolute;
   pointer-events: none;
 }
-.lp-orb--gold { width: 500px; height: 500px; top: -80px; right: -120px; }
-.lp-orb--navy { width: 320px; height: 320px; bottom: 40px; left: -60px; }
+.lp-orb--gold { width: clamp(240px, 55vw, 500px); height: clamp(240px, 55vw, 500px); top: -8%; right: -12%; }
+.lp-orb--navy { width: clamp(180px, 40vw, 320px); height: clamp(180px, 40vw, 320px); bottom: 4%; left: -6%; }
 
 .lp-hero-content {
   position: relative;

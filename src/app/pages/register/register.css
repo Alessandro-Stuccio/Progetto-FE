@@ -9,7 +9,8 @@
 
 .register-page {
   display: flex;
-  min-height: 100dvh;
+  height: 100dvh;
+  overflow: hidden;
   background: var(--bg-base);
 }
 
@@ -41,8 +42,8 @@
 }
 
 .rp-left__orb { position: absolute; pointer-events: none; }
-.rp-left__orb--gold { width: 400px; height: 400px; top: -60px; right: -80px; }
-.rp-left__orb--navy { width: 280px; height: 280px; bottom: 20px; left: -40px; }
+.rp-left__orb--gold { width: clamp(220px, 50vw, 400px); height: clamp(220px, 50vw, 400px); top: -6%; right: -8%; }
+.rp-left__orb--navy { width: clamp(160px, 38vw, 280px); height: clamp(160px, 38vw, 280px); bottom: 2%; left: -4%; }
 
 .rp-left__content {
   position: relative;
@@ -74,6 +75,7 @@
 /* Right form panel */
 .rp-right {
   flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   padding: 1.5rem;
@@ -129,7 +131,7 @@
 
 .card-title {
   font-family: var(--font-display);
-  font-size: 1.75rem;
+  font-size: clamp(1.5rem, 5vw, 1.75rem);
   font-weight: 500;
   color: var(--text-primary);
   letter-spacing: -0.02em;
@@ -237,8 +239,11 @@
 /* Row (grid 2 col) */
 .rp-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 1rem;
+}
+@media (min-width: 480px) {
+  .rp-row { grid-template-columns: 1fr 1fr; }
 }
 
 /* Shared field classes (defined in login.css; re-declared here for component encapsulation) */
@@ -249,12 +254,13 @@
 .field-input {
   width: 100%;
   font-family: var(--font-sans);
-  font-size: 0.9375rem;
+  font-size: 1rem;
   color: var(--text-primary);
   background: var(--bg-panel);
   border: 1.5px solid var(--border-medium);
   border-radius: var(--radius-sm);
-  padding: 0.625rem 0.875rem;
+  padding: 0.75rem 0.875rem;
+  min-height: 44px;
   outline: none;
   transition: border-color 0.15s, box-shadow 0.15s;
   appearance: none;
@@ -284,7 +290,7 @@
   box-shadow: var(--shadow-sm);
   transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
 }
-.btn-primary--full { width: 100%; }
+.btn-primary--full { width: 100%; min-height: 48px; }
 .btn-primary:hover:not(:disabled) { background: var(--navy-deep); transform: translateY(-1px); box-shadow: var(--shadow-md); }
 .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
 
@@ -495,9 +501,16 @@
 /* Buttons row */
 .rp-btn-row {
   display: flex;
+  flex-direction: column;
   gap: 0.75rem;
-  justify-content: flex-end;
   padding-top: 0.5rem;
+}
+@media (min-width: 480px) {
+  .rp-btn-row { flex-direction: row; justify-content: flex-end; }
+}
+@media (max-width: 479px) {
+  .rp-btn-row .btn-primary,
+  .rp-btn-row .btn-secondary { width: 100%; min-height: 48px; }
 }
 
 /* ── Success step ── */

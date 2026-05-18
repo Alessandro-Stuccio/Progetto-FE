@@ -1,8 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
-import { Subscription, UserManagementMode } from '../models/dashboard.types';
+import { environment } from '../../../environments/environment';
+import { Subscription, UserManagementMode } from '../../shared/models/dashboard.model';
 
 export type PaymentFrequency = 'UNICA_SOLUZIONE' | 'RATE_MENSILI';
 

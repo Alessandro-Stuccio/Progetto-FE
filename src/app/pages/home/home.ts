@@ -2,11 +2,10 @@ import { Component, inject, OnInit, AfterViewInit, OnDestroy, ChangeDetectorRef,
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
-import { AuthService } from '../../services/auth.service';
-import { PlanService } from '../../services/plan.service';
-import { environment } from '../../../environments/environment';
-import { FooterComponent } from '../../components/layout/footer/footer';
+import { AuthService } from '../../core/services/auth.service';
+import { PlanService } from '../../core/services/plan.service';
+import { JobApplicationService } from '../../core/services/job-application.service';
+import { FooterComponent } from '../../shared/components/layout/footer/footer';
 
 @Component({
     selector: 'app-home',
@@ -39,16 +38,19 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     isCarouselPlaying: boolean = false;
 
     getVideoSrc(video: any): string {
-        return window.innerWidth < 640 ? video.mobileSrc : video.src;
+        // Su mobile (< 768px) usa la variante verticale 9:16 — vedi mobileSrc nell'array.
+        // TODO: i mobileSrc attuali sono ancora ripresi orizzontali. Sostituire con video verticali
+        //       (ripresi da telefono in formato 9:16) quando disponibili da Cloudinary.
+        return window.innerWidth < 768 ? video.mobileSrc : video.src;
     }
     private readonly maxCarouselAutoplayRetries = 6;
     private carouselSectionObserver!: IntersectionObserver;
     private hasCarouselStarted: boolean = false;
-    private lastIsMobile: boolean = window.innerWidth < 640;
+    private lastIsMobile: boolean = window.innerWidth < 768;
 
     @HostListener('window:resize')
     onResize(): void {
-        const isMobileObj = window.innerWidth < 640;
+        const isMobileObj = window.innerWidth < 768;
         if (this.lastIsMobile !== isMobileObj) {
             this.lastIsMobile = isMobileObj;
             if (this.hasCarouselStarted) {
@@ -79,6 +81,14 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
         {
             question: 'Cosa include la polizza assicurativa sportiva?',
             answer: 'Ogni membro Kore è coperto da una polizza assicurativa sportiva che protegge durante l\'attività fisica. La copertura è inclusa in tutti i piani senza costi aggiuntivi.'
+        },
+        {
+            question: 'Posso cambiare Personal Trainer o Nutrizionista durante l\'abbonamento?',
+            answer: 'Sì. Se senti che il rapporto non funziona, puoi richiedere la riassegnazione contattando il supporto. La continuità è importante, ma il fit umano lo è di più: vogliamo che tu sia in mani giuste.'
+        },
+        {
+            question: 'Come funziona la cancellazione di una sessione prenotata?',
+            answer: 'Puoi cancellare una sessione fino a 24 ore prima dell\'orario previsto: il credito ti viene restituito automaticamente. Sotto le 24 ore lo slot si libera ma il credito viene consumato — è una tutela per il professionista che ti ha riservato il tempo.'
         }
     ];
 
@@ -93,10 +103,10 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private authService = inject(AuthService);
     private planService = inject(PlanService);
+    private jobApplicationService = inject(JobApplicationService);
     private router = inject(Router);
     private cdr = inject(ChangeDetectorRef);
     private fb = inject(FormBuilder);
-    private http = inject(HttpClient);
     private el = inject(ElementRef);
     private zone = inject(NgZone);
 
@@ -455,7 +465,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
             formData.append('cv', this.selectedFile);
         }
 
-        this.http.post(`${environment.apiUrl}/api/job-applications`, formData).subscribe({
+        this.jobApplicationService.submit(formData).subscribe({
             next: () => {
                 this.isSubmitting = false;
                 this.submitSuccess = true;

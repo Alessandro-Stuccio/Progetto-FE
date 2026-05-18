@@ -1,8 +1,8 @@
 import { Component, Input, inject, OnInit, OnDestroy, ChangeDetectorRef, ViewChild, ElementRef, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ChatService, ChatMessage, Conversation } from '../../../../services/chat.service';
-import { SocketService } from '../../../../services/socket.service';
+import { ChatService, ChatMessage, Conversation } from '../../../../core/services/chat.service';
+import { SocketService } from '../../../../core/services/socket.service';
 
 @Component({
   selector: 'app-chat-tab',

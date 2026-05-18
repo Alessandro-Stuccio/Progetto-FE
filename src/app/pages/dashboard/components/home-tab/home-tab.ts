@@ -1,9 +1,9 @@
 import { Component, Input, Output, EventEmitter, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { PlanService } from '../../../../services/plan.service';
-import { SubscriptionService, PaymentFrequency } from '../../../../services/subscription.service';
-import { Plan, Subscription } from '../../../../models/dashboard.types';
+import { PlanService } from '../../../../core/services/plan.service';
+import { SubscriptionService, PaymentFrequency } from '../../../../core/services/subscription.service';
+import { Plan, Subscription } from '../../../../shared/models/dashboard.model';
 
 @Component({
   selector: 'app-home-tab',

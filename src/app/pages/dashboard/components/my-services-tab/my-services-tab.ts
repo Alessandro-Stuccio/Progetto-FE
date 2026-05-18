@@ -1,7 +1,7 @@
 import { Component, Input, inject, ChangeDetectorRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { DocumentService } from '../../../../services/document.service';
+import { DocumentService } from '../../../../core/services/document.service';
 
 @Component({
   selector: 'app-my-services-tab',

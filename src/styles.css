@@ -64,6 +64,21 @@
   /* Motion */
   --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);
 
+  /* Spacing scale */
+  --space-2xs: 0.5rem;
+  --space-xs:  0.75rem;
+  --space-sm:  1rem;
+  --space-md:  1.5rem;
+  --space-lg:  2rem;
+  --space-xl:  3rem;
+  --space-2xl: 4rem;
+  --space-3xl: 6rem;
+
+  /* Section padding — mobile-first */
+  --section-px: 1.25rem;
+  --section-py: 3.5rem;
+  --container-max: 80rem;
+
   /* ─── Legacy aliases (transizione: rimossi quando i sub-tab saranno tutti aggiornati) ─── */
   --color-primary-navy: var(--navy-primary);
   --color-primary-navy-rgb: var(--navy-primary-rgb);
@@ -83,6 +98,19 @@
   --color-border-subtle: var(--border-subtle);
   --font-heading: var(--font-display);
   --font-body: var(--font-sans);
+}
+
+@media (min-width: 640px) {
+  :root {
+    --section-px: 1.5rem;
+    --section-py: 4.5rem;
+  }
+}
+@media (min-width: 1024px) {
+  :root {
+    --section-px: 2rem;
+    --section-py: 6rem;
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -340,6 +368,14 @@ img, video, svg {
   filter: blur(40px);
   animation: floatGlow 18s ease-in-out infinite reverse;
   pointer-events: none;
+}
+
+/* Container utility */
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--section-px);
 }
 
 /* Stato pulsing per CTA importanti */

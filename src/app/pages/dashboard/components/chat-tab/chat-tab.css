@@ -42,8 +42,9 @@
 /* Input textarea */
 .chat-input {
   font-family: var(--font-sans);
+  font-size: 1rem;
   line-height: 1.45;
-  min-height: 40px;
+  min-height: 44px;
   scrollbar-width: none;
 }
 

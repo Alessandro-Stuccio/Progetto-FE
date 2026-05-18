@@ -1,8 +1,8 @@
 import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { UserService } from '../../services/user.service';
+import { UserService } from '../../core/services/user.service';
 import { Router, RouterModule } from '@angular/router';
-import { UserRole, ClientBasicInfo } from '../../models/dashboard.types';
+import { UserRole, ClientBasicInfo } from '../../shared/models/dashboard.model';
 
 @Component({
   selector: 'app-clients-list',

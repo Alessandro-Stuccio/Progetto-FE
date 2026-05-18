@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { SlotService } from './slot.service';
-import { ProfessionalSlot, SlotPayload, BookingRequest } from '../models/dashboard.types';
+import { ProfessionalSlot, SlotPayload, BookingRequest } from '../../shared/models/dashboard.model';
 
 const START_HOUR = 8;
 const END_HOUR = 21;
