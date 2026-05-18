@@ -1,353 +1,377 @@
-<div class="register-page" [class.step2]="currentStep === 2">
+<div class="register-page" [class.rp--step2]="currentStep === 2">
 
-  <!-- ═══ LEFT: Video ═══ -->
-  <div class="register-left">
-    <video autoplay muted loop playsinline class="register-video">
-      <source src="https://res.cloudinary.com/dpgixeqq0/video/upload/v1774348521/register_video_xily8e.mp4" type="video/mp4">
-    </video>
-    <div class="video-overlay"></div>
+  <!-- ════════════ LEFT — Hero panel (step 1 only) ════════════ -->
+  <div class="rp-left" aria-hidden="true">
+    <div class="rp-left__orb rp-left__orb--gold glow-orb-gold"></div>
+    <div class="rp-left__orb rp-left__orb--navy glow-orb-navy"></div>
+    <svg class="rp-left__lines" viewBox="0 0 500 700" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+      <line x1="-50" y1="0" x2="550" y2="700" stroke="rgba(201,169,110,0.08)" stroke-width="1"/>
+      <line x1="0" y1="0" x2="600" y2="700" stroke="rgba(201,169,110,0.06)" stroke-width="1"/>
+      <line x1="100" y1="0" x2="700" y2="700" stroke="rgba(201,169,110,0.05)" stroke-width="1"/>
+      <line x1="-100" y1="0" x2="500" y2="700" stroke="rgba(201,169,110,0.07)" stroke-width="1"/>
+    </svg>
+    <div class="rp-left__content">
+      <p class="rp-eyebrow text-eyebrow">Il tuo percorso inizia adesso.</p>
+      <h2 class="rp-headline">
+        Unisciti a<br>
+        <span class="rp-headline--gold">Kore.</span>
+      </h2>
+      <ul class="rp-trust">
+        <li class="rp-trust-item">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+          Scegli il tuo Personal Trainer
+        </li>
+        <li class="rp-trust-item">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+          Piano alimentare su misura
+        </li>
+        <li class="rp-trust-item">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+          Polizza sportiva inclusa
+        </li>
+      </ul>
+    </div>
   </div>
 
-  <!-- ═══ RIGHT: Form ═══ -->
-  <div class="register-right">
-
-    <!-- Back Button -->
-    <button routerLink="/" class="btn-back">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-        stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="15 18 9 12 15 6" />
-      </svg>
+  <!-- ════════════ RIGHT — Form ════════════ -->
+  <div class="rp-right">
+    <a routerLink="/" class="btn-back" aria-label="Torna alla home">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
       Home
-    </button>
+    </a>
 
-    <div class="register-center" [class.wide]="currentStep === 2">
+    <div class="rp-center" [class.rp-center--wide]="currentStep === 2">
 
-      <!-- Brand -->
-      <div class="brand">
-        <img src="assets/images/kore_login.png" alt="Naval Gold Logo" class="brand-logo-img">
-      </div>
+      <!-- Logo -->
+      <a routerLink="/" class="auth-logo" aria-label="Kore — Homepage">
+        <span>Kore</span><span class="auth-logo__dot">.</span>
+      </a>
 
-      <form [formGroup]="registerForm" class="register-form" [class.wide]="currentStep === 2">
+      <form [formGroup]="registerForm" class="rp-form" [class.rp-form--wide]="currentStep === 2">
 
-        <!-- Header step -->
+        <!-- ── Stepper + heading (step 1 e 2) ── -->
         <ng-container *ngIf="currentStep !== 3">
-          <div class="card-header">
-            <h2 class="card-title">Crea il tuo Account</h2>
-            <p class="card-subtitle">Completa la registrazione in pochi passaggi</p>
-            <div class="step-track">
-              <div class="step-pill" [class.active]="currentStep === 1" [class.done]="currentStep > 1">
-                <span class="step-num">1</span>
-                <span class="step-label">Dati Personali</span>
+          <div class="rp-head">
+            <div class="rp-hd-text">
+              <h1 class="card-title">Crea il tuo account</h1>
+              <p class="card-subtitle">Completa la registrazione in due semplici passi</p>
+            </div>
+            <!-- Stepper -->
+            <div class="rp-stepper" aria-label="Avanzamento registrazione">
+              <div class="rp-step" [class.rp-step--active]="currentStep === 1" [class.rp-step--done]="currentStep > 1">
+                <div class="rp-step__dot">
+                  <svg *ngIf="currentStep > 1" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span *ngIf="currentStep <= 1">1</span>
+                </div>
+                <span class="rp-step__lbl">Dati personali</span>
               </div>
-              <div class="step-line" [class.done]="currentStep > 1"></div>
-              <div class="step-pill" [class.active]="currentStep === 2">
-                <span class="step-num">2</span>
-                <span class="step-label">Piano</span>
+              <div class="rp-step__line" [class.rp-step__line--done]="currentStep > 1"></div>
+              <div class="rp-step" [class.rp-step--active]="currentStep === 2">
+                <div class="rp-step__dot">
+                  <span>2</span>
+                </div>
+                <span class="rp-step__lbl">Piano e professionisti</span>
               </div>
             </div>
           </div>
         </ng-container>
 
-        <!-- STEP 1 -->
-        <div *ngIf="currentStep === 1" class="step-body">
+        <!-- ══════ STEP 1 — Dati personali ══════ -->
+        <div *ngIf="currentStep === 1" class="rp-step-body">
 
           <!-- Avatar upload -->
-          <div class="avatar-upload">
-            <input type="file" id="actual-btn" (change)="onFileSelected($event)" accept="image/*" hidden />
-            <label for="actual-btn" class="avatar-label">
-              <ng-container *ngIf="profilePictureBase64">
-                <img [src]="profilePictureBase64" alt="Anteprima" class="avatar-preview">
-                <div class="avatar-overlay">📷</div>
-              </ng-container>
-              <ng-container *ngIf="!profilePictureBase64">
-                <div class="avatar-placeholder">
-                  <span class="avatar-plus">+</span>
-                  <span class="avatar-text">Foto</span>
-                </div>
-              </ng-container>
+          <div class="rp-avatar-wrap">
+            <input type="file" id="avatarInput" (change)="onFileSelected($event)" accept="image/*" hidden />
+            <label for="avatarInput" class="rp-avatar" aria-label="Carica foto profilo">
+              <img *ngIf="profilePictureBase64" [src]="profilePictureBase64" alt="Anteprima foto" class="rp-avatar__img">
+              <div *ngIf="profilePictureBase64" class="rp-avatar__overlay">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              </div>
+              <div *ngIf="!profilePictureBase64" class="rp-avatar__placeholder">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              </div>
             </label>
-            <p class="avatar-hint">Opzionale</p>
+            <p class="rp-avatar__hint">Foto profilo · opzionale</p>
           </div>
 
-          <!-- Campi in griglia -->
-          <div class="fields-grid">
+          <!-- Nome / Cognome -->
+          <div class="rp-row">
             <div class="field-group">
-              <label class="field-label">Nome</label>
-              <input type="text" formControlName="firstName" placeholder="Mario" class="field-input">
+              <label class="field-label" for="firstName">Nome *</label>
+              <input id="firstName" type="text" formControlName="firstName" placeholder="Mario" class="field-input"
+                [class.invalid]="registerForm.get('firstName')?.invalid && registerForm.get('firstName')?.touched">
+              <div class="field-error" *ngIf="registerForm.get('firstName')?.invalid && registerForm.get('firstName')?.touched">Nome obbligatorio</div>
             </div>
             <div class="field-group">
-              <label class="field-label">Cognome</label>
-              <input type="text" formControlName="lastName" placeholder="Rossi" class="field-input">
+              <label class="field-label" for="lastName">Cognome *</label>
+              <input id="lastName" type="text" formControlName="lastName" placeholder="Rossi" class="field-input"
+                [class.invalid]="registerForm.get('lastName')?.invalid && registerForm.get('lastName')?.touched">
+              <div class="field-error" *ngIf="registerForm.get('lastName')?.invalid && registerForm.get('lastName')?.touched">Cognome obbligatorio</div>
             </div>
           </div>
 
+          <!-- Email -->
           <div class="field-group">
-            <label class="field-label">Email</label>
+            <label class="field-label" for="regEmail">Email *</label>
             <div class="input-wrapper">
-              <span class="input-icon">&#64;</span>
-              <input type="email" formControlName="email" placeholder="mario&#64;example.com" class="field-input with-icon">
-            </div>
-          </div>
-
-          <div class="field-group">
-            <label class="field-label">Password</label>
-            <div class="input-wrapper">
-              <svg class="input-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              <svg class="input-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
               </svg>
-              <input [type]="showPassword ? 'text' : 'password'" formControlName="password"
-                placeholder="Minimo 6 caratteri" class="field-input with-icon"
+              <input id="regEmail" type="email" formControlName="email" placeholder="mario&#64;example.com"
+                autocomplete="email" class="field-input with-icon"
+                [class.invalid]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+            </div>
+            <div class="field-error" *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+              <span *ngIf="registerForm.get('email')?.errors?.['required']">Email obbligatoria</span>
+              <span *ngIf="registerForm.get('email')?.errors?.['email']">Email non valida</span>
+            </div>
+          </div>
+
+          <!-- Password -->
+          <div class="field-group">
+            <label class="field-label" for="regPassword">Password *</label>
+            <div class="input-wrapper">
+              <svg class="input-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+              <input id="regPassword" [type]="showPassword ? 'text' : 'password'" formControlName="password"
+                placeholder="Minimo 6 caratteri" autocomplete="new-password"
+                class="field-input with-icon"
                 [class.invalid]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
               <button type="button" class="btn-toggle-password" (click)="togglePasswordVisibility()"
                 [attr.aria-label]="showPassword ? 'Nascondi' : 'Mostra'">
-                <svg *ngIf="!showPassword" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path
-                    d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
-                  <line x1="1" y1="1" x2="23" y2="23" />
-                </svg>
-                <svg *ngIf="showPassword" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                  <circle cx="12" cy="12" r="3" />
-                </svg>
+                <svg *ngIf="!showPassword" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                <svg *ngIf="showPassword" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
               </button>
             </div>
-            <div class="field-error"
-              *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
-              <span *ngIf="registerForm.get('password')?.errors?.['required']">La password è obbligatoria</span>
+            <div class="field-error" *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+              <span *ngIf="registerForm.get('password')?.errors?.['required']">Password obbligatoria</span>
               <span *ngIf="registerForm.get('password')?.errors?.['minlength']">Minimo 6 caratteri</span>
             </div>
           </div>
 
+          <!-- Conferma password -->
           <div class="field-group">
-            <label class="field-label">Conferma Password</label>
+            <label class="field-label" for="regConfirm">Conferma password *</label>
             <div class="input-wrapper">
-              <svg class="input-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M9 12l2 2 4-4" />
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              <svg class="input-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
               </svg>
-              <input [type]="showConfirmPassword ? 'text' : 'password'" formControlName="confirmPassword"
-                placeholder="Ripeti la password" class="field-input with-icon"
+              <input id="regConfirm" [type]="showConfirmPassword ? 'text' : 'password'" formControlName="confirmPassword"
+                placeholder="Ripeti la password" autocomplete="new-password"
+                class="field-input with-icon"
                 [class.invalid]="registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched">
               <button type="button" class="btn-toggle-password" (click)="toggleConfirmPasswordVisibility()"
                 [attr.aria-label]="showConfirmPassword ? 'Nascondi' : 'Mostra'">
-                <svg *ngIf="!showConfirmPassword" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path
-                    d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
-                <line x1="1" y1="1" x2="23" y2="23" />
-                </svg>
-                <svg *ngIf="showConfirmPassword" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                  <circle cx="12" cy="12" r="3" />
-                </svg>
+                <svg *ngIf="!showConfirmPassword" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                <svg *ngIf="showConfirmPassword" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
               </button>
             </div>
-            <div class="field-error"
-              *ngIf="registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched">
+            <div class="field-error" *ngIf="registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched">
               <span *ngIf="registerForm.get('confirmPassword')?.errors?.['required']">Conferma la password</span>
               <span *ngIf="registerForm.get('confirmPassword')?.errors?.['mismatch']">Le password non corrispondono</span>
             </div>
           </div>
 
-          <button type="button" class="btn-primary" (click)="goToStep2()">
-            <span>Avanti</span><span class="btn-arrow">→</span>
+          <button type="button" class="btn-primary btn-primary--full" (click)="goToStep2()">
+            Avanti
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </button>
 
-          <div class="card-footer">
-            Hai già un account? <a routerLink="/login" class="link">Accedi</a>
-          </div>
+          <p class="card-footer">
+            Hai già un account?
+            <a routerLink="/login" class="link">Accedi</a>
+          </p>
         </div>
 
-        <!-- STEP 2 -->
-        <div *ngIf="currentStep === 2" class="step-body">
+        <!-- ══════ STEP 2 — Piano + Professionisti ══════ -->
+        <div *ngIf="currentStep === 2" class="rp-step-body">
 
-          <div class="field-group plans-section">
-            <label class="field-label text-center">Scegli il tuo Piano</label>
-
-            <div class="pricing-carousel">
-              <div class="pricing-card" *ngFor="let plan of plans; let i = index"
-                [class.selected]="registerForm.value.selectedPlanId === plan.id" (click)="selectPlan(plan.id)">
-
-                <div class="pc-badge" *ngIf="i === 1">Vantaggioso</div>
-                <div class="pc-badge" *ngIf="i === 2">Premium</div>
-
-                <div class="pc-header">
-                  <h3 class="pc-name">{{ plan.name }}</h3>
+          <!-- Scegli piano -->
+          <div class="rp-section">
+            <h3 class="rp-section__title">Scegli il tuo piano</h3>
+            <div class="rp-plans">
+              <div
+                *ngFor="let plan of plans; let i = index"
+                class="rp-plan"
+                [class.rp-plan--selected]="registerForm.value.selectedPlanId === plan.id"
+                (click)="selectPlan(plan.id)"
+                [attr.aria-pressed]="registerForm.value.selectedPlanId === plan.id"
+                role="button">
+                <div *ngIf="i > 0" class="rp-plan__badge">{{ i === 1 ? 'Popolare' : 'Premium' }}</div>
+                <div class="rp-plan__check" aria-hidden="true">
+                  <svg *ngIf="registerForm.value.selectedPlanId === plan.id" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                 </div>
-
-                <div class="pc-price-block">
-                  <div class="pc-price">
-                    <span class="currency">€</span>
-                    <span class="amount">{{ plan.fullPrice }}</span>
-                  </div>
-                  <span class="pc-period">Contratto {{ plan.name }}</span>
+                <h4 class="rp-plan__name">{{ plan.name }}</h4>
+                <div class="rp-plan__price">
+                  <span class="rp-plan__currency">€</span>
+                  <span class="rp-plan__amount">{{ plan.fullPrice }}</span>
                 </div>
+                <p class="rp-plan__period">Contratto {{ plan.name }}</p>
+              </div>
+            </div>
+            <input type="hidden" formControlName="selectedPlanId">
+            <div class="field-error" *ngIf="registerForm.get('selectedPlanId')?.invalid && registerForm.get('selectedPlanId')?.touched">
+              Seleziona un piano
+            </div>
+          </div>
 
-                <div class="pc-features">
-                  <div class="feature-item">
-                    <span class="feature-dot"></span> Schede PT personalizzate
-                  </div>
-                  <div class="feature-item">
-                    <span class="feature-dot"></span> Piano alimentare mensile
-                  </div>
-                  <div class="feature-item">
-                    <span class="feature-dot"></span> Appuntamenti inclusi
-                  </div>
+          <!-- Metodo di pagamento -->
+          <div class="rp-section">
+            <h3 class="rp-section__title">Metodo di pagamento</h3>
+            <div class="input-wrapper">
+              <select formControlName="paymentFrequency" class="field-input">
+                <option value="UNICA_SOLUZIONE">Pagamento unico (risparmia)</option>
+                <option value="RATE_MENSILI">Rate mensili</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Personal Trainer -->
+          <div class="rp-section">
+            <h3 class="rp-section__title">Scegli il tuo Personal Trainer</h3>
+            <div class="rp-search">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" class="rp-search__input" placeholder="Cerca per nome..." [(ngModel)]="ptSearch" [ngModelOptions]="{standalone: true}">
+            </div>
+            <div class="rp-prof-grid">
+              <div
+                *ngFor="let pt of filteredPts"
+                class="rp-prof"
+                [class.rp-prof--selected]="registerForm.value.selectedPtId === pt.id"
+                [class.rp-prof--full]="pt.isSoldOut"
+                (click)="!pt.isSoldOut && selectPt(pt.id)"
+                [attr.aria-disabled]="pt.isSoldOut"
+                role="button">
+                <div class="rp-prof__avatar">
+                  <img *ngIf="pt.profilePicture" [src]="pt.profilePicture" [alt]="pt.fullName" class="rp-prof__img">
+                  <span *ngIf="!pt.profilePicture" class="rp-prof__initials">{{ getInitials(pt.fullName) }}</span>
                 </div>
-
-                <button type="button" class="btn-select-plan">
-                  {{ registerForm.value.selectedPlanId === plan.id ? 'Selezionato' : 'Scegli' }}
+                <div class="rp-prof__info">
+                  <span class="rp-prof__name">{{ pt.fullName }}</span>
+                  <span class="rp-prof__rating">★ {{ pt.averageRating | number:'1.1-1' }}/5</span>
+                </div>
+                <span *ngIf="pt.isSoldOut" class="rp-prof__sold">Completo</span>
+                <div *ngIf="registerForm.value.selectedPtId === pt.id" class="rp-prof__tick" aria-hidden="true">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <button type="button" class="rp-prof__reviews"
+                  (click)="$event.stopPropagation(); openReviewsModal(pt)">
+                  Recensioni
                 </button>
               </div>
-            </div>
-
-            <input type="hidden" formControlName="selectedPlanId">
-          </div>
-
-          <div class="field-group">
-            <label class="field-label text-center">Metodo di pagamento</label>
-            <select formControlName="paymentFrequency" class="field-select">
-              <option value="UNICA_SOLUZIONE">Pagamento Unico (Risparmia)</option>
-              <option value="RATE_MENSILI">Rate Mensili</option>
-            </select>
-          </div>
-
-          <div class="section-divider"></div>
-          <h3 class="section-heading">Scegli i tuoi Professionisti</h3>
-
-          <!-- PT Picker -->
-          <div class="field-group">
-            <label class="field-label">💪 Personal Trainer</label>
-            <div class="prof-search-wrap">
-              <span class="prof-search-icon">🔍</span>
-              <input type="text" class="prof-search-input" placeholder="Cerca per nome..." [(ngModel)]="ptSearch"
-                [ngModelOptions]="{standalone: true}">
-            </div>
-            <div class="prof-grid">
-              <div class="prof-card" *ngFor="let pt of filteredPts"
-                [class.selected]="registerForm.value.selectedPtId === pt.id" [class.sold-out]="pt.isSoldOut"
-                (click)="!pt.isSoldOut && selectPt(pt.id)">
-                <div class="prof-avatar">
-                  <img *ngIf="pt.profilePicture" [src]="pt.profilePicture" [alt]="pt.fullName">
-                  <span *ngIf="!pt.profilePicture" class="prof-initials">{{ getInitials(pt.fullName) }}</span>
-                </div>
-                <div class="prof-info">
-                  <span class="prof-name">{{ pt.fullName }}</span>
-                  <span class="prof-rating">
-                    ⭐ {{ (pt.averageRating | number:'1.1-1') }}<span class="prof-rating-max">/5</span>
-                  </span>
-                </div>
-                <span *ngIf="pt.isSoldOut" class="prof-sold-out-badge">Completo</span>
-                <span *ngIf="registerForm.value.selectedPtId === pt.id" class="prof-check">✓</span>
-                <button type="button" class="btn-view-reviews"
-                  (click)="$event.stopPropagation(); openReviewsModal(pt)">Vedi recensioni</button>
-              </div>
-              <div *ngIf="filteredPts.length === 0" class="prof-empty">Nessun risultato</div>
+              <div *ngIf="filteredPts.length === 0" class="rp-prof-empty">Nessun risultato</div>
             </div>
             <input type="hidden" formControlName="selectedPtId">
+            <div class="field-error" *ngIf="registerForm.get('selectedPtId')?.invalid && registerForm.get('selectedPtId')?.touched">
+              Seleziona un Personal Trainer
+            </div>
           </div>
 
-          <!-- Nutrizionista Picker -->
-          <div class="field-group">
-            <label class="field-label">🥗 Nutrizionista</label>
-            <div class="prof-search-wrap">
-              <span class="prof-search-icon">🔍</span>
-              <input type="text" class="prof-search-input" placeholder="Cerca per nome..." [(ngModel)]="nutSearch"
-                [ngModelOptions]="{standalone: true}">
+          <!-- Nutrizionista -->
+          <div class="rp-section">
+            <h3 class="rp-section__title">Scegli il tuo Nutrizionista</h3>
+            <div class="rp-search">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" class="rp-search__input" placeholder="Cerca per nome..." [(ngModel)]="nutSearch" [ngModelOptions]="{standalone: true}">
             </div>
-            <div class="prof-grid">
-              <div class="prof-card" *ngFor="let nut of filteredNuts"
-                [class.selected]="registerForm.value.selectedNutritionistId === nut.id" [class.sold-out]="nut.isSoldOut"
-                (click)="!nut.isSoldOut && selectNut(nut.id)">
-                <div class="prof-avatar">
-                  <img *ngIf="nut.profilePicture" [src]="nut.profilePicture" [alt]="nut.fullName">
-                  <span *ngIf="!nut.profilePicture" class="prof-initials">{{ getInitials(nut.fullName) }}</span>
+            <div class="rp-prof-grid">
+              <div
+                *ngFor="let nut of filteredNuts"
+                class="rp-prof"
+                [class.rp-prof--selected]="registerForm.value.selectedNutritionistId === nut.id"
+                [class.rp-prof--full]="nut.isSoldOut"
+                (click)="!nut.isSoldOut && selectNut(nut.id)"
+                [attr.aria-disabled]="nut.isSoldOut"
+                role="button">
+                <div class="rp-prof__avatar">
+                  <img *ngIf="nut.profilePicture" [src]="nut.profilePicture" [alt]="nut.fullName" class="rp-prof__img">
+                  <span *ngIf="!nut.profilePicture" class="rp-prof__initials">{{ getInitials(nut.fullName) }}</span>
                 </div>
-                <div class="prof-info">
-                  <span class="prof-name">{{ nut.fullName }}</span>
-                  <span class="prof-rating">
-                    ⭐ {{ (nut.averageRating | number:'1.1-1') }}<span class="prof-rating-max">/5</span>
-                  </span>
+                <div class="rp-prof__info">
+                  <span class="rp-prof__name">{{ nut.fullName }}</span>
+                  <span class="rp-prof__rating">★ {{ nut.averageRating | number:'1.1-1' }}/5</span>
                 </div>
-                <span *ngIf="nut.isSoldOut" class="prof-sold-out-badge">Completo</span>
-                <span *ngIf="registerForm.value.selectedNutritionistId === nut.id" class="prof-check">✓</span>
-                <button type="button" class="btn-view-reviews"
-                  (click)="$event.stopPropagation(); openReviewsModal(nut)">Vedi recensioni</button>
+                <span *ngIf="nut.isSoldOut" class="rp-prof__sold">Completo</span>
+                <div *ngIf="registerForm.value.selectedNutritionistId === nut.id" class="rp-prof__tick" aria-hidden="true">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <button type="button" class="rp-prof__reviews"
+                  (click)="$event.stopPropagation(); openReviewsModal(nut)">
+                  Recensioni
+                </button>
               </div>
-              <div *ngIf="filteredNuts.length === 0" class="prof-empty">Nessun risultato</div>
+              <div *ngIf="filteredNuts.length === 0" class="rp-prof-empty">Nessun risultato</div>
             </div>
             <input type="hidden" formControlName="selectedNutritionistId">
+            <div class="field-error" *ngIf="registerForm.get('selectedNutritionistId')?.invalid && registerForm.get('selectedNutritionistId')?.touched">
+              Seleziona un Nutrizionista
+            </div>
           </div>
 
-          <div class="btn-row">
+          <!-- Bottoni step 2 -->
+          <div class="rp-btn-row">
             <button type="button" class="btn-secondary" (click)="goToStep1()" [disabled]="isLoading">
-              ← Indietro
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+              Indietro
             </button>
-            <button type="button" class="btn-primary btn-submit" (click)="onSubmit()" [disabled]="isLoading">
-              <span *ngIf="!isLoading">Completa →</span>
-              <span *ngIf="isLoading" class="loading-dots">Invio<span>.</span><span>.</span><span>.</span></span>
+            <button type="button" class="btn-primary" (click)="onSubmit()" [disabled]="isLoading">
+              <span *ngIf="!isLoading">
+                Completa registrazione
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </span>
+              <span *ngIf="isLoading">Registrazione in corso...</span>
             </button>
           </div>
-
         </div>
 
-        <!-- STEP 3: Successo -->
-        <div *ngIf="currentStep === 3" class="success-body">
-          <div class="success-ring">
-            <div class="success-check">✓</div>
+        <!-- ══════ STEP 3 — Successo ══════ -->
+        <div *ngIf="currentStep === 3" class="rp-success">
+          <div class="rp-success__ring" aria-hidden="true">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
           </div>
-          <h3 class="success-title">Benvenuto/a!</h3>
-          <p class="success-text">Il tuo account è stato creato con successo.</p>
-          <p class="success-redirect">Reindirizzamento al login in corso...</p>
-          <button type="button" class="btn-primary" routerLink="/login">Vai al Login →</button>
+          <h2 class="rp-success__title">Benvenuto/a in Kore!</h2>
+          <p class="rp-success__sub">Il tuo account è stato creato con successo.<br>Verrai reindirizzato al login...</p>
+          <a routerLink="/login" class="btn-primary">Vai al Login →</a>
         </div>
 
       </form>
     </div>
-
   </div>
 
 </div>
 
-<!-- TOAST -->
-<div class="toast-wrapper" *ngIf="toast" [class.toast-success]="toast.type === 'success'"
-  [class.toast-error]="toast.type === 'error'">
-  <div class="toast-icon-wrap">{{ toast.type === 'success' ? '✓' : '!' }}</div>
-  <span class="toast-message">{{ toast.message }}</span>
-  <button class="toast-close" (click)="dismissToast()">✕</button>
+<!-- ── Toast ── -->
+<div *ngIf="toast" class="rp-toast" [class.rp-toast--success]="toast.type === 'success'" [class.rp-toast--error]="toast.type === 'error'" role="alert">
+  <span class="rp-toast__icon">{{ toast.type === 'success' ? '✓' : '!' }}</span>
+  <span class="rp-toast__msg">{{ toast.message }}</span>
+  <button class="rp-toast__close" type="button" (click)="dismissToast()" aria-label="Chiudi notifica">✕</button>
 </div>
 
-<!-- ── MODAL VEDI RECENSIONI ── -->
-<div class="reviews-modal-overlay" *ngIf="reviewsModal" (click)="closeReviewsModal()">
-  <div class="reviews-modal" (click)="$event.stopPropagation()">
-    <div class="reviews-modal-header">
-      <div class="reviews-modal-title-wrap">
-        <span class="reviews-modal-emoji">{{ reviewsModal.prof.role === 'PERSONAL_TRAINER' ? '💪' : '🥗' }}</span>
-        <h3 class="reviews-modal-title">{{ reviewsModal.prof.fullName }}</h3>
-      </div>
-      <button class="reviews-modal-close" (click)="closeReviewsModal()">✕</button>
+<!-- ── Modal recensioni ── -->
+<div class="rp-modal-overlay" *ngIf="reviewsModal" (click)="closeReviewsModal()">
+  <div class="rp-modal" (click)="$event.stopPropagation()" role="dialog" [attr.aria-label]="reviewsModal.prof.fullName + ' — Recensioni'">
+    <div class="rp-modal__head">
+      <h3 class="rp-modal__title">{{ reviewsModal.prof.fullName }}</h3>
+      <button class="rp-modal__close" type="button" (click)="closeReviewsModal()" aria-label="Chiudi">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
     </div>
-    <div class="reviews-modal-body">
-      <div class="reviews-loading" *ngIf="reviewsLoading">Caricamento recensioni...</div>
+    <div class="rp-modal__body">
+      <div *ngIf="reviewsLoading" class="rp-modal__loading">Caricamento recensioni...</div>
       <ng-container *ngIf="!reviewsLoading">
-        <div class="review-item" *ngFor="let r of reviewsModal.reviews">
-          <div class="review-top">
-            <span class="review-author">{{ r.authorName }}</span>
-            <div class="review-stars">
-              <span *ngFor="let s of [1,2,3,4,5]" [class.active]="r.rating >= s">★</span>
+        <div *ngFor="let r of reviewsModal.reviews" class="rp-review">
+          <div class="rp-review__top">
+            <span class="rp-review__author">{{ r.authorName }}</span>
+            <div class="rp-review__stars" [attr.aria-label]="r.rating + ' stelle su 5'">
+              <span *ngFor="let s of [1,2,3,4,5]" [class.rp-star--on]="r.rating >= s">★</span>
             </div>
           </div>
-          <p class="review-comment">{{ r.comment }}</p>
+          <p class="rp-review__comment">{{ r.comment }}</p>
         </div>
-        <div class="reviews-empty" *ngIf="reviewsModal.reviews.length === 0">
-          Nessuna recensione ancora per questo professionista.
+        <div *ngIf="reviewsModal.reviews.length === 0" class="rp-modal__empty">
+          Nessuna recensione per questo professionista.
         </div>
       </ng-container>
     </div>

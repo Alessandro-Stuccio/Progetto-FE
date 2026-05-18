@@ -1,11 +1,11 @@
 /* ── Root ── */
 .mp-page {
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-sans);
     color: var(--color-text-main);
 }
 
 .mp-title {
-    font-family: 'Darker Grotesque', sans-serif;
+    font-family: var(--font-display);
     font-size: 1.45rem;
     font-weight: 900;
     color: var(--color-text-main);
@@ -131,7 +131,7 @@
 }
 
 .mp-prof-name {
-    font-family: 'Darker Grotesque', sans-serif;
+    font-family: var(--font-display);
     font-size: 1.1rem;
     font-weight: 800;
     color: var(--color-text-main);
@@ -184,7 +184,7 @@
     border: none;
     font-weight: 700;
     font-size: .88rem;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-sans);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -266,7 +266,7 @@
     color: #a88a53;
     font-weight: 600;
     font-size: .84rem;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-sans);
     cursor: pointer;
     transition: background .2s, color .2s;
 }
@@ -310,7 +310,7 @@
     padding: .7rem;
     border: 1px solid var(--color-border-subtle);
     border-radius: 8px;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-sans);
     font-size: .88rem;
     color: var(--color-text-main);
     resize: vertical;
@@ -342,7 +342,7 @@
     color: var(--color-text-main);
     font-weight: 700;
     font-size: .9rem;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-sans);
     cursor: pointer;
     transition: opacity .2s;
 }
@@ -393,7 +393,7 @@
 }
 
 .mp-empty-title {
-    font-family: 'Darker Grotesque', sans-serif;
+    font-family: var(--font-display);
     font-size: 1.25rem;
     font-weight: 800;
     color: var(--color-text-main);
@@ -438,35 +438,38 @@
     align-items: center;
     justify-content: space-between;
     padding: 1.1rem 1.4rem;
-    background: var(--color-primary-navy);
+    background: var(--bg-panel);
+    border-bottom: 1px solid var(--border-subtle);
     border-radius: 16px 16px 0 0;
     flex-shrink: 0;
 }
 
 .mp-modal-title {
-    font-family: 'Darker Grotesque', sans-serif;
+    font-family: var(--font-display);
     font-size: 1.1rem;
-    font-weight: 800;
-    color: #fff;
+    font-weight: 500;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
 }
 
 .mp-modal-close {
     width: 28px;
     height: 28px;
-    background: rgba(255, 255, 255, .12);
-    border: 1px solid rgba(255, 255, 255, .2);
-    color: #fff;
+    background: var(--bg-subtle);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-muted);
     border-radius: 6px;
     cursor: pointer;
     font-size: .8rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background .2s;
+    transition: all .2s;
 }
 
 .mp-modal-close:hover {
-    background: rgba(255, 255, 255, .22);
+    color: var(--text-primary);
+    border-color: var(--border-medium);
 }
 
 .mp-modal-body {

@@ -1,4 +1,4 @@
-<div class="flex flex-col h-[100dvh] overflow-hidden bg-[var(--color-bg-subtle)] font-['DM_Sans'] text-[var(--color-text-main)]">
+<div class="flex flex-col h-[100dvh] overflow-hidden bg-[var(--bg-base)] text-[var(--text-primary)]">
 
   <!-- ══════════════════════════════════════════════════════════
        TOPBAR — Logo + Nav desktop al centro, Profilo dx
@@ -6,13 +6,12 @@
   <header class="flex-shrink-0 flex items-center justify-between relative
                  px-4 lg:px-7 h-[calc(3.5rem+env(safe-area-inset-top))] sm:h-[calc(4rem+env(safe-area-inset-top))]
                  pt-[env(safe-area-inset-top)]
-                 bg-[var(--color-primary-navy)] border-b border-[var(--color-accent-gold)]/20
-                 shadow-[0_2px_20px_rgba(26,52,98,0.30)] z-50">
+                 bg-[var(--bg-panel)] border-b border-[var(--border-subtle)]
+                 shadow-[var(--shadow-sm)] z-50">
 
     <!-- Brand logo (sinistra) -->
     <div class="flex items-center flex-shrink-0">
-      <img src="assets/images/navalgold_logo.png" alt="Naval Gold Logo"
-        class="brand-logo-img h-10 sm:h-12 w-auto object-contain">
+      <span class="font-['Clash_Display'] text-[1.5rem] font-medium text-[var(--text-primary)] leading-none select-none">Kore<span class="text-[var(--gold-accent)]">.</span></span>
     </div>
 
     <!-- Desktop navigation tabs (centrato) -->
@@ -121,8 +120,8 @@
       <!-- Week stat (professionals only) — desktop only, visible on calendar tab -->
       <div class="hidden md:flex flex-col items-end gap-[1px]"
         *ngIf="!isLoading && isProfessional() && activeTab === 'calendar'">
-        <span class="text-[1.1rem] font-bold text-[var(--color-accent-gold-light)] leading-none tabular-nums">{{ countWeekBookings() }}</span>
-        <span class="text-[0.6rem] text-white/40 uppercase tracking-[0.10em]">questa settimana</span>
+        <span class="text-[1.1rem] font-bold text-[var(--navy-primary)] leading-none tabular-nums">{{ countWeekBookings() }}</span>
+        <span class="text-[0.6rem] text-[var(--text-muted)] uppercase tracking-[0.10em]">questa settimana</span>
       </div>
 
       <!-- Credits (clients — desktop only, visible on calendar tab) -->
@@ -130,14 +129,14 @@
         *ngIf="!isLoading && isClient() && subscription?.active && activeTab === 'calendar'">
         <div class="flex items-center gap-1">
           <div class="topbar-credit-badge flex items-center gap-1 px-2 py-[0.2rem]
-                       bg-[var(--color-accent-gold)]/15 border border-[var(--color-accent-gold)]/30 rounded-[6px]
-                       text-[var(--color-accent-gold-light)] text-[0.8rem] font-semibold transition-all">
+                       bg-[var(--bg-subtle)] border border-[var(--border-medium)] rounded-[6px]
+                       text-[var(--text-secondary)] text-[0.8rem] font-semibold transition-all">
             <span>💪</span>
             <span class="tabular-nums">{{ subscription?.remainingPtCredits }}</span>
           </div>
           <div class="topbar-credit-badge flex items-center gap-1 px-2 py-[0.2rem]
-                       bg-[var(--color-accent-gold)]/15 border border-[var(--color-accent-gold)]/30 rounded-[6px]
-                       text-[var(--color-accent-gold-light)] text-[0.8rem] font-semibold transition-all">
+                       bg-[var(--bg-subtle)] border border-[var(--border-medium)] rounded-[6px]
+                       text-[var(--text-secondary)] text-[0.8rem] font-semibold transition-all">
             <span>🥗</span>
             <span class="tabular-nums">{{ subscription?.remainingNutritionistCredits }}</span>
           </div>
@@ -152,20 +151,20 @@
       </button>
 
       <!-- Profile button (clienti e professionisti) -->
-      <button *ngIf="!isAdmin() && !isModerator() && !isInsuranceManager()" class="profile-btn w-9 h-9 sm:w-[38px] sm:h-[38px] rounded-full border-2 border-[var(--color-accent-gold)]/50
-                     bg-[var(--color-accent-gold)]/12 cursor-pointer flex items-center justify-center
+      <button *ngIf="!isAdmin() && !isModerator() && !isInsuranceManager()" class="profile-btn w-9 h-9 sm:w-[38px] sm:h-[38px] rounded-full border-2 border-[var(--border-medium)]
+                     bg-[var(--bg-subtle)] cursor-pointer flex items-center justify-center
                      transition-all overflow-hidden p-0 flex-shrink-0" (click)="toggleProfile()"
         [class.active]="isProfileOpen">
         <img *ngIf="currentUser?.profilePicture" [src]="currentUser?.profilePicture" alt="Avatar"
           class="w-full h-full object-cover">
-        <span *ngIf="!currentUser?.profilePicture" class="text-[0.78rem] font-bold text-[var(--color-accent-gold)]">{{ getInitials()
+        <span *ngIf="!currentUser?.profilePicture" class="text-[0.78rem] font-bold text-[var(--navy-primary)]">{{ getInitials()
           }}</span>
       </button>
 
       <!-- Logout button (Admin e Insurance Manager) -->
-      <button *ngIf="isAdmin() || isModerator() || isInsuranceManager()" class="flex items-center gap-1.5 px-3 py-[0.35rem] rounded-lg border border-[var(--color-accent-gold)]/40
-               bg-[var(--color-accent-gold)]/10 text-[var(--color-accent-gold)] text-[0.78rem] font-semibold
-               hover:bg-[var(--color-accent-gold)]/20 transition-all flex-shrink-0" (click)="logout()">
+      <button *ngIf="isAdmin() || isModerator() || isInsuranceManager()" class="flex items-center gap-1.5 px-3 py-[0.35rem] rounded-lg border border-[var(--border-medium)]
+               bg-[var(--bg-subtle)] text-[var(--text-secondary)] text-[0.78rem] font-semibold
+               hover:bg-[var(--navy-primary)] hover:text-white hover:border-[var(--navy-primary)] transition-all flex-shrink-0" (click)="logout()">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round"
             d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -185,7 +184,7 @@
   <div class="flex-1 flex flex-col overflow-hidden relative">
 
     <!-- Loading overlay -->
-    <div class="loading-overlay absolute inset-0 bg-[var(--color-bg-subtle)]/88 z-20
+    <div class="loading-overlay absolute inset-0 bg-[var(--bg-base)]/90 z-20
                 flex flex-col items-center justify-center gap-4 backdrop-blur-[6px]" *ngIf="isLoading">
       <div class="loading-spinner w-9 h-9 rounded-full border-2 border-[var(--color-accent-gold)]/20 border-t-[var(--color-accent-gold)]"></div>
       <span class="text-[0.8rem] text-[var(--color-text-muted)] uppercase tracking-[0.08em]">Caricamento in corso...</span>
@@ -404,11 +403,11 @@
        ══════════════════════════════════════════════════════════ -->
 
   <!-- ── MODALE ACCESSO CALL ── -->
-  <div class="fixed inset-0 bg-[var(--color-primary-navy)]/30 backdrop-blur-[4px] z-[120] flex items-center justify-center p-4"
+  <div class="fixed inset-0 bg-[var(--navy-primary)]/30 backdrop-blur-[4px] z-[120] flex items-center justify-center p-4"
     style="animation: fadeIn 0.2s ease" *ngIf="isCallModalOpen">
     <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden flex flex-col"
       style="animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)">
-      <div class="px-6 py-5 bg-[var(--color-primary-navy)] border-b border-[var(--color-accent-gold)]/20 flex justify-between items-start">
+      <div class="px-6 py-5 bg-[var(--navy-primary)] border-b border-[var(--gold-accent)]/20 flex justify-between items-start">
         <h3 class="text-xl font-bold text-white leading-tight">Dettagli Chiamata</h3>
         <button class="text-white/60 hover:text-white transition-colors" (click)="closeCallModal()">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -464,7 +463,7 @@
         </p>
         <button
           class="mt-4 w-full py-3.5 rounded-xl text-[0.95rem] font-bold uppercase tracking-wide transition-all flex items-center justify-center gap-2"
-          [ngClass]="canJoinCallNow && selectedCallBooking.status === 'CONFIRMED' ? 'bg-[var(--color-primary-navy)] hover:bg-[var(--color-primary-navy-dark)] text-white shadow-lg shadow-[var(--color-primary-navy)]/20' : 'bg-[#e0e8f5] text-[var(--color-text-muted)] cursor-not-allowed'"
+          [ngClass]="canJoinCallNow && selectedCallBooking.status === 'CONFIRMED' ? 'bg-[var(--navy-primary)] hover:bg-[var(--navy-deep)] text-white shadow-lg shadow-[var(--navy-primary)]/20' : 'bg-[var(--bg-elevated)] text-[var(--text-muted)] cursor-not-allowed'"
           [disabled]="!canJoinCallNow || selectedCallBooking.status !== 'CONFIRMED'" (click)="joinCall()">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
             *ngIf="canJoinCallNow && selectedCallBooking.status === 'CONFIRMED'">
@@ -495,14 +494,14 @@
   </div>
 
   <!-- Modale Conferma Annullamento Prenotazione -->
-  <div class="fixed inset-0 bg-[var(--color-text-main)]/40 backdrop-blur-[4px] z-[200] flex items-center justify-center p-4"
+  <div class="fixed inset-0 bg-[var(--navy-primary)]/30 backdrop-blur-[4px] z-[200] flex items-center justify-center p-4"
     *ngIf="showCancelBookingModal" (click)="closeCancelBookingModal()">
     <div class="bg-white rounded-2xl shadow-2xl w-full max-w-[340px] overflow-hidden" (click)="$event.stopPropagation()">
       <div class="p-6 flex flex-col items-center text-center">
         <div class="w-14 h-14 bg-red-50 rounded-full flex items-center justify-center mb-4">
           <span class="text-[1.8rem]">❌</span>
         </div>
-        <h3 class="font-['Darker_Grotesque'] text-[1.4rem] font-black text-[var(--color-text-main)] leading-tight mb-2">
+        <h3 class="font-['Clash_Display'] text-[1.4rem] font-black text-[var(--color-text-main)] leading-tight mb-2">
           Annullare la prenotazione?
         </h3>
         <p class="text-[0.85rem] text-[var(--color-text-muted)] leading-relaxed mb-6">
@@ -526,7 +525,7 @@
   </div>
 
   <!-- ── OVERLAY PROFILO ── -->
-  <div class="fixed inset-0 bg-[var(--color-primary-navy)]/28 z-[100] backdrop-blur-[4px]" style="animation: fadeIn 0.2s ease"
+  <div class="fixed inset-0 bg-[var(--navy-primary)]/28 z-[100] backdrop-blur-[4px]" style="animation: fadeIn 0.2s ease"
     *ngIf="isProfileOpen" (click)="closeProfile()"></div>
 
   <!-- ── PANNELLO PROFILO ── -->
@@ -534,11 +533,11 @@
                 bg-white border-l border-[var(--color-border-subtle)] z-[101]
                 flex flex-col shadow-[-12px_0_48px_rgba(26,52,98,0.14)]" [class.open]="isProfileOpen">
     <div
-      class="panel-header flex items-center justify-between px-6 py-5 border-b border-[var(--color-border-subtle)] flex-shrink-0 bg-[var(--color-primary-navy)]">
-      <span class="panel-title font-['Darker_Grotesque'] text-[1.15rem] font-extrabold tracking-[0.03em]">Il tuo
+      class="panel-header flex items-center justify-between px-6 py-5 border-b border-[var(--border-subtle)] flex-shrink-0 bg-[var(--bg-panel)]">
+      <span class="font-['Clash_Display'] text-[1.15rem] font-medium tracking-[-0.01em] text-[var(--text-primary)]">Il tuo
         Profilo</span>
       <button
-        class="w-7 h-7 bg-white/12 border border-white/20 rounded-[6px] text-white/60 text-[0.75rem] cursor-pointer flex items-center justify-center transition-all"
+        class="w-7 h-7 bg-[var(--bg-subtle)] border border-[var(--border-subtle)] rounded-[6px] text-[var(--text-muted)] text-[0.75rem] cursor-pointer flex items-center justify-center transition-all hover:text-[var(--text-primary)]"
         (click)="closeProfile()">✕</button>
     </div>
     <div class="panel-body flex-1 overflow-y-auto px-5 py-7 flex flex-col items-center gap-[0.9rem] bg-[var(--color-bg-subtle)]">
@@ -553,11 +552,11 @@
             class="w-[82px] h-[82px] rounded-full object-cover border-2 border-[var(--color-accent-gold)] relative z-[1]">
           <div *ngIf="!currentUser?.profilePicture"
             class="panel-avatar-fallback w-[82px] h-[82px] rounded-full
-                      bg-gradient-to-br from-[var(--color-primary-navy)] to-[#2d5fa8] border-2 border-[var(--color-accent-gold)] text-[var(--color-accent-gold-light)]
-                      flex items-center justify-center text-[1.8rem] font-black relative z-[1] font-['Darker_Grotesque']">{{ getInitials() }}</div>
+                      bg-gradient-to-br from-[var(--navy-primary)] to-[var(--navy-mid)] border-2 border-[var(--gold-accent)] text-[var(--gold-light)]
+                      flex items-center justify-center text-[1.8rem] font-black relative z-[1] font-['Clash_Display']">{{ getInitials() }}</div>
           <div class="panel-avatar-ring absolute rounded-full border border-[var(--color-accent-gold)]/28" style="inset: -6px"></div>
         </div>
-        <div class="font-['Darker_Grotesque'] text-[1.35rem] font-black text-[var(--color-text-main)] text-center tracking-[0.02em]">{{
+        <div class="font-['Clash_Display'] text-[1.35rem] font-medium text-[var(--text-primary)] text-center tracking-[-0.01em]">{{
           profile?.firstName }} {{ profile?.lastName }}</div>
         <div
           class="bg-[var(--color-primary-navy)]/8 border border-[var(--color-primary-navy)]/20 text-[var(--color-primary-navy)] px-4 py-[0.22rem] rounded-full text-[0.68rem] font-semibold tracking-[0.12em] uppercase">
@@ -661,14 +660,14 @@
 
   <!-- ── MODALE DISPONIBILITÀ ── -->
   <ng-container *ngIf="calendarState$ | async as calState">
-  <div class="fixed inset-0 bg-[var(--color-primary-navy)]/38 z-[200] backdrop-blur-[5px]" style="animation: fadeIn 0.2s ease"
+  <div class="fixed inset-0 bg-[var(--navy-primary)]/38 z-[200] backdrop-blur-[5px]" style="animation: fadeIn 0.2s ease"
     *ngIf="calState.isAvailabilityOpen" (click)="closeAvailability()"></div>
   <div class="avail-modal fixed z-[201] bg-white overflow-hidden flex flex-col top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
               w-[min(96vw,920px)] h-[min(92vh,700px)] rounded-2xl max-sm:top-0 max-sm:left-0 max-sm:translate-x-0 max-sm:translate-y-0
               max-sm:w-screen max-sm:h-[100dvh] max-sm:rounded-none" *ngIf="calState.isAvailabilityOpen">
-    <div class="flex items-center justify-between px-6 py-[1.1rem] bg-[var(--color-primary-navy)] flex-shrink-0">
+    <div class="flex items-center justify-between px-6 py-[1.1rem] bg-[var(--navy-primary)] flex-shrink-0">
       <div class="flex flex-col gap-[0.15rem]">
-        <span class="avail-title font-['Darker_Grotesque'] text-[1.1rem] font-black tracking-[0.02em]">Disponibilità
+        <span class="avail-title font-['Clash_Display'] text-[1.1rem] font-black tracking-[0.02em]">Disponibilità
           Settimana Prossima</span>
         <span class="text-[0.72rem] text-white/52 tracking-[0.04em]">{{ getNextWeekLabel() }}</span>
       </div>
@@ -713,9 +712,9 @@
     </div>
     <div
       class="avail-footer flex items-center justify-between flex-wrap gap-4 px-6 py-[0.9rem] border-t border-[var(--color-border-subtle)] bg-white flex-shrink-0 max-sm:flex-col max-sm:items-stretch">
-      <span class="flex items-center gap-2 text-[0.82rem] text-[var(--color-text-muted)]">
-        <span class="text-[1.1rem] font-bold text-[var(--color-primary-navy)]">{{ getSelectedCount() }}</span> slot selezionati
-        <span class="text-[0.75rem] text-[var(--color-accent-gold)] font-medium">({{ (getSelectedCount() * 0.5).toFixed(1) }}h
+      <span class="flex items-center gap-2 text-[0.82rem] text-[var(--text-secondary)]">
+        <span class="text-[1.1rem] font-bold text-[var(--navy-primary)]">{{ getSelectedCount() }}</span> slot selezionati
+        <span class="text-[0.75rem] text-[var(--gold-accent)] font-medium">({{ (getSelectedCount() * 0.5).toFixed(1) }}h
           totali)</span>
       </span>
       <div class="flex gap-2 max-sm:justify-end">
@@ -729,16 +728,16 @@
 
   <!-- ── MODALE PRENOTAZIONE CLIENTE ── -->
   <ng-container *ngIf="bookingState$ | async as bookState">
-  <div class="fixed inset-0 bg-[var(--color-text-main)]/40 backdrop-blur-[4px] z-[2000]" style="animation: fadeIn 0.3s ease"
+  <div class="fixed inset-0 bg-[var(--navy-primary)]/30 backdrop-blur-[4px] z-[2000]" style="animation: fadeIn 0.3s ease"
     *ngIf="bookState.isBookingOpen" (click)="closeBooking()"></div>
   <div
     class="booking-modal fixed z-[2001] bg-white rounded-xl overflow-hidden flex flex-col top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-[540px] max-h-[90vh]"
     *ngIf="bookState.isBookingOpen">
-    <div class="flex justify-between items-start px-6 py-5 bg-[var(--color-text-main)] border-b-2 border-[var(--color-accent-gold)]">
+    <div class="flex justify-between items-start px-6 py-5 bg-[var(--navy-primary)] border-b-2 border-[var(--gold-accent)]">
       <div class="flex flex-col gap-[0.3rem]">
-        <span class="font-['Darker_Grotesque'] text-[1.6rem] font-extrabold leading-tight text-white">Prenota con {{
+        <span class="font-['Clash_Display'] text-[1.6rem] font-extrabold leading-tight text-white">Prenota con {{
           bookState.selectedProfessional?.fullName }}</span>
-        <span class="text-[0.85rem] text-[var(--color-accent-gold)] font-medium tracking-[0.03em] uppercase">{{
+        <span class="text-[0.85rem] text-[var(--gold-accent)] font-medium tracking-[0.03em] uppercase">{{
           bookState.selectedProfessional?.role === 'PERSONAL_TRAINER' ? 'Personal Trainer' : 'Nutrizionista' }}</span>
       </div>
       <button
@@ -760,14 +759,14 @@
         <div class="text-[0.9rem] font-bold text-[var(--color-text-main)] mb-3 uppercase tracking-[0.03em]">Seleziona una data</div>
         <div class="booking-day-selector flex gap-3 overflow-x-auto pb-2">
           <button
-            class="booking-day-card flex-[0_0_auto] w-[72px] py-3 flex flex-col items-center justify-center bg-white border border-[#e2e8f0] rounded-[10px] cursor-pointer transition-all"
+            class="booking-day-card flex-[0_0_auto] w-[72px] py-3 flex flex-col items-center justify-center bg-white border border-[var(--border-subtle)] rounded-[10px] cursor-pointer transition-all"
             *ngFor="let day of bookState.bookingDays"
             [class.selected]="bookState.selectedBookingDay && day.getTime() === bookState.selectedBookingDay.getTime()"
             (click)="selectBookingDay(day)">
             <span class="bdc-name text-[0.75rem] text-[#64748b] uppercase font-semibold mb-[0.2rem]">{{ getDayName(day)
               }}</span>
             <span
-              class="bdc-num font-['Darker_Grotesque'] text-[1.8rem] font-extrabold leading-none text-[var(--color-text-main)] mb-[0.1rem]">{{
+              class="bdc-num font-['Clash_Display'] text-[1.8rem] font-extrabold leading-none text-[var(--color-text-main)] mb-[0.1rem]">{{
               getDayNumber(day) }}</span>
             <span class="bdc-month text-[0.75rem] text-[var(--color-text-muted)] font-medium capitalize">{{
               day.toLocaleDateString('it-IT', { month: 'short' }) }}</span>
@@ -777,25 +776,25 @@
         </div>
         <div class="flex flex-wrap gap-[0.6rem]" *ngIf="bookState.slotsForSelectedDay.length > 0">
           <button
-            class="booking-time-pill px-5 py-[0.6rem] bg-white border border-[#e2e8f0] rounded-full text-[var(--color-text-main)] font-semibold text-[0.9rem] cursor-pointer transition-all"
+            class="booking-time-pill px-5 py-[0.6rem] bg-white border border-[var(--border-subtle)] rounded-full text-[var(--text-primary)] font-semibold text-[0.9rem] cursor-pointer transition-all"
             *ngFor="let slot of bookState.slotsForSelectedDay" [class.selected]="isBookingSlotSelected(slot)"
             (click)="toggleBookingSlot(slot)">
             {{ getSlotTimeLabel(slot) }}
           </button>
         </div>
-        <div class="p-4 bg-[var(--color-text-main)]/3 rounded-lg text-[#64748b] text-[0.9rem] text-center italic"
+        <div class="p-4 bg-[var(--bg-elevated)] rounded-lg text-[var(--text-muted)] text-[0.9rem] text-center italic"
           *ngIf="bookState.selectedBookingDay && bookState.slotsForSelectedDay.length === 0">Nessun orario disponibile in questa data.</div>
       </ng-container>
     </div>
-    <div class="flex flex-col gap-4 px-6 py-5 bg-white border-t border-[#e2e8f0]" *ngIf="!bookState.isLoading">
+    <div class="flex flex-col gap-4 px-6 py-5 bg-white border-t border-[var(--border-subtle)]" *ngIf="!bookState.isLoading">
       <div
-        class="booking-selection-info flex items-center gap-2 text-[0.95rem] px-[0.6rem] py-[0.6rem] bg-[var(--color-accent-gold)]/10 rounded-md text-[var(--color-text-main)]"
+        class="booking-selection-info flex items-center gap-2 text-[0.95rem] px-[0.6rem] py-[0.6rem] bg-[var(--gold-accent)]/10 rounded-md text-[var(--text-primary)]"
         style="animation: fadeIn 0.3s" *ngIf="bookState.selectedBookingSlot && bookState.selectedBookingDay">
-        <span class="font-medium text-[#64748b]">Data selezionata:</span>
-        <span class="font-bold text-[var(--color-text-main)]">{{ bookState.selectedBookingDay.toLocaleDateString('it-IT', { weekday: 'long', day:
+        <span class="font-medium text-[var(--text-secondary)]">Data selezionata:</span>
+        <span class="font-bold text-[var(--text-primary)]">{{ bookState.selectedBookingDay.toLocaleDateString('it-IT', { weekday: 'long', day:
           'numeric', month: 'long' }) }} alle {{ getSlotTimeLabel(bookState.selectedBookingSlot) }}</span>
       </div>
-      <div class="text-[var(--color-text-muted)] italic text-[0.95rem]" *ngIf="!bookState.selectedBookingSlot">Seleziona un orario per continuare
+      <div class="text-[var(--text-muted)] italic text-[0.95rem]" *ngIf="!bookState.selectedBookingSlot">Seleziona un orario per continuare
       </div>
       <div class="flex gap-2 justify-end">
         <button class="btn-avail-cancel" (click)="closeBooking()">Annulla</button>
@@ -807,13 +806,13 @@
   </ng-container>
 
   <!-- ── MODALE MODIFICA PROFILO ── -->
-  <div class="fixed inset-0 bg-[var(--color-text-main)]/40 backdrop-blur-[4px] z-[2000]" style="animation: fadeIn 0.2s ease"
+  <div class="fixed inset-0 bg-[var(--navy-primary)]/30 backdrop-blur-[4px] z-[2000]" style="animation: fadeIn 0.2s ease"
     *ngIf="isProfileEditOpen" (click)="closeProfileEditModal()"></div>
   <div
     class="fixed z-[2001] bg-white rounded-xl overflow-hidden flex flex-col top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-[450px] shadow-2xl"
     *ngIf="isProfileEditOpen">
-    <div class="flex justify-between items-center px-6 py-4 bg-[var(--color-primary-navy)]">
-      <span class="font-['Darker_Grotesque'] text-[1.4rem] font-bold text-white">Modifica Profilo</span>
+    <div class="flex justify-between items-center px-6 py-4 bg-[var(--navy-primary)]">
+      <span class="font-['Clash_Display'] text-[1.4rem] font-bold text-white">Modifica Profilo</span>
       <button
         class="w-7 h-7 bg-white/10 rounded-full text-white text-[0.8rem] flex items-center justify-center transition-all hover:bg-white/20"
         (click)="closeProfileEditModal()">✕</button>

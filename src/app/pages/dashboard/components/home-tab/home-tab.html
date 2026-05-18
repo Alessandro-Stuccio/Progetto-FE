@@ -1,164 +1,161 @@
 <ng-container *ngIf="!isLoading && dashboardData; else skeletonHome">
-  <div class="px-5 py-6 flex flex-col gap-5 sm:max-w-[900px] sm:mx-auto sm:py-10 sm:px-8 fade-in">
-    <!-- Existing content ... -->
-    <div class="text-center">
-      <div class="relative inline-block mb-3">
-        <img *ngIf="currentUser?.profilePicture" [src]="currentUser.profilePicture" alt="Avatar" class="w-20 h-20 rounded-full object-cover border-[3px] border-[var(--color-accent-gold)] shadow-lg">
-        <div *ngIf="!currentUser?.profilePicture" class="w-20 h-20 rounded-full bg-gradient-to-br from-[var(--color-primary-navy)] to-[#2d5fa8] border-[3px] border-[var(--color-accent-gold)] text-[var(--color-accent-gold-light)] flex items-center justify-center text-[1.8rem] font-black font-['Darker_Grotesque'] shadow-lg">{{ getInitials() }}</div>
+  <div class="ht-page fade-in">
+
+    <!-- ── Hero profilo ── -->
+    <div class="ht-hero">
+      <div class="ht-hero-avatar-wrap">
+        <img *ngIf="currentUser?.profilePicture" [src]="currentUser.profilePicture" alt="Avatar" class="ht-hero-avatar">
+        <div *ngIf="!currentUser?.profilePicture" class="ht-hero-avatar ht-hero-avatar--fallback">{{ getInitials() }}</div>
+        <div class="ht-avatar-ring"></div>
       </div>
-      <h2 class="font-['Darker_Grotesque'] text-[1.6rem] font-black text-[var(--color-text-main)] leading-tight">Ciao, {{ profile?.firstName }}!</h2>
-      <p class="text-[0.82rem] text-[var(--color-text-muted)] mt-1">{{ isProfessional ? 'Ecco un riepilogo della tua attività' : 'Ecco il tuo riepilogo' }}</p>
+      <div class="ht-hero-text">
+        <h2 class="ht-hero-name">Ciao, {{ profile?.firstName }}!</h2>
+        <span class="ht-role-badge">{{ isProfessional ? (profile?.role === 'PERSONAL_TRAINER' ? 'Personal Trainer' : 'Nutrizionista') : 'Cliente' }}</span>
+      </div>
     </div>
 
-    <!-- Abbonamento / Ruolo -->
-    <div class="bg-white rounded-2xl border border-[var(--color-border-subtle)] p-4 shadow-sm">
-      <div class="flex items-center gap-3 mb-3">
-        <div class="w-10 h-10 rounded-xl bg-[var(--color-primary-navy)] flex items-center justify-center text-[1.1rem]">{{ isProfessional ? '🏆' : '⭐' }}</div>
-        <div>
-          <div class="text-[0.65rem] text-[var(--color-text-muted)] uppercase tracking-[0.10em] font-semibold">Il tuo ruolo</div>
-          <div class="text-[0.95rem] font-bold text-[var(--color-text-main)]">{{ profile?.role === 'PERSONAL_TRAINER' ? 'Personal Trainer' : profile?.role === 'NUTRITIONIST' ? 'Nutrizionista' : profile?.role === 'ADMIN' ? 'Amministratore' : profile?.role === 'INSURANCE_MANAGER' ? 'Gestore Polizze' : 'Cliente' }}</div>
+    <!-- ── Crediti (solo clienti con abbonamento attivo) ── -->
+    <div class="ht-credits-grid" *ngIf="isClient && subscription?.active">
+      <div class="ht-credit-card">
+        <div class="ht-credit-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5c0-2.5 2-4 5.5-4s5.5 1.5 5.5 4c0 3-2.5 5-5.5 5s-5.5-2-5.5-5z"/><path d="M12 17.5v4"/><path d="M8.5 21.5h7"/></svg>
+        </div>
+        <div class="ht-credit-number">{{ subscription?.remainingPtCredits }}</div>
+        <div class="ht-credit-label">Crediti PT</div>
+        <div class="ht-credit-bar">
+          <div class="ht-credit-bar-fill ht-credit-bar-fill--navy" [style.width.%]="(subscription?.remainingPtCredits || 0) * 50"></div>
         </div>
       </div>
-      <div class="text-[0.78rem] text-[var(--color-text-muted)]">{{ profile?.email }}</div>
-    </div>
-
-    <!-- Abbonamento (Solo Clienti) -->
-    <div class="bg-white rounded-2xl border border-[var(--color-border-subtle)] p-4 shadow-sm" *ngIf="isClient && subscription">
-      <div class="flex items-center justify-between mb-4">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl flex items-center justify-center text-[1.1rem]" [ngClass]="subscription.active ? 'bg-amber-100' : 'bg-gray-100'">{{ subscription.active ? '👑' : '⏸️' }}</div>
-          <div>
-            <div class="text-[0.65rem] text-[var(--color-text-muted)] uppercase tracking-[0.10em] font-semibold">Il tuo piano</div>
-            <div class="text-[0.95rem] font-bold text-[var(--color-text-main)]">{{ subscription.planName || 'Piano attivo' }}</div>
-          </div>
+      <div class="ht-credit-card">
+        <div class="ht-credit-icon ht-credit-icon--gold">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a7 7 0 0 1 7 7c0 3-1.5 5.5-3.5 7H8.5C6.5 14.5 5 12 5 9a7 7 0 0 1 7-7z"/><path d="M8.5 21h7"/><path d="M9 17v4"/><path d="M15 17v4"/></svg>
         </div>
-        <span class="text-[0.65rem] font-bold px-2.5 py-1 rounded-full" [class.bg-emerald-50]="subscription.active" [class.text-emerald-600]="subscription.active" [class.bg-red-50]="!subscription.active" [class.text-red-500]="!subscription.active">{{ subscription.active ? 'Attivo' : 'Scaduto' }}</span>
-      </div>
-      <div class="flex gap-3 mb-4" *ngIf="subscription.active">
-        <div class="flex-1 bg-gradient-to-br from-[var(--color-primary-navy)] to-[#2d5fa8] rounded-xl p-3.5 text-center relative overflow-hidden">
-          <div class="absolute top-0 right-0 w-16 h-16 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
-          <div class="text-[1.6rem] font-black text-white leading-none">{{ subscription.remainingPtCredits }}</div>
-          <div class="text-[0.6rem] text-white/60 uppercase tracking-[0.08em] mt-[5px] font-semibold">Crediti PT</div>
-        </div>
-        <div class="flex-1 bg-gradient-to-br from-[var(--color-accent-gold)] to-[#a88a53] rounded-xl p-3.5 text-center relative overflow-hidden">
-          <div class="absolute top-0 right-0 w-16 h-16 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2"></div>
-          <div class="text-[1.6rem] font-black text-[var(--color-text-main)] leading-none">{{ subscription.remainingNutritionistCredits }}</div>
-          <div class="text-[0.6rem] text-[var(--color-text-main)]/60 uppercase tracking-[0.08em] mt-[5px] font-semibold">Crediti Nutr.</div>
+        <div class="ht-credit-number">{{ subscription?.remainingNutritionistCredits }}</div>
+        <div class="ht-credit-label">Crediti Nutriz.</div>
+        <div class="ht-credit-bar">
+          <div class="ht-credit-bar-fill ht-credit-bar-fill--gold" [style.width.%]="(subscription?.remainingNutritionistCredits || 0) * 50"></div>
         </div>
       </div>
     </div>
 
-    <!-- Attiva Abbonamento (Solo Clienti senza abbonamento attivo) -->
-    <div class="bg-white rounded-2xl border border-[var(--color-border-subtle)] p-4 shadow-sm"
-      *ngIf="isClient && (!subscription || !subscription.active) && !activationSuccess && plans.length > 0">
-      <div class="flex items-center gap-3 mb-4">
-        <div class="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-[1.1rem]">🎯</div>
-        <div>
-          <div class="text-[0.65rem] text-[var(--color-text-muted)] uppercase tracking-[0.10em] font-semibold">Nessun piano attivo</div>
-          <div class="text-[0.95rem] font-bold text-[var(--color-text-main)]">Attiva il tuo abbonamento</div>
-        </div>
+    <!-- ── Prossimo appuntamento ── -->
+    <div class="ht-card ht-card--appointment" *ngIf="bookings.length > 0">
+      <div class="ht-card-header">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Prossimo appuntamento
       </div>
+      <div class="ht-appt-row">
+        <div class="ht-appt-date">
+          <span class="ht-appt-day">{{ getDayNumber(toDate(bookings[0].date)) }}</span>
+          <span class="ht-appt-month">{{ getMonthShort(toDate(bookings[0].date)) }}</span>
+        </div>
+        <div class="ht-appt-info">
+          <div class="ht-appt-name">{{ getBookingLabel(bookings[0]) }}</div>
+          <div class="ht-appt-time">{{ bookings[0].startTime }}</div>
+        </div>
+        <span class="ht-appt-badge">Confermato</span>
+      </div>
+    </div>
 
-      <!-- Piano -->
-      <div class="mb-3">
-        <label class="text-[0.7rem] font-semibold text-[var(--color-text-muted)] uppercase tracking-wider mb-1.5 block">Scegli piano</label>
-        <div class="flex flex-col gap-2">
-          <label *ngFor="let plan of plans" class="flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-colors"
-            [class.border-[var(--color-primary-navy)]]="selectedPlanId === plan.id"
-            [class.bg-[var(--color-bg-subtle)]]="selectedPlanId === plan.id"
-            [class.border-[var(--color-border-subtle)]]="selectedPlanId !== plan.id">
-            <input type="radio" name="plan" [value]="plan.id" [(ngModel)]="selectedPlanId" class="mt-0.5 accent-[var(--color-primary-navy)]">
-            <div class="flex-1 min-w-0">
-              <div class="text-[0.85rem] font-bold text-[var(--color-text-main)]">{{ plan.name }}</div>
-              <div class="text-[0.72rem] text-[var(--color-text-muted)]">
-                {{ plan.duration === 'SEMESTRALE' ? '6 mesi' : '12 mesi' }} &bull;
-                {{ plan.monthlyCreditsPT }} cr. PT + {{ plan.monthlyCreditsNutri }} cr. Nutr. al mese
-              </div>
-              <div class="text-[0.72rem] text-[var(--color-text-muted)] mt-0.5">
-                Unica soluzione: <strong>{{ plan.fullPrice.toFixed(2) }} €</strong>
-                &nbsp;|&nbsp; Rate: <strong>{{ getInstallmentLabel(plan) }}</strong>
-              </div>
-            </div>
+    <!-- ── Azioni rapide (solo clienti) ── -->
+    <div class="ht-actions" *ngIf="isClient">
+      <button class="ht-action-btn ht-action-btn--primary" (click)="setTabEvent.emit('book-call')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Prenota
+      </button>
+      <button class="ht-action-btn ht-action-btn--secondary" (click)="setTabEvent.emit('my-services')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+        Servizi
+      </button>
+      <button class="ht-action-btn ht-action-btn--ghost" (click)="setTabEvent.emit('calendar')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Agenda
+      </button>
+    </div>
+
+    <!-- ── Abbonamento (solo clienti) ── -->
+    <div class="ht-card" *ngIf="isClient && subscription">
+      <div class="ht-card-header">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        Il tuo piano
+      </div>
+      <div class="ht-sub-row">
+        <div class="ht-sub-info">
+          <span class="ht-sub-name">{{ subscription.planName || 'Piano attivo' }}</span>
+          <span class="ht-sub-expires">Scade {{ subscription.endDate | date:'d MMM yyyy':'':'it' }}</span>
+        </div>
+        <span class="ht-sub-status" [class.ht-sub-status--active]="subscription.active" [class.ht-sub-status--expired]="!subscription.active">
+          {{ subscription.active ? 'Attivo' : 'Scaduto' }}
+        </span>
+      </div>
+      <div class="ht-sub-days" *ngIf="subscription.active">
+        <div class="ht-sub-days-bar">
+          <div class="ht-sub-days-fill" [style.width.%]="100 - (getSubscriptionDaysLeft() / 180 * 100)"></div>
+        </div>
+        <span class="ht-sub-days-label">{{ getSubscriptionDaysLeft() }} giorni rimanenti</span>
+      </div>
+    </div>
+
+    <!-- ── Attiva abbonamento ── -->
+    <div class="ht-card ht-card--activate" *ngIf="isClient && (!subscription || !subscription.active) && !activationSuccess && plans.length > 0">
+      <div class="ht-card-header">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        Attiva abbonamento
+      </div>
+      <div class="ht-activate-body">
+        <div class="ht-plan-list">
+          <label *ngFor="let plan of plans" class="ht-plan-option" [class.ht-plan-option--selected]="selectedPlanId === plan.id">
+            <input type="radio" name="plan" [value]="plan.id" [(ngModel)]="selectedPlanId" class="sr-only">
+            <div class="ht-plan-name">{{ plan.name }}</div>
+            <div class="ht-plan-meta">{{ plan.duration === 'SEMESTRALE' ? '6 mesi' : '12 mesi' }} · {{ plan.monthlyCreditsPT }}+{{ plan.monthlyCreditsNutri }} cr./mese</div>
+            <div class="ht-plan-price">{{ plan.fullPrice.toFixed(2) }} € <span>o {{ getInstallmentLabel(plan) }}</span></div>
           </label>
         </div>
-      </div>
-
-      <!-- Frequenza pagamento -->
-      <div class="mb-4">
-        <label class="text-[0.7rem] font-semibold text-[var(--color-text-muted)] uppercase tracking-wider mb-1.5 block">Modalità pagamento</label>
-        <div class="flex gap-2">
-          <label class="flex-1 flex items-center justify-center gap-2 p-2.5 rounded-xl border cursor-pointer text-[0.8rem] font-semibold transition-colors"
-            [class.border-[var(--color-primary-navy)]]="selectedFrequency === 'UNICA_SOLUZIONE'"
-            [class.bg-[var(--color-bg-subtle)]]="selectedFrequency === 'UNICA_SOLUZIONE'"
-            [class.border-[var(--color-border-subtle)]]="selectedFrequency !== 'UNICA_SOLUZIONE'">
+        <div class="ht-freq-row">
+          <label class="ht-freq-opt" [class.ht-freq-opt--sel]="selectedFrequency === 'UNICA_SOLUZIONE'">
             <input type="radio" name="freq" value="UNICA_SOLUZIONE" [(ngModel)]="selectedFrequency" class="sr-only">
             Unica soluzione
           </label>
-          <label class="flex-1 flex items-center justify-center gap-2 p-2.5 rounded-xl border cursor-pointer text-[0.8rem] font-semibold transition-colors"
-            [class.border-[var(--color-primary-navy)]]="selectedFrequency === 'RATE_MENSILI'"
-            [class.bg-[var(--color-bg-subtle)]]="selectedFrequency === 'RATE_MENSILI'"
-            [class.border-[var(--color-border-subtle)]]="selectedFrequency !== 'RATE_MENSILI'">
+          <label class="ht-freq-opt" [class.ht-freq-opt--sel]="selectedFrequency === 'RATE_MENSILI'">
             <input type="radio" name="freq" value="RATE_MENSILI" [(ngModel)]="selectedFrequency" class="sr-only">
             Rate mensili
           </label>
         </div>
-      </div>
-
-      <p *ngIf="activationError" class="text-[0.75rem] text-red-500 mb-3">{{ activationError }}</p>
-
-      <button (click)="activatePlan()" [disabled]="activationLoading || !selectedPlanId"
-        class="w-full bg-[var(--color-primary-navy)] text-white rounded-xl py-3 text-[0.85rem] font-bold disabled:opacity-50 transition-opacity">
-        {{ activationLoading ? 'Attivazione...' : 'Attiva ora' }}
-      </button>
-    </div>
-
-    <!-- Prossimo appuntamento -->
-    <div class="bg-white rounded-2xl border border-[var(--color-border-subtle)] p-4 shadow-sm" *ngIf="bookings.length > 0">
-      <div class="flex items-center gap-2 mb-3"><span class="text-[1.1rem]">📅</span><span class="text-[0.72rem] text-[var(--color-text-muted)] uppercase tracking-[0.10em] font-semibold">Prossimo appuntamento</span></div>
-      <div class="flex items-center gap-3 bg-[var(--color-bg-subtle)] rounded-xl p-3 border border-[var(--color-border-subtle)]/60">
-        <div class="w-12 text-center flex-shrink-0">
-          <div class="text-[1.2rem] font-black text-[var(--color-text-main)] leading-none">{{ getDayNumber(toDate(bookings[0].date)) }}</div>
-          <div class="text-[0.55rem] font-semibold uppercase text-[var(--color-text-muted)] mt-[2px]">{{ getMonthShort(toDate(bookings[0].date)) }}</div>
-        </div>
-        <div class="flex-1 min-w-0">
-          <div class="text-[0.88rem] font-bold text-[var(--color-text-main)] truncate">{{ getBookingLabel(bookings[0]) }}</div>
-          <div class="text-[0.75rem] text-[var(--color-text-muted)]">{{ bookings[0].startTime }}</div>
-        </div>
+        <p *ngIf="activationError" class="ht-error">{{ activationError }}</p>
+        <button class="ht-btn-activate" (click)="activatePlan()" [disabled]="activationLoading || !selectedPlanId">
+          {{ activationLoading ? 'Attivazione...' : 'Attiva ora' }}
+        </button>
       </div>
     </div>
 
-    <!-- Azioni rapide -->
-    <div class="grid grid-cols-3 gap-3" *ngIf="isClient">
-      <button class="bg-[var(--color-primary-navy)] text-white rounded-xl py-4 flex flex-col items-center gap-1 text-[0.7rem] font-bold" (click)="setTabEvent.emit('book-call')">Prenota</button>
-      <button class="bg-[var(--color-accent-gold)] text-[var(--color-text-main)] rounded-xl py-4 flex flex-col items-center gap-1 text-[0.7rem] font-bold" (click)="setTabEvent.emit('my-services')">Servizi</button>
-      <button class="bg-white border border-[var(--color-border-subtle)] text-[var(--color-text-main)] rounded-xl py-4 flex flex-col items-center gap-1 text-[0.7rem] font-bold" (click)="setTabEvent.emit('calendar')">Agenda</button>
-    </div>
-
-    <!-- Statistiche Professionista -->
-    <div class="grid grid-cols-3 gap-3" *ngIf="isProfessional">
-      <div class="bg-gradient-to-br from-[var(--color-primary-navy)] to-[#2d5fa8] rounded-xl p-3.5 text-center text-white">
-        <div class="text-[1.4rem] font-black">{{ proStats?.todayBookingsCount ?? 0 }}</div>
-        <div class="text-[0.55rem] opacity-60 uppercase font-bold">Oggi</div>
+    <!-- ── KPI professionista ── -->
+    <div class="ht-kpi-grid" *ngIf="isProfessional">
+      <div class="ht-kpi-card ht-kpi-card--primary">
+        <div class="ht-kpi-num">{{ proStats?.todayBookingsCount ?? 0 }}</div>
+        <div class="ht-kpi-label">Oggi</div>
       </div>
-      <div class="bg-white border border-[var(--color-border-subtle)] rounded-xl p-3.5 text-center">
-        <div class="text-[1.4rem] font-black text-[var(--color-text-main)]">{{ weekBookingsCount }}</div>
-        <div class="text-[0.55rem] text-[var(--color-text-muted)] uppercase font-bold">Settimana</div>
+      <div class="ht-kpi-card">
+        <div class="ht-kpi-num">{{ weekBookingsCount }}</div>
+        <div class="ht-kpi-label">Settimana</div>
       </div>
-      <div class="bg-white border border-[var(--color-border-subtle)] rounded-xl p-3.5 text-center">
-        <div class="text-[1.4rem] font-black text-[var(--color-text-main)]">{{ myClients.length }}</div>
-        <div class="text-[0.55rem] text-[var(--color-text-muted)] uppercase font-bold">Clienti</div>
+      <div class="ht-kpi-card">
+        <div class="ht-kpi-num">{{ myClients.length }}</div>
+        <div class="ht-kpi-label">Clienti</div>
       </div>
     </div>
 
-    <!-- Attività Recenti -->
-    <div class="bg-white rounded-2xl border border-[var(--color-border-subtle)] p-4 shadow-sm" *ngIf="activityFeed.length > 0">
-      <div class="text-[0.72rem] text-[var(--color-text-muted)] uppercase tracking-[0.10em] font-semibold mb-3">Attività recenti</div>
-      <div class="flex flex-col gap-3">
-        <div *ngFor="let item of activityFeed.slice(0,3)" class="flex items-center gap-3">
-          <div class="w-8 h-8 rounded-lg bg-[var(--color-bg-subtle)] flex items-center justify-center text-[0.9rem]">{{ item.icon }}</div>
-          <div class="flex-1 min-w-0">
-            <p class="text-[0.78rem] text-[var(--color-text-main)] truncate">{{ item.text }}</p>
-            <span class="text-[0.6rem] text-[var(--color-text-muted)]">{{ item.timeAgo }}</span>
+    <!-- ── Activity feed ── -->
+    <div class="ht-card ht-card--feed" *ngIf="activityFeed.length > 0">
+      <div class="ht-card-header">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Attività recenti
+      </div>
+      <div class="ht-feed-list">
+        <div class="ht-feed-item" *ngFor="let item of activityFeed.slice(0,5)">
+          <div class="ht-feed-icon">{{ item.icon }}</div>
+          <div class="ht-feed-content">
+            <p class="ht-feed-text">{{ item.text }}</p>
+            <span class="ht-feed-time">{{ item.timeAgo }}</span>
           </div>
         </div>
       </div>
@@ -168,41 +165,25 @@
 </ng-container>
 
 <ng-template #skeletonHome>
-  <div class="px-5 py-6 flex flex-col gap-5 sm:max-w-[900px] sm:mx-auto sm:py-10 sm:px-8">
-    <div class="flex flex-col items-center">
-      <div class="w-20 h-20 rounded-full skeleton-loader mb-3"></div>
-      <div class="w-32 h-6 skeleton-loader mb-2"></div>
-      <div class="w-48 h-4 skeleton-loader"></div>
-    </div>
-    
-    <div class="bg-white rounded-2xl border border-[var(--color-border-subtle)] p-4">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl skeleton-loader"></div>
-        <div class="flex-1">
-          <div class="w-24 h-3 skeleton-loader mb-2"></div>
-          <div class="w-40 h-5 skeleton-loader"></div>
-        </div>
+  <div class="ht-page">
+    <div class="ht-hero">
+      <div class="ht-hero-avatar-wrap">
+        <div class="ht-hero-avatar skeleton-loader"></div>
+      </div>
+      <div class="ht-hero-text">
+        <div class="skeleton-loader" style="width:120px;height:20px;border-radius:6px;margin-bottom:8px"></div>
+        <div class="skeleton-loader" style="width:80px;height:14px;border-radius:999px"></div>
       </div>
     </div>
-
-    <div class="bg-white rounded-2xl border border-[var(--color-border-subtle)] p-4">
-      <div class="flex justify-between mb-4">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl skeleton-loader"></div>
-          <div class="w-32 h-5 skeleton-loader"></div>
-        </div>
-        <div class="w-16 h-6 rounded-full skeleton-loader"></div>
-      </div>
-      <div class="flex gap-3">
-        <div class="flex-1 h-20 rounded-xl skeleton-loader"></div>
-        <div class="flex-1 h-20 rounded-xl skeleton-loader"></div>
-      </div>
+    <div class="ht-credits-grid">
+      <div class="ht-credit-card skeleton-loader" style="height:110px"></div>
+      <div class="ht-credit-card skeleton-loader" style="height:110px"></div>
     </div>
-
-    <div class="grid grid-cols-3 gap-3">
-      <div class="h-20 rounded-xl skeleton-loader"></div>
-      <div class="h-20 rounded-xl skeleton-loader"></div>
-      <div class="h-20 rounded-xl skeleton-loader"></div>
+    <div class="ht-card skeleton-loader" style="height:90px"></div>
+    <div class="ht-kpi-grid">
+      <div class="ht-kpi-card skeleton-loader" style="height:80px"></div>
+      <div class="ht-kpi-card skeleton-loader" style="height:80px"></div>
+      <div class="ht-kpi-card skeleton-loader" style="height:80px"></div>
     </div>
   </div>
 </ng-template>

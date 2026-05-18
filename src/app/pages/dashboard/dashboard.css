@@ -23,11 +23,11 @@
 
 /* ── Google Fonts (font-family usate via CSS class) ───────────────────── */
 .font-dm-sans {
-  font-family: 'DM Sans', sans-serif;
+  font-family: var(--font-sans);
 }
 
 .font-dark-grotesk {
-  font-family: 'Darker Grotesque', sans-serif;
+  font-family: var(--font-display);
 }
 
 
@@ -111,7 +111,7 @@
 .btn-book-topbar {
   background: linear-gradient(135deg, var(--color-accent-gold) 0%, #a88a53 100%);
   box-shadow: 0 4px 12px rgba(var(--color-accent-gold-rgb), 0.25);
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--font-sans);
   letter-spacing: 0.02em;
 }
 
@@ -337,9 +337,9 @@
   transform: translateX(0);
 }
 
-/* Gradient text */
+/* Gradient text (panel title — on white bg now uses navy→mid gradient) */
 .panel-title {
-  background: linear-gradient(90deg, var(--color-accent-gold-light), var(--color-accent-gold));
+  background: linear-gradient(90deg, var(--navy-primary), var(--navy-mid));
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -396,7 +396,7 @@
   border-radius: 10px;
   color: var(--color-primary-navy);
   font-size: 0.84rem;
-  font-family: 'DM Sans', sans-serif;
+  font-family: var(--font-sans);
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
@@ -427,7 +427,7 @@
   border-radius: 10px;
   color: #b55555;
   font-size: 0.84rem;
-  font-family: 'DM Sans', sans-serif;
+  font-family: var(--font-sans);
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
@@ -579,7 +579,7 @@
   border-radius: 4px;
   color: var(--color-text-muted);
   font-size: 0.55rem;
-  font-family: 'DM Sans', sans-serif;
+  font-family: var(--font-sans);
   font-weight: 500;
   cursor: pointer;
   transition: all 0.18s;
@@ -624,7 +624,7 @@
   border-radius: 4px;
   color: var(--color-text-main);
   font-size: 0.58rem;
-  font-family: 'DM Sans', sans-serif;
+  font-family: var(--font-sans);
   font-weight: 700;
   cursor: pointer;
   white-space: nowrap;
@@ -706,7 +706,7 @@
   border-radius: 8px;
   color: var(--color-text-muted);
   font-size: 0.82rem;
-  font-family: 'DM Sans', sans-serif;
+  font-family: var(--font-sans);
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
@@ -719,21 +719,22 @@
 
 .btn-avail-confirm {
   padding: 0.55rem 1.4rem;
-  background: linear-gradient(135deg, var(--color-accent-gold), var(--color-accent-gold-light));
+  background: var(--navy-primary);
   border: none;
   border-radius: 8px;
-  color: var(--color-text-main);
+  color: #ffffff;
   font-size: 0.82rem;
-  font-family: 'DM Sans', sans-serif;
+  font-family: var(--font-sans);
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
   letter-spacing: 0.02em;
-  box-shadow: 0 2px 10px rgba(var(--color-accent-gold-rgb), 0.30);
+  box-shadow: 0 2px 10px rgba(26, 52, 98, 0.25);
 }
 
 .btn-avail-confirm:hover:not(:disabled) {
-  box-shadow: 0 4px 16px rgba(var(--color-accent-gold-rgb), 0.45);
+  background: var(--navy-deep);
+  box-shadow: 0 4px 16px rgba(26, 52, 98, 0.35);
   transform: translateY(-1px);
 }
 
@@ -750,12 +751,12 @@
   align-items: center;
   gap: 0.4rem;
   padding: 0.35rem 0.9rem;
-  background: rgba(var(--color-accent-gold-rgb), 0.15);
-  border: 1px solid rgba(var(--color-accent-gold-rgb), 0.42);
+  background: rgba(26, 52, 98, 0.06);
+  border: 1px solid var(--border-medium);
   border-radius: 7px;
-  color: var(--color-accent-gold-light);
+  color: var(--navy-primary);
   font-size: 0.78rem;
-  font-family: 'DM Sans', sans-serif;
+  font-family: var(--font-sans);
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
@@ -764,48 +765,51 @@
 }
 
 .btn-avail-topbar:hover {
-  background: rgba(var(--color-accent-gold-rgb), 0.26);
-  box-shadow: 0 0 12px rgba(var(--color-accent-gold-rgb), 0.22);
+  background: rgba(26, 52, 98, 0.12);
+  border-color: var(--navy-primary);
+  box-shadow: var(--shadow-sm);
 }
 
 /* ── Booking modal buttons ──────────────────────────────────────────────── */
 .btn-book-sm {
   padding: 0.35rem 0.8rem;
-  background: linear-gradient(135deg, var(--color-accent-gold), var(--color-accent-gold-light));
+  background: var(--navy-primary);
   border: none;
   border-radius: 6px;
-  color: var(--color-text-main);
+  color: #ffffff;
   font-size: 0.72rem;
-  font-family: 'DM Sans', sans-serif;
+  font-family: var(--font-sans);
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
   letter-spacing: 0.02em;
-  box-shadow: 0 2px 6px rgba(var(--color-accent-gold-rgb), 0.25);
+  box-shadow: 0 2px 6px rgba(26, 52, 98, 0.20);
   margin-left: auto;
 }
 
 .btn-book-sm:hover {
+  background: var(--navy-deep);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(var(--color-accent-gold-rgb), 0.40);
+  box-shadow: 0 4px 12px rgba(26, 52, 98, 0.30);
 }
 
 .btn-book-confirm {
   padding: 0.55rem 1.4rem;
-  background: linear-gradient(135deg, var(--color-accent-gold), var(--color-accent-gold-light));
+  background: var(--navy-primary);
   border: none;
   border-radius: 8px;
-  color: var(--color-text-main);
+  color: #ffffff;
   font-size: 0.82rem;
-  font-family: 'DM Sans', sans-serif;
+  font-family: var(--font-sans);
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
-  box-shadow: 0 2px 10px rgba(var(--color-accent-gold-rgb), 0.30);
+  box-shadow: 0 2px 10px rgba(26, 52, 98, 0.25);
 }
 
 .btn-book-confirm:hover:not(:disabled) {
-  box-shadow: 0 4px 16px rgba(var(--color-accent-gold-rgb), 0.45);
+  background: var(--navy-deep);
+  box-shadow: 0 4px 16px rgba(26, 52, 98, 0.35);
   transform: translateY(-1px);
 }
 
@@ -816,21 +820,21 @@
 
 /* Booking day card states */
 .booking-day-card:hover {
-  border-color: var(--color-accent-gold);
+  border-color: var(--gold-accent);
   transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(var(--color-accent-gold-rgb), 0.15);
+  box-shadow: 0 4px 10px rgba(201, 169, 110, 0.15);
 }
 
 .booking-day-card.selected {
-  background: var(--color-text-main);
-  border-color: var(--color-text-main);
-  box-shadow: 0 4px 12px rgba(26, 39, 68, 0.25);
+  background: var(--navy-primary);
+  border-color: var(--navy-primary);
+  box-shadow: 0 4px 12px rgba(26, 52, 98, 0.25);
   transform: translateY(-2px);
 }
 
 .booking-day-card.selected .bdc-name,
 .booking-day-card.selected .bdc-month {
-  color: var(--color-text-muted);
+  color: rgba(255, 255, 255, 0.65);
 }
 
 .booking-day-card.selected .bdc-num {
@@ -849,16 +853,16 @@
 
 /* Booking time pill states */
 .booking-time-pill:hover {
-  border-color: var(--color-accent-gold);
-  color: var(--color-accent-gold);
-  background: rgba(var(--color-accent-gold-rgb), 0.05);
+  border-color: var(--gold-accent);
+  color: var(--gold-dark);
+  background: rgba(201, 169, 110, 0.06);
 }
 
 .booking-time-pill.selected {
-  background: linear-gradient(135deg, var(--color-accent-gold), var(--color-accent-gold-light));
-  border-color: var(--color-accent-gold);
-  color: var(--color-text-main);
-  box-shadow: 0 4px 12px rgba(var(--color-accent-gold-rgb), 0.35);
+  background: var(--navy-primary);
+  border-color: var(--navy-primary);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(26, 52, 98, 0.25);
   transform: scale(1.05);
 }
 
@@ -1151,11 +1155,12 @@
    ══════════════════════════════════════════════════════════════════════════ */
 
 .desktop-nav-item {
-  color: rgba(255, 255, 255, 0.78);
+  color: var(--text-secondary);
   background: transparent;
   border: 1px solid transparent;
   cursor: pointer;
   letter-spacing: 0.01em;
+  font-family: var(--font-sans);
 }
 
 /* Tablet: nav items più compatti */
@@ -1172,19 +1177,19 @@
 }
 
 .desktop-nav-item:hover {
-  color: rgba(255, 255, 255, 0.95);
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.15);
+  color: var(--text-primary);
+  background: var(--bg-subtle);
+  border-color: var(--border-subtle);
 }
 
 .desktop-nav-item.active {
-  color: var(--color-accent-gold-light);
-  background: rgba(var(--color-accent-gold-rgb), 0.12);
-  border-color: rgba(var(--color-accent-gold-rgb), 0.25);
+  color: var(--navy-primary);
+  background: rgba(26, 52, 98, 0.06);
+  border-color: var(--border-medium);
 }
 
 .desktop-nav-item.active svg {
-  color: var(--color-accent-gold);
+  color: var(--gold-accent);
 }
 
 .desktop-nav-item svg {
@@ -1224,7 +1229,7 @@
 
 /* Input textarea */
 .chat-input {
-  font-family: 'DM Sans', sans-serif;
+  font-family: var(--font-sans);
   line-height: 1.45;
   min-height: 40px;
   scrollbar-width: none;

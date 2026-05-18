@@ -41,7 +41,7 @@
 
 /* Input textarea */
 .chat-input {
-  font-family: 'DM Sans', sans-serif;
+  font-family: var(--font-sans);
   line-height: 1.45;
   min-height: 40px;
   scrollbar-width: none;

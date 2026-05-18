@@ -6,11 +6,12 @@ import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
 import { PlanService } from '../../services/plan.service';
 import { environment } from '../../../environments/environment';
+import { FooterComponent } from '../../components/layout/footer/footer';
 
 @Component({
     selector: 'app-home',
     standalone: true,
-    imports: [CommonModule, RouterModule, ReactiveFormsModule],
+    imports: [CommonModule, RouterModule, ReactiveFormsModule, FooterComponent],
     templateUrl: './home.html',
     styleUrls: ['./home.css']
 })

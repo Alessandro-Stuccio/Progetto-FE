@@ -1,569 +1,600 @@
 <div class="home-page">
-    <!-- Reading Progress Bar -->
-    <div class="reading-progress-container">
-        <div class="reading-progress-bar" #progressBar></div>
+
+  <!-- ── Reading progress bar ── -->
+  <div class="rdp-wrap" aria-hidden="true">
+    <div #progressBar class="rdp-fill"></div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════
+       NAVBAR (inline — gestita da isNavScrolled del TS)
+       ════════════════════════════════════════════════════════ -->
+  <header class="hn" [class.hn--scrolled]="isNavScrolled">
+    <div class="hn__inner">
+      <a routerLink="/" class="hn__logo" aria-label="Kore — Homepage">
+        Kore<span class="hn__dot">.</span>
+      </a>
+
+      <nav class="hn__links" aria-label="Navigazione principale">
+        <a href="#come-funziona" class="hn__link">Come funziona</a>
+        <a href="#piani" class="hn__link">Piani</a>
+        <a href="#professionisti" class="hn__link">Professionisti</a>
+        <a href="#perche-sceglierci" class="hn__link">Perché Kore</a>
+      </nav>
+
+      <div class="hn__actions">
+        <a routerLink="/login" class="hn__ghost">Accedi</a>
+        <a routerLink="/register" class="hn__primary">Inizia ora</a>
+      </div>
+
+      <button
+        class="hn__ham"
+        type="button"
+        [attr.aria-expanded]="isMobileMenuOpen"
+        aria-label="Apri menu"
+        (click)="toggleMobileMenu()">
+        <span class="hn__bar" [class.hn__bar--a]="isMobileMenuOpen"></span>
+        <span class="hn__bar" [class.hn__bar--b]="isMobileMenuOpen"></span>
+        <span class="hn__bar" [class.hn__bar--c]="isMobileMenuOpen"></span>
+      </button>
     </div>
 
-    <!-- Sfondo animato -->
-    <div class="bg-shapes">
-        <div class="shape shape-1"></div>
-        <div class="shape shape-2"></div>
-        <div class="shape shape-3"></div>
+    <div class="hn__mob" [class.hn__mob--open]="isMobileMenuOpen" [attr.aria-hidden]="!isMobileMenuOpen">
+      <nav class="hn__mob-nav">
+        <a href="#come-funziona" class="hn__mob-link" (click)="closeMobileMenu()">Come funziona</a>
+        <a href="#piani" class="hn__mob-link" (click)="closeMobileMenu()">Piani</a>
+        <a href="#professionisti" class="hn__mob-link" (click)="closeMobileMenu()">Professionisti</a>
+        <a href="#perche-sceglierci" class="hn__mob-link" (click)="closeMobileMenu()">Perché Kore</a>
+      </nav>
+      <div class="hn__mob-actions">
+        <a routerLink="/login" class="hn__mob-link" (click)="closeMobileMenu()">Accedi</a>
+        <a routerLink="/register" class="hn__primary hn__primary--block" (click)="closeMobileMenu()">Inizia ora</a>
+      </div>
+    </div>
+  </header>
+
+
+  <!-- ════════════════════════════════════════════════════════
+       HERO
+       ════════════════════════════════════════════════════════ -->
+  <section class="hs" id="hero" aria-label="Benvenuto in Kore">
+    <div class="hs__mesh" data-parallax="0.08" aria-hidden="true"></div>
+    <div class="hs__orb hs__orb--gold glow-orb-gold" aria-hidden="true"></div>
+    <div class="hs__orb hs__orb--navy glow-orb-navy" aria-hidden="true"></div>
+
+    <div class="hs__inner">
+      <!-- Copy -->
+      <div class="hs__copy fade-in">
+        <p class="text-eyebrow hs__eyebrow">Personal Training · Nutrizione · Assicurazione</p>
+        <h1 class="hs__title">
+          Forgia la tua<br>
+          <span class="text-gold-underline">migliore versione</span>
+        </h1>
+        <p class="hs__sub">
+          Personal trainer certificati, nutrizionisti esperti e copertura assicurativa sportiva.
+          Un unico abbonamento per prenderti cura di corpo, mente e futuro.
+        </p>
+        <div class="hs__cta">
+          <a routerLink="/register" class="hs__btn-primary" aria-label="Inizia il tuo percorso">
+            Inizia ora
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a href="#come-funziona" class="hs__btn-ghost">
+            Scopri come funziona
+          </a>
+        </div>
+        <div class="hs__trust" data-reveal>
+          <span class="hs__trust-item">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            Nessun vincolo
+          </span>
+          <span class="hs__trust-sep" aria-hidden="true">·</span>
+          <span class="hs__trust-item">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            Max 50 clienti/professionista
+          </span>
+          <span class="hs__trust-sep" aria-hidden="true">·</span>
+          <span class="hs__trust-item">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            Polizza inclusa
+          </span>
+        </div>
+      </div>
+
+      <!-- Decorative right -->
+      <div class="hs__deco" aria-hidden="true">
+        <p class="hs__kore-word">KORE</p>
+        <div class="hs__stat hs__stat--1 slide-up">
+          <span class="hs__stat-num">500+</span>
+          <span class="hs__stat-lbl">Clienti attivi</span>
+        </div>
+        <div class="hs__stat hs__stat--2 slide-up" style="animation-delay: 0.12s">
+          <span class="hs__stat-num">4.9</span>
+          <span class="hs__stat-lbl">★ Valutazione media</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════════════
+       COME FUNZIONA
+       ════════════════════════════════════════════════════════ -->
+  <section class="cfs" id="come-funziona">
+    <div class="section-hd" data-reveal>
+      <p class="text-eyebrow">Il metodo</p>
+      <h2 class="section-h2">Tre passi verso<br>il tuo obiettivo</h2>
     </div>
 
-    <!-- Navbar -->
-    <header class="home-header">
-        <div class="brand">
-            <h1 class="brand-text">Kore<span class="brand-dot">.</span></h1>
-        </div>
-        <nav class="nav-links">
-            <a href="#features" class="nav-link">Servizi</a>
-            <a href="#how-it-works" class="nav-link">Il Metodo</a>
-            <a href="#experience-carousel" class="nav-link">Esperienza App</a>
-            <a href="#testimonials" class="nav-link">Dicono di noi</a>
-            <a href="#pricing" class="nav-link">Piani</a>
-            <a href="#faq" class="nav-link">FAQ</a>
-            <a href="#lavora-con-noi" class="nav-link">Team</a>
-        </nav>
-        <div class="auth-buttons">
-            <a routerLink="/login" class="btn-outline" aria-label="Accedi al tuo account">Accedi</a>
-            <a routerLink="/register" class="btn-primary" aria-label="Crea un nuovo account">Registrati</a>
+    <div class="cfs__grid">
+      <div class="cfs__step" data-reveal>
+        <span class="cfs__num">01</span>
+        <div class="cfs__connector" aria-hidden="true"></div>
+        <h3 class="cfs__title">Analisi e pianificazione</h3>
+        <p class="cfs__desc">Il tuo coach analizza il punto di partenza e definisce gli obiettivi a breve e lungo termine su misura per te.</p>
+      </div>
+      <div class="cfs__step" data-reveal>
+        <span class="cfs__num">02</span>
+        <div class="cfs__connector" aria-hidden="true"></div>
+        <h3 class="cfs__title">Azione e costanza</h3>
+        <p class="cfs__desc">Ricevi il piano e inizia. I nostri professionisti ti guidano passo dopo passo con sessioni dedicate.</p>
+      </div>
+      <div class="cfs__step" data-reveal>
+        <span class="cfs__num">03</span>
+        <h3 class="cfs__title">Feedback e risultati</h3>
+        <p class="cfs__desc">Monitoriamo i progressi ogni settimana, regolando carichi e alimentazione per massimizzare i risultati.</p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════════════
+       I PIANI
+       ════════════════════════════════════════════════════════ -->
+  <section class="ps" id="piani">
+    <div class="section-hd" data-reveal>
+      <p class="text-eyebrow">I piani</p>
+      <h2 class="section-h2">Scegli il tuo<br>livello di successo</h2>
+      <p class="section-sub">Prezzi trasparenti. Nessun costo nascosto.</p>
+    </div>
+
+    <!-- Billing toggle -->
+    <div class="ps__toggle" data-reveal>
+      <span class="ps__t-lbl" [class.ps__t-lbl--active]="!isAnnual" (click)="toggleBilling(false)">Semestrale</span>
+      <button
+        class="ps__switch"
+        type="button"
+        role="switch"
+        [attr.aria-checked]="isAnnual"
+        aria-label="Cambia durata abbonamento"
+        (click)="toggleBilling(!isAnnual)">
+        <span class="ps__knob" [class.ps__knob--on]="isAnnual"></span>
+      </button>
+      <span class="ps__t-lbl" [class.ps__t-lbl--active]="isAnnual" (click)="toggleBilling(true)">
+        Annuale
+        <span class="ps__save">–10%</span>
+      </span>
+    </div>
+
+    <!-- Plan cards -->
+    <div class="ps__grid">
+      <div
+        *ngFor="let plan of displayedPlans; let i = index"
+        class="ps__card"
+        [class.ps__card--featured]="i === 1"
+        data-reveal>
+
+        <div *ngIf="i === 1" class="ps__badge">Più scelto</div>
+
+        <div class="ps__card-hd">
+          <h3 class="ps__name">{{ plan.name }}</h3>
+          <p class="ps__card-desc">
+            {{ i === 0 ? 'Il punto di partenza ideale per chi vuole iniziare con metodo.' : 'Doppio supporto e massima attenzione per risultati straordinari.' }}
+          </p>
         </div>
 
-        <!-- Mobile Menu Toggle -->
-        <button class="mobile-menu-toggle" (click)="toggleMobileMenu()" [class.open]="isMobileMenuOpen" aria-label="Apri menu di navigazione">
-            <span class="hamburger-line"></span>
-            <span class="hamburger-line"></span>
-            <span class="hamburger-line"></span>
+        <div class="ps__price-block">
+          <div class="ps__price">
+            <span class="ps__cur">€</span>
+            <span class="ps__amount">{{ plan.monthlyInstallmentPrice }}</span>
+            <span class="ps__period">/mese</span>
+          </div>
+          <p class="ps__billing">Fatturazione {{ isAnnual ? 'annuale' : 'semestrale' }}: €{{ plan.fullPrice }}</p>
+        </div>
+
+        <!-- Credits highlight -->
+        <div class="ps__credits">
+          <div class="ps__cred-item">
+            <span class="ps__cred-num">{{ plan.monthlyCreditsPT < 50 ? plan.monthlyCreditsPT : '∞' }}</span>
+            <span class="ps__cred-lbl">sessioni PT/mese</span>
+          </div>
+          <div class="ps__cred-sep" aria-hidden="true"></div>
+          <div class="ps__cred-item">
+            <span class="ps__cred-num">{{ plan.monthlyCreditsNutri < 50 ? plan.monthlyCreditsNutri : '∞' }}</span>
+            <span class="ps__cred-lbl">sessioni Nutri/mese</span>
+          </div>
+        </div>
+
+        <button
+          class="ps__cta"
+          [class.ps__cta--featured]="i === 1"
+          type="button"
+          (click)="goToRegister(plan.id)"
+          [attr.aria-label]="'Inizia con il piano ' + plan.name">
+          Inizia ora
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </button>
-    </header>
 
-    <!-- Mobile Menu Overlay -->
-    <div class="mobile-menu-overlay" [class.active]="isMobileMenuOpen">
-        <nav class="mobile-nav-links">
-            <a href="#features" class="mobile-nav-link" (click)="closeMobileMenu()">Servizi</a>
-            <a href="#how-it-works" class="mobile-nav-link" (click)="closeMobileMenu()">Il Metodo</a>
-            <a href="#experience-carousel" class="mobile-nav-link" (click)="closeMobileMenu()">Esperienza App</a>
-            <a href="#testimonials" class="mobile-nav-link" (click)="closeMobileMenu()">Dicono di noi</a>
-            <a href="#pricing" class="mobile-nav-link" (click)="closeMobileMenu()">Piani</a>
-            <a href="#faq" class="mobile-nav-link" (click)="closeMobileMenu()">FAQ</a>
-            <a href="#lavora-con-noi" class="mobile-nav-link" (click)="closeMobileMenu()">Team</a>
-        </nav>
-        <div class="mobile-auth-buttons">
-            <a routerLink="/login" class="btn-outline" (click)="closeMobileMenu()" aria-label="Accedi al tuo account">Accedi</a>
-            <a routerLink="/register" class="btn-primary" (click)="closeMobileMenu()" aria-label="Crea un nuovo account">Registrati</a>
-        </div>
+        <ul class="ps__feats">
+          <li class="ps__feat"><span class="ps__check" aria-hidden="true"></span> Scheda allenamento mensile</li>
+          <li class="ps__feat"><span class="ps__check" aria-hidden="true"></span> Piano alimentare personalizzato</li>
+          <li class="ps__feat"><span class="ps__check" aria-hidden="true"></span> Chat con i professionisti</li>
+          <li class="ps__feat"><span class="ps__check" aria-hidden="true"></span> Prenotazione sessioni in app</li>
+          <li class="ps__feat"><span class="ps__check" aria-hidden="true"></span> Polizza assicurativa sportiva</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════════════
+       PROFESSIONISTI
+       ════════════════════════════════════════════════════════ -->
+  <section class="profs" id="professionisti">
+    <div class="section-hd" data-reveal>
+      <p class="text-eyebrow">Il team</p>
+      <h2 class="section-h2">Professionisti certificati<br>al tuo fianco</h2>
     </div>
 
-    <!-- ═══════════════════════════════════════════════════════
-         HERO SECTION
-         ═══════════════════════════════════════════════════════ -->
-    <main class="hero-section">
-        <video #heroVideo autoplay loop [muted]="true" playsinline preload="auto" class="hero-video">
-            <source src="https://res.cloudinary.com/dpgixeqq0/video/upload/v1774348525/video_home_page_asv77g.mp4" type="video/mp4">
+    <div class="profs__grid">
+      <div class="profs__card" data-reveal>
+        <div class="profs__icon">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M6 4v16"/><path d="M18 4v16"/><path d="M6 12h12"/>
+            <circle cx="6" cy="4" r="2"/><circle cx="6" cy="20" r="2"/>
+            <circle cx="18" cy="4" r="2"/><circle cx="18" cy="20" r="2"/>
+          </svg>
+        </div>
+        <h3 class="profs__title">Personal Trainer</h3>
+        <p class="profs__desc">Protocolli di allenamento d'élite aggiornati sui tuoi progressi. Massima forza, massima ipertrofia, zero improvvisazione.</p>
+        <div class="profs__meta">
+          <span class="profs__stars" aria-label="5 stelle">★★★★★</span>
+          <span class="profs__limit">Max 50 clienti</span>
+        </div>
+      </div>
+
+      <div class="profs__card" data-reveal>
+        <div class="profs__icon">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 2a5 5 0 0 1 5 5c0 2-1.5 3.5-3 4.5V14h-4v-2.5C8.5 10.5 7 9 7 7a5 5 0 0 1 5-5Z"/>
+            <path d="M10 14v3a2 2 0 0 0 4 0v-3"/><path d="M8 21h8"/>
+          </svg>
+        </div>
+        <h3 class="profs__title">Nutrizionista</h3>
+        <p class="profs__desc">Piani alimentari su metabolismo, intolleranze e stile di vita. Nutrizione che si adatta a te, non al contrario.</p>
+        <div class="profs__meta">
+          <span class="profs__stars" aria-label="5 stelle">★★★★★</span>
+          <span class="profs__limit">Max 50 clienti</span>
+        </div>
+      </div>
+
+      <div class="profs__card" data-reveal>
+        <div class="profs__icon">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/>
+          </svg>
+        </div>
+        <h3 class="profs__title">Partner Assicurativo</h3>
+        <p class="profs__desc">Copertura sportiva inclusa in ogni piano. Allena corpo e mente sapendo di essere protetto in ogni momento.</p>
+        <div class="profs__meta">
+          <span class="profs__stars" aria-label="5 stelle">★★★★★</span>
+          <span class="profs__limit">Inclusa nel piano</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════════════
+       PERCHÉ SCEGLIERCI — bento grid
+       ════════════════════════════════════════════════════════ -->
+  <section class="bento" id="perche-sceglierci">
+    <div class="section-hd" data-reveal>
+      <p class="text-eyebrow">Perché Kore</p>
+      <h2 class="section-h2">Tutto quello che ti serve,<br>senza quello che non ti serve</h2>
+    </div>
+
+    <div class="bento__grid">
+      <div class="bento__cell bento__cell--wide" data-reveal>
+        <div class="bento__icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg>
+        </div>
+        <h3 class="bento__title">Niente overbooking</h3>
+        <p class="bento__desc">Slot garantiti. Ogni professionista segue al massimo 50 clienti — la tua sessione è sempre disponibile quando la prenoti.</p>
+      </div>
+      <div class="bento__cell" data-reveal>
+        <div class="bento__icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        </div>
+        <h3 class="bento__title">Recensioni verificate</h3>
+        <p class="bento__desc">Solo chi ha prenotato può lasciare una recensione. Zero fake.</p>
+      </div>
+      <div class="bento__cell" data-reveal>
+        <div class="bento__icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <h3 class="bento__title">Crediti mensili</h3>
+        <p class="bento__desc">Si rinnovano ogni mese. Prenota quando vuoi, come vuoi.</p>
+      </div>
+      <div class="bento__cell" data-reveal>
+        <div class="bento__icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <h3 class="bento__title">Rapporto esclusivo</h3>
+        <p class="bento__desc">Il tuo PT e il tuo nutrizionista ti conoscono davvero. Non sono intercambiabili.</p>
+      </div>
+      <div class="bento__cell bento__cell--wide" data-reveal>
+        <div class="bento__icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+        </div>
+        <h3 class="bento__title">App completa, zero strumenti esterni</h3>
+        <p class="bento__desc">Dashboard, calendario, chat, documenti e prenotazioni in un'unica piattaforma. Tutto sincronizzato in tempo reale.</p>
+      </div>
+      <div class="bento__cell" data-reveal>
+        <div class="bento__icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
+        <h3 class="bento__title">Copertura assicurativa</h3>
+        <p class="bento__desc">Inclusa. Zero costi aggiuntivi. Zero burocrazia.</p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════════════
+       SOCIAL PROOF — navy-deep unica sezione dark
+       ════════════════════════════════════════════════════════ -->
+  <section class="sp">
+    <div class="sp__inner">
+      <div class="sp__stat" data-reveal>
+        <span class="sp__num" data-counter="500" data-counter-suffix="+">0+</span>
+        <span class="sp__lbl">Clienti attivi</span>
+      </div>
+      <div class="sp__sep" aria-hidden="true"></div>
+      <div class="sp__stat" data-reveal>
+        <span class="sp__num" data-counter="50">0</span>
+        <span class="sp__lbl">Professionisti certificati</span>
+      </div>
+      <div class="sp__sep" aria-hidden="true"></div>
+      <div class="sp__stat" data-reveal>
+        <span class="sp__num" data-counter="98" data-counter-suffix="%">0%</span>
+        <span class="sp__lbl">Soddisfazione clienti</span>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════════════
+       VIDEO CAROUSEL — logica TS invariata, solo restyling
+       ════════════════════════════════════════════════════════ -->
+  <section class="experience-carousel-section" id="experience-carousel">
+    <div class="section-hd" data-reveal>
+      <p class="text-eyebrow">L'esperienza</p>
+      <h2 class="section-h2">Vivi l'app in anteprima</h2>
+      <p class="section-sub">Tutte le funzionalità in un'unica piattaforma.</p>
+    </div>
+
+    <div class="experience-carousel" data-reveal>
+      <div class="carousel-stories-bar">
+        <div
+          *ngFor="let video of carouselVideos; let i = index"
+          class="stories-segment"
+          [class.completed]="i < currentCarouselVideoIndex"
+          [class.active]="i === currentCarouselVideoIndex"
+          (click)="selectCarouselVideo(i)">
+          <div class="stories-segment-fill" [style.width.%]="i < currentCarouselVideoIndex ? 100 : (i === currentCarouselVideoIndex ? videoProgress : 0)"></div>
+        </div>
+      </div>
+
+      <div class="carousel-video-wrapper">
+        <video
+          #carouselVideo
+          class="experience-video"
+          muted
+          playsinline
+          preload="none"
+          (ended)="onCarouselVideoEnded()"
+          (timeupdate)="onVideoTimeUpdate()"
+          [attr.aria-label]="'Demo sezione ' + carouselVideos[currentCarouselVideoIndex].title"
+          [src]="getVideoSrc(carouselVideos[currentCarouselVideoIndex])">
         </video>
-        <div class="hero-overlay"></div>
 
-        <!-- Mesh gradient decorative -->
-        <div class="hero-mesh" data-parallax="0.15"></div>
+        <button
+          *ngIf="!isCarouselPlaying"
+          type="button"
+          class="carousel-play-overlay"
+          (click)="onCarouselPlayClick()"
+          aria-label="Avvia il video">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+        </button>
 
-        <div class="hero-content">
-            <h2 class="hero-title">
-                <span class="hero-line" style="--line-index: 0">Forgia la tua</span>
-                <span class="hero-line" style="--line-index: 1">migliore versione</span>
-            </h2>
-            <p class="hero-subtitle">
-                Benvenuto in Kore, l'ecosistema esclusivo progettato per trasformare il tuo corpo e la tua mente.
-                Allenamento d'élite, nutrizione avanzata e supporto costante si fondono in un'unica piattaforma per
-                scolpire il tuo successo senza compromessi.
-            </p>
+        <div class="carousel-tap-zone prev-zone" (click)="previousCarouselVideo()" aria-label="Video precedente"></div>
+        <div class="carousel-tap-zone next-zone" (click)="nextCarouselVideo()" aria-label="Video successivo"></div>
+      </div>
 
-            <div class="hero-cta">
-                <a routerLink="/register" class="btn-primary btn-large btn-glow" aria-label="Inizia il tuo percorso con Kore">
-                    Inizia il tuo percorso <span class="btn-arrow">→</span>
-                </a>
-                <a href="#features" class="btn-ghost btn-large" aria-label="Scopri i servizi di Kore">
-                    Scopri di più
-                </a>
-            </div>
+      <div class="carousel-card-strip">
+        <div
+          *ngFor="let video of carouselVideos; let i = index"
+          class="carousel-card"
+          [class.active]="i === currentCarouselVideoIndex"
+          [style.transform]="getCardTransform(i)"
+          [style.opacity]="getCardOpacity(i)"
+          (click)="selectCarouselVideo(i)">
+          <span class="carousel-card-title">{{ video.title }}</span>
+          <div class="carousel-card-progress-track" *ngIf="i === currentCarouselVideoIndex">
+            <div class="carousel-card-progress-bar" [style.width.%]="videoProgress"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════════════
+       FAQ
+       ════════════════════════════════════════════════════════ -->
+  <section class="faq-s" id="faq">
+    <div class="section-hd" data-reveal>
+      <p class="text-eyebrow">FAQ</p>
+      <h2 class="section-h2">Domande frequenti</h2>
+    </div>
+
+    <div class="faq-list" data-reveal>
+      <div class="faq-item" *ngFor="let item of faqItems; let i = index" [class.open]="openFaqIndex === i">
+        <button
+          class="faq-question"
+          type="button"
+          (click)="toggleFaq(i)"
+          [attr.aria-expanded]="openFaqIndex === i"
+          [attr.aria-controls]="'faq-answer-' + i">
+          <span>{{ item.question }}</span>
+          <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </button>
+        <div class="faq-answer" [id]="'faq-answer-' + i" role="region">
+          <p>{{ item.answer }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════════════
+       LAVORA CON NOI
+       ════════════════════════════════════════════════════════ -->
+  <section class="join-s" id="lavora-con-noi">
+    <div class="section-hd" data-reveal>
+      <p class="text-eyebrow">Team</p>
+      <h2 class="section-h2">Lavora con noi</h2>
+      <p class="section-sub">Sei un Personal Trainer o un Nutrizionista certificato? Unisciti al team Kore.</p>
+    </div>
+
+    <div class="join-card" data-reveal>
+      <!-- Success state -->
+      <div class="join-success" *ngIf="submitSuccess">
+        <div class="join-success__icon" aria-hidden="true">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--state-success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <h3 class="join-success__title">Candidatura inviata!</h3>
+        <p class="join-success__sub">Grazie per il tuo interesse. Ti contatteremo a breve all'indirizzo email fornito.</p>
+      </div>
+
+      <!-- Form -->
+      <form *ngIf="!submitSuccess" [formGroup]="applicationForm" (ngSubmit)="submitApplication()" class="join-form">
+        <div class="jf-row">
+          <div class="jf-group">
+            <label class="jf-lbl" for="firstName">Nome *</label>
+            <input class="jf-input" id="firstName" type="text" formControlName="firstName" placeholder="Il tuo nome"
+              [class.jf-input--err]="applicationForm.get('firstName')?.invalid && applicationForm.get('firstName')?.touched">
+            <span class="jf-err-msg" *ngIf="applicationForm.get('firstName')?.invalid && applicationForm.get('firstName')?.touched">Il nome è obbligatorio</span>
+          </div>
+          <div class="jf-group">
+            <label class="jf-lbl" for="lastName">Cognome *</label>
+            <input class="jf-input" id="lastName" type="text" formControlName="lastName" placeholder="Il tuo cognome"
+              [class.jf-input--err]="applicationForm.get('lastName')?.invalid && applicationForm.get('lastName')?.touched">
+            <span class="jf-err-msg" *ngIf="applicationForm.get('lastName')?.invalid && applicationForm.get('lastName')?.touched">Il cognome è obbligatorio</span>
+          </div>
         </div>
 
-    </main>
-
-    <!-- ═══════════════════════════════════════════════════════
-         FEATURES SECTION
-         ═══════════════════════════════════════════════════════ -->
-    <section class="intro-section" id="features">
-        <div class="section-header text-center" data-reveal>
-            <h2 class="section-title">I nostri servizi</h2>
-            <p class="section-subtitle">Un ecosistema completo per la tua trasformazione.</p>
+        <div class="jf-row">
+          <div class="jf-group">
+            <label class="jf-lbl" for="email">Email *</label>
+            <input class="jf-input" id="email" type="email" formControlName="email" placeholder="email&#64;esempio.com"
+              [class.jf-input--err]="applicationForm.get('email')?.invalid && applicationForm.get('email')?.touched">
+            <span class="jf-err-msg" *ngIf="applicationForm.get('email')?.hasError('required') && applicationForm.get('email')?.touched">L'email è obbligatoria</span>
+            <span class="jf-err-msg" *ngIf="applicationForm.get('email')?.hasError('email') && applicationForm.get('email')?.touched">Inserisci un'email valida</span>
+          </div>
+          <div class="jf-group">
+            <label class="jf-lbl" for="role">Ruolo desiderato *</label>
+            <select class="jf-input" id="role" formControlName="role"
+              [class.jf-input--err]="applicationForm.get('role')?.invalid && applicationForm.get('role')?.touched">
+              <option value="" disabled>Seleziona un ruolo</option>
+              <option value="PERSONAL_TRAINER">Personal Trainer</option>
+              <option value="NUTRITIONIST">Nutrizionista</option>
+            </select>
+            <span class="jf-err-msg" *ngIf="applicationForm.get('role')?.invalid && applicationForm.get('role')?.touched">Seleziona un ruolo</span>
+          </div>
         </div>
 
-        <div class="features-grid">
-            <div class="feature-card minimal-card" data-reveal>
-                <div class="feature-icon">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <path d="M6 4v16"/><path d="M18 4v16"/><path d="M6 12h12"/><circle cx="6" cy="4" r="2"/><circle cx="6" cy="20" r="2"/><circle cx="18" cy="4" r="2"/><circle cx="18" cy="20" r="2"/>
-                    </svg>
-                </div>
-                <h3 class="feature-title">Allenamento Su Misura</h3>
-                <p class="feature-desc">Abbandona le schede preimpostate. Ricevi protocolli di allenamento d'élite dai nostri Personal Trainer, costantemente aggiornati sui tuoi progressi per massimizzare forza e ipertrofia.</p>
-            </div>
-
-            <div class="feature-card minimal-card" data-reveal>
-                <div class="feature-icon">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <path d="M12 2a5 5 0 0 1 5 5c0 2-1.5 3.5-3 4.5V14h-4v-2.5C8.5 10.5 7 9 7 7a5 5 0 0 1 5-5Z"/><path d="M10 14v3a2 2 0 0 0 4 0v-3"/><path d="M8 21h8"/>
-                    </svg>
-                </div>
-                <h3 class="feature-title">Nutrizione Strategica</h3>
-                <p class="feature-desc">Nutrizione non significa rinuncia, ma carburante. I nostri specialisti creeranno un piano alimentare bilanciato sul tuo metabolismo e stile di vita per sostenere le tue performance.</p>
-            </div>
-
-            <div class="feature-card minimal-card" data-reveal>
-                <div class="feature-icon">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <path d="M12 2L2 7l10 5 10-5-10-5Z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
-                    </svg>
-                </div>
-                <h3 class="feature-title">Un Ecosistema Premium</h3>
-                <p class="feature-desc">Gestisci tutto in un unico ambiente digitale fluido e potente. Traccia i tuoi record, sblocca crediti per sessioni private e comunica direttamente con i tuoi coach in qualsiasi momento.</p>
-            </div>
-
-            <div class="feature-card minimal-card" data-reveal>
-                <div class="feature-icon">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/>
-                    </svg>
-                </div>
-                <h3 class="feature-title">Polizza Assicurativa</h3>
-                <p class="feature-desc">Il tuo allenamento è protetto. Ogni membro Kore è coperto da una polizza assicurativa sportiva inclusa nel piano, per allenarti in totale sicurezza senza pensieri.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- ═══════════════════════════════════════════════════════
-         COME FUNZIONA SECTION
-         ═══════════════════════════════════════════════════════ -->
-    <section class="how-it-works-section" id="how-it-works">
-        <div class="section-header text-center" data-reveal>
-            <h2 class="section-title">Il tuo percorso verso il successo</h2>
-            <p class="section-subtitle">Un metodo diviso in tre fasi semplici, chiare e misurabili.</p>
-        </div>
-        <div class="steps-grid">
-            <div class="step-card minimal-card" data-reveal>
-                <div class="step-number">01</div>
-                <h3 class="step-title">Analisi e Pianificazione</h3>
-                <p class="step-desc">Il tuo coach analizza il tuo punto di partenza e definisce gli obiettivi a breve e lungo termine.</p>
-            </div>
-            <div class="step-card minimal-card" data-reveal>
-                <div class="step-number">02</div>
-                <h3 class="step-title">Azione e Costanza</h3>
-                <p class="step-desc">Ricevi il tuo piano su misura e inizia ad allenarti. I nostri professionisti ti guidano passo dopo passo.</p>
-            </div>
-            <div class="step-card minimal-card" data-reveal>
-                <div class="step-number">03</div>
-                <h3 class="step-title">Feedback e Risultati</h3>
-                <p class="step-desc">Monitoriamo i tuoi progressi ogni settimana, regolando i carichi e l'alimentazione per ottimizzare i risultati.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- ═══════════════════════════════════════════════════════
-         VIDEO CAROUSEL SECTION
-         ═══════════════════════════════════════════════════════ -->
-    <section class="experience-carousel-section" id="experience-carousel">
-        <div class="section-header text-center" data-reveal>
-            <h2 class="section-title">Vivi l'esperienza Kore</h2>
-            <p class="section-subtitle">Scorri i video per scoprire tutte le funzionalità della piattaforma.</p>
+        <div class="jf-group">
+          <label class="jf-lbl" for="message">Messaggio motivazionale *</label>
+          <textarea class="jf-input jf-textarea" id="message" formControlName="message" rows="5"
+            placeholder="Raccontaci di te, le tue esperienze e perché vorresti far parte del team..."
+            [class.jf-input--err]="applicationForm.get('message')?.invalid && applicationForm.get('message')?.touched"></textarea>
+          <span class="jf-err-msg" *ngIf="applicationForm.get('message')?.invalid && applicationForm.get('message')?.touched">Il messaggio è obbligatorio</span>
         </div>
 
-        <div class="experience-carousel" data-reveal>
-            <!-- Stories-style progress bars (mobile only) -->
-            <div class="carousel-stories-bar">
-                <div
-                    *ngFor="let video of carouselVideos; let i = index"
-                    class="stories-segment"
-                    [class.completed]="i < currentCarouselVideoIndex"
-                    [class.active]="i === currentCarouselVideoIndex"
-                    (click)="selectCarouselVideo(i)">
-                    <div class="stories-segment-fill" [style.width.%]="i < currentCarouselVideoIndex ? 100 : (i === currentCarouselVideoIndex ? videoProgress : 0)"></div>
-                </div>
+        <div class="jf-group">
+          <label class="jf-lbl">Curriculum Vitae (PDF, opzionale)</label>
+          <div class="jf-upload"
+            (click)="fileInput.click()"
+            (dragover)="onDragOver($event)"
+            (dragleave)="onDragLeave($event)"
+            (drop)="onDrop($event)"
+            [class.jf-upload--drag]="isDragging"
+            role="button"
+            tabindex="0"
+            aria-label="Carica il tuo CV">
+            <input #fileInput type="file" accept=".pdf" (change)="onFileSelected($event)" style="display:none">
+            <div class="jf-upload__inner" *ngIf="!selectedFile">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <p class="jf-upload__text">Clicca o trascina il tuo CV</p>
+              <span class="jf-upload__hint">Solo PDF · max 10MB</span>
             </div>
-
-            <!-- Video fullscreen 16:9 -->
-            <div class="carousel-video-wrapper">
-
-                <video
-                    #carouselVideo
-                    class="experience-video"
-                    muted
-                    playsinline
-                    preload="none"
-                    (ended)="onCarouselVideoEnded()"
-                    (timeupdate)="onVideoTimeUpdate()"
-                    [attr.aria-label]="'Demo sezione ' + carouselVideos[currentCarouselVideoIndex].title"
-                    [src]="getVideoSrc(carouselVideos[currentCarouselVideoIndex])">
-                </video>
-
-                <!-- Play overlay -->
-                <button
-                    *ngIf="!isCarouselPlaying"
-                    type="button"
-                    class="carousel-play-overlay"
-                    (click)="onCarouselPlayClick()"
-                    aria-label="Avvia il video">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M8 5v14l11-7z"/>
-                    </svg>
-                </button>
-
-                <!-- Tap Navigation Zones -->
-                <div class="carousel-tap-zone prev-zone" (click)="previousCarouselVideo()" aria-label="Video precedente"></div>
-                <div class="carousel-tap-zone next-zone" (click)="nextCarouselVideo()" aria-label="Video successivo"></div>
+            <div class="jf-upload__inner" *ngIf="selectedFile">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--state-success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="20 6 9 17 4 12"/></svg>
+              <p class="jf-upload__text">{{ selectedFile!.name }}</p>
+              <span class="jf-upload__hint">{{ (selectedFile!.size / 1024 / 1024).toFixed(2) }} MB</span>
             </div>
-
-            <!-- Card strip (desktop) -->
-            <div class="carousel-card-strip">
-                <div
-                    *ngFor="let video of carouselVideos; let i = index"
-                    class="carousel-card"
-                    [class.active]="i === currentCarouselVideoIndex"
-                    [style.transform]="getCardTransform(i)"
-                    [style.opacity]="getCardOpacity(i)"
-                    (click)="selectCarouselVideo(i)">
-                    <span class="carousel-card-title">{{ video.title }}</span>
-                    <div class="carousel-card-progress-track" *ngIf="i === currentCarouselVideoIndex">
-                        <div class="carousel-card-progress-bar" [style.width.%]="videoProgress"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ═══════════════════════════════════════════════════════
-         TESTIMONIALS SECTION
-         ═══════════════════════════════════════════════════════ -->
-    <section class="testimonials-section" id="testimonials">
-        <div class="section-header text-center" data-reveal>
-            <h2 class="section-title">Storie di successo</h2>
-            <p class="section-subtitle">Scopri chi ha già trasformato la propria vita con Kore.</p>
-        </div>
-        <div class="testimonials-grid">
-            <div class="testimonial-card minimal-card" data-reveal>
-                <div class="testimonial-content">
-                    <p>"Avere personal trainer e nutrizionista nello stesso ecosistema fa davvero la differenza. Mai più senza."</p>
-                </div>
-                <div class="testimonial-author">
-                    <div class="author-avatar">M</div>
-                    <div class="author-info">
-                        <h4>Marco R.</h4>
-                        <span>Piano Premium</span>
-                    </div>
-                </div>
-            </div>
-            <div class="testimonial-card minimal-card" data-reveal>
-                <div class="testimonial-content">
-                    <p>"L'attenzione ai dettagli è maniacale. I miei risultati in questi primi 3 mesi hanno superato le mie aspettative."</p>
-                </div>
-                <div class="testimonial-author">
-                    <div class="author-avatar">E</div>
-                    <div class="author-info">
-                        <h4>Elena F.</h4>
-                        <span>Piano Basic</span>
-                    </div>
-                </div>
-            </div>
-            <div class="testimonial-card minimal-card" data-reveal>
-                <div class="testimonial-content">
-                    <p>"L'app è intuitiva e bellissima. Finalmente un approccio serio al fitness, senza le solite schede copia-incolla."</p>
-                </div>
-                <div class="testimonial-author">
-                    <div class="author-avatar">A</div>
-                    <div class="author-info">
-                        <h4>Andrea V.</h4>
-                        <span>Piano Premium</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ═══════════════════════════════════════════════════════
-         PRICING SECTION
-         ═══════════════════════════════════════════════════════ -->
-    <section class="pricing-section" id="pricing">
-        <div class="pricing-header" data-reveal>
-            <h2 class="section-title">Scegli il livello del tuo successo</h2>
-            <p class="section-subtitle">Piani trasparenti pensati per portarti esattamente dove vuoi arrivare.</p>
-
-            <!-- Toggle Semestrale / Annuale -->
-            <div class="billing-toggle">
-                <span class="toggle-label" [class.active]="!isAnnual" (click)="toggleBilling(false)">Semestrale</span>
-                <button class="toggle-switch" [class.on]="isAnnual" (click)="toggleBilling(!isAnnual)"
-                    aria-label="Cambia durata abbonamento">
-                    <span class="toggle-knob"></span>
-                </button>
-                <span class="toggle-label" [class.active]="isAnnual" (click)="toggleBilling(true)">
-                    Annuale <span class="discount-badge">Save 10%</span>
-                </span>
-            </div>
+          </div>
+          <span class="jf-err-msg" *ngIf="fileError">{{ fileError }}</span>
         </div>
 
-        <!-- Piani -->
-        <div class="pricing-grid">
-            <div class="pricing-card minimal-card" *ngFor="let plan of displayedPlans; let i = index"
-                [class.popular]="i === 1" data-reveal>
-
-                <div class="popular-badge" *ngIf="i === 1">Più Popolare</div>
-
-                <div class="pc-header">
-                    <h3 class="pc-name">{{ plan.name }}</h3>
-                    <p class="pc-desc">Ideale per chi vuole iniziare con il piede giusto</p>
-                </div>
-
-                <div class="pc-price-block">
-                    <div class="pc-price">
-                        <span class="currency">€</span>
-                        <span class="amount">{{ plan.monthlyInstallmentPrice }}</span>
-                        <span class="period">/mese</span>
-                    </div>
-                    <p class="pc-billing-text">Fatturazione {{ isAnnual ? 'annuale' : 'semestrale' }}: €{{
-                        plan.fullPrice }}</p>
-                </div>
-
-                <button class="btn-primary btn-shimmer pc-cta" [class.btn-outline]="i !== 1" (click)="goToRegister(plan.id)"
-                    [attr.aria-label]="'Inizia con il piano ' + plan.name">
-                    Inizia Ora <span *ngIf="i === 1" class="btn-arrow">→</span>
-                </button>
-
-                <div class="pc-features">
-                    <div class="feature-item">
-                        <div class="feature-check">✓</div>
-                        <span>Scheda Allenamento Mensile</span>
-                    </div>
-                    <div class="feature-item">
-                        <div class="feature-check">✓</div>
-                        <span>Piano Alimentare (+ aggiornamenti)</span>
-                    </div>
-                    <div class="feature-item">
-                        <div class="feature-check">✓</div>
-                        <span>Chat con i Professionisti</span>
-                    </div>
-                    <div class="feature-item">
-                        <div class="feature-check">✓</div>
-                        <span>
-                            <strong *ngIf="plan.monthlyCreditsPT < 50">{{ plan.monthlyCreditsPT }}</strong>
-                            <strong *ngIf="plan.monthlyCreditsPT >= 50">Illimitati</strong>
-                            Crediti Personal Trainer
-                        </span>
-                    </div>
-                    <div class="feature-item">
-                        <div class="feature-check">✓</div>
-                        <span>
-                            <strong *ngIf="plan.monthlyCreditsNutri < 50">{{ plan.monthlyCreditsNutri }}</strong>
-                            <strong *ngIf="plan.monthlyCreditsNutri >= 50">Illimitati</strong>
-                            Crediti Nutrizionista
-                        </span>
-                    </div>
-                    <div class="feature-item">
-                        <div class="feature-check">✓</div>
-                        <span>Polizza Assicurativa Inclusa</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ═══════════════════════════════════════════════════════
-         FAQ SECTION
-         ═══════════════════════════════════════════════════════ -->
-    <section class="faq-section" id="faq">
-        <div class="section-header text-center" data-reveal>
-            <h2 class="section-title">Domande frequenti</h2>
-            <p class="section-subtitle">Tutto quello che devi sapere prima di iniziare.</p>
+        <div class="jf-actions">
+          <button type="submit" class="jf-submit" [disabled]="isSubmitting">
+            <span *ngIf="!isSubmitting">
+              Invia candidatura
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </span>
+            <span *ngIf="isSubmitting">Invio in corso...</span>
+          </button>
         </div>
 
-        <div class="faq-list" data-reveal>
-            <div class="faq-item" *ngFor="let item of faqItems; let i = index" [class.open]="openFaqIndex === i">
-                <button class="faq-question"
-                        (click)="toggleFaq(i)"
-                        [attr.aria-expanded]="openFaqIndex === i"
-                        [attr.aria-controls]="'faq-answer-' + i"
-                        aria-label="Espandi domanda">
-                    <span>{{ item.question }}</span>
-                    <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <polyline points="6 9 12 15 18 9"/>
-                    </svg>
-                </button>
-                <div class="faq-answer" [id]="'faq-answer-' + i" role="region">
-                    <p>{{ item.answer }}</p>
-                </div>
-            </div>
-        </div>
-    </section>
+        <p class="jf-submit-err" *ngIf="submitError">{{ submitError }}</p>
+      </form>
+    </div>
+  </section>
 
-    <!-- ═══════════════════════════════════════════════════════
-         LAVORA CON NOI SECTION
-         ═══════════════════════════════════════════════════════ -->
-    <section class="join-section" id="lavora-con-noi">
-        <div class="join-header" data-reveal>
-            <h2 class="section-title">Lavora con Noi</h2>
-            <p class="section-subtitle">Sei un Personal Trainer o un Nutrizionista? Unisciti al team Kore e
-                porta la tua carriera al livello successivo.</p>
-        </div>
 
-        <div class="join-form-container minimal-card join-card" data-reveal>
-            <!-- Success message -->
-            <div class="form-success" *ngIf="submitSuccess">
-                <div class="success-icon">✅</div>
-                <h3>Candidatura Inviata!</h3>
-                <p>Grazie per il tuo interesse. Ti contatteremo a breve all'indirizzo email fornito.</p>
-            </div>
+  <!-- ════════════════════════════════════════════════════════
+       FOOTER
+       ════════════════════════════════════════════════════════ -->
+  <app-footer></app-footer>
 
-            <!-- Form -->
-            <form *ngIf="!submitSuccess" [formGroup]="applicationForm" (ngSubmit)="submitApplication()"
-                class="join-form">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="firstName">Nome *</label>
-                        <input id="firstName" type="text" formControlName="firstName" placeholder="Il tuo nome"
-                            [class.invalid]="applicationForm.get('firstName')?.invalid && applicationForm.get('firstName')?.touched">
-                        <span class="field-error"
-                            *ngIf="applicationForm.get('firstName')?.invalid && applicationForm.get('firstName')?.touched">
-                            Il nome è obbligatorio
-                        </span>
-                    </div>
-                    <div class="form-group">
-                        <label for="lastName">Cognome *</label>
-                        <input id="lastName" type="text" formControlName="lastName" placeholder="Il tuo cognome"
-                            [class.invalid]="applicationForm.get('lastName')?.invalid && applicationForm.get('lastName')?.touched">
-                        <span class="field-error"
-                            *ngIf="applicationForm.get('lastName')?.invalid && applicationForm.get('lastName')?.touched">
-                            Il cognome è obbligatorio
-                        </span>
-                    </div>
-                </div>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="email">Email *</label>
-                        <input id="email" type="email" formControlName="email" placeholder="email&#64;esempio.com"
-                            [class.invalid]="applicationForm.get('email')?.invalid && applicationForm.get('email')?.touched">
-                        <span class="field-error"
-                            *ngIf="applicationForm.get('email')?.hasError('required') && applicationForm.get('email')?.touched">
-                            L'email è obbligatoria
-                        </span>
-                        <span class="field-error"
-                            *ngIf="applicationForm.get('email')?.hasError('email') && applicationForm.get('email')?.touched">
-                            Inserisci un'email valida
-                        </span>
-                    </div>
-                    <div class="form-group">
-                        <label for="role">Ruolo desiderato *</label>
-                        <select id="role" formControlName="role"
-                            [class.invalid]="applicationForm.get('role')?.invalid && applicationForm.get('role')?.touched">
-                            <option value="" disabled>Seleziona un ruolo</option>
-                            <option value="PERSONAL_TRAINER">Personal Trainer</option>
-                            <option value="NUTRITIONIST">Nutrizionista</option>
-                        </select>
-                        <span class="field-error"
-                            *ngIf="applicationForm.get('role')?.invalid && applicationForm.get('role')?.touched">
-                            Seleziona un ruolo
-                        </span>
-                    </div>
-                </div>
+  <!-- Back to top -->
+  <button
+    class="back-to-top"
+    type="button"
+    [class.back-to-top--vis]="showBackToTop"
+    (click)="scrollToTop()"
+    aria-label="Torna in cima">
+    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M5 15l7-7 7 7"/>
+    </svg>
+  </button>
 
-                <div class="form-group">
-                    <label for="message">Messaggio Motivazionale *</label>
-                    <textarea id="message" formControlName="message" rows="5"
-                        placeholder="Raccontaci di te, le tue esperienze e perché vorresti far parte del nostro team..."
-                        [class.invalid]="applicationForm.get('message')?.invalid && applicationForm.get('message')?.touched"></textarea>
-                    <span class="field-error"
-                        *ngIf="applicationForm.get('message')?.invalid && applicationForm.get('message')?.touched">
-                        Il messaggio è obbligatorio
-                    </span>
-                </div>
-
-                <div class="form-group">
-                    <label>Curriculum Vitae (PDF)</label>
-                    <div class="file-upload-area" (click)="fileInput.click()" (dragover)="onDragOver($event)"
-                        (dragleave)="onDragLeave($event)" (drop)="onDrop($event)" [class.drag-over]="isDragging">
-                        <input #fileInput type="file" accept=".pdf" (change)="onFileSelected($event)"
-                            style="display:none">
-                        <div class="file-upload-content" *ngIf="!selectedFile">
-                            <span class="upload-icon">📄</span>
-                            <p>Clicca o trascina il tuo CV qui</p>
-                            <span class="upload-hint">Solo file PDF, max 10MB</span>
-                        </div>
-                        <div class="file-upload-content file-selected" *ngIf="selectedFile">
-                            <span class="upload-icon">✅</span>
-                            <p>{{ selectedFile.name }}</p>
-                            <span class="upload-hint">{{ (selectedFile.size / 1024 / 1024).toFixed(2) }} MB</span>
-                        </div>
-                    </div>
-                    <span class="field-error" *ngIf="fileError">{{ fileError }}</span>
-                </div>
-
-                <div class="form-actions">
-                    <button type="submit" class="btn-primary btn-large btn-shimmer" [disabled]="isSubmitting"
-                        aria-label="Invia la tua candidatura">
-                        <span *ngIf="!isSubmitting">Invia Candidatura <span class="btn-arrow">→</span></span>
-                        <span *ngIf="isSubmitting">Invio in corso...</span>
-                    </button>
-                </div>
-
-                <div class="form-error-message" *ngIf="submitError">
-                    ⚠️ {{ submitError }}
-                </div>
-            </form>
-        </div>
-    </section>
-
-    <!-- ═══════════════════════════════════════════════════════
-         FOOTER
-         ═══════════════════════════════════════════════════════ -->
-    <footer class="home-footer">
-        <div class="footer-top">
-            <div class="footer-col footer-brand-col">
-                <h2 class="brand-text footer-logo-text">Kore<span class="brand-dot">.</span></h2>
-                <p class="footer-copy">
-                    Kore rappresenta l'eccellenza nel fitness e nella nutrizione.
-                    Un approccio essenziale e olistico per forgiare la migliore versione di te.
-                </p>
-            </div>
-            <div class="footer-col">
-                <h4 class="footer-col-title">Servizi</h4>
-                <a href="#features" class="footer-link">Allenamento</a>
-                <a href="#features" class="footer-link">Nutrizione</a>
-                <a href="#features" class="footer-link">Piattaforma</a>
-                <a href="#features" class="footer-link">Assicurazione</a>
-            </div>
-            <div class="footer-col">
-                <h4 class="footer-col-title">Azienda</h4>
-                <a href="#how-it-works" class="footer-link">Il Metodo</a>
-                <a href="#testimonials" class="footer-link">Testimonianze</a>
-                <a href="#lavora-con-noi" class="footer-link">Lavora con noi</a>
-                <a href="#faq" class="footer-link">FAQ</a>
-            </div>
-            <div class="footer-col">
-                <h4 class="footer-col-title">Contatti</h4>
-                <span class="footer-link footer-info">info&#64;kore.fit</span>
-                <span class="footer-link footer-info">Milano, Italia</span>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p class="footer-rights">
-                &copy; 2026 Kore. Tutti i diritti riservati.
-            </p>
-        </div>
-    </footer>
-
-    <!-- Back to Top Button -->
-    <button class="back-to-top" [class.visible]="showBackToTop" (click)="scrollToTop()" aria-label="Torna in cima">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 15l7-7 7 7"></path>
-        </svg>
-    </button>
 </div>

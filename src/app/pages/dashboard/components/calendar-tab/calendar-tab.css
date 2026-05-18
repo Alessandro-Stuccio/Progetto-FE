@@ -4,30 +4,33 @@
 
 /* ── Nav buttons ────────────────────────────────────────────────────────── */
 .nav-btn:hover {
-  background: rgba(255, 255, 255, 0.22);
-  color: var(--color-accent-gold-light);
+  background: var(--bg-elevated);
+  color: var(--navy-primary);
+  border-color: var(--border-medium);
 }
 
 .today-btn:hover {
-  filter: brightness(1.1);
-  box-shadow: 0 4px 15px rgba(var(--color-accent-gold-rgb), 0.3);
+  background: var(--navy-deep);
+  box-shadow: 0 4px 12px rgba(26, 52, 98, 0.25);
 }
 
 /* ── Toggle vista Agenda (solo mobile) ─────────────────────────────────── */
 .agenda-toggle-btn {
-  background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.60);
+  background: var(--bg-subtle);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
   font-size: 1rem;
 }
 
 .agenda-toggle-btn:hover {
-  background: rgba(255, 255, 255, 0.16);
-  color: var(--color-accent-gold-light);
+  background: var(--bg-elevated);
+  color: var(--navy-primary);
 }
 
 .agenda-toggle-btn.active {
-  background: rgba(var(--color-accent-gold-rgb), 0.18);
-  color: var(--color-accent-gold-light);
+  background: rgba(26, 52, 98, 0.08);
+  color: var(--navy-primary);
+  border-color: var(--border-medium);
 }
 
 /* ── Agenda view: booking row hover ────────────────────────────────────── */
@@ -142,28 +145,27 @@
 
 /* ── Today highlight ────────────────────────────────────────────────────── */
 .day-name {
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--text-muted);
   letter-spacing: 0.16em;
 }
 
 .day-number {
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .day-header.today .day-name {
-  color: var(--color-accent-gold-light);
+  color: var(--gold-accent);
 }
 
 .day-number.today-circle {
-  background: linear-gradient(135deg, var(--color-accent-gold), var(--color-accent-gold-light));
-  color: var(--color-primary-navy);
+  background: linear-gradient(135deg, var(--gold-accent), var(--gold-light));
+  color: var(--navy-primary);
   font-weight: 700;
-  box-shadow: 0 2px 12px rgba(var(--color-accent-gold-rgb), 0.40);
+  box-shadow: 0 2px 12px rgba(201, 169, 110, 0.35);
 }
 
 .day-col.today-col {
-  background: rgba(var(--color-accent-gold-rgb), 0.05);
-  box-shadow: inset 0 0 15px rgba(var(--color-accent-gold-rgb), 0.03);
+  background: rgba(201, 169, 110, 0.04);
 }
 
 /* ── Booking cards ──────────────────────────────────────────────────────── */
