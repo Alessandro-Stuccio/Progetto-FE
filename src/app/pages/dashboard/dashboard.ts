@@ -203,23 +203,23 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.toast.warning('Attenzione', 'Sei già un Amministratore.');
       return;
     }
-    this.userService.getAdmin()
+    this.userService.getModerator()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (adminUser) => {
+        next: (moderatorUser) => {
           if (this.activeTab === 'chat' && this._chatTabComponent) {
-            const wasExisting = this._chatTabComponent.startConversationWith(adminUser);
+            const wasExisting = this._chatTabComponent.startConversationWith(moderatorUser);
             if (wasExisting) {
               this.toast.success('Chat Supporto', 'Hai già una conversazione aperta con il supporto. Ti abbiamo reindirizzato alla chat esistente.');
             }
           } else {
-            this.dashboardFacade.setPendingChatUser(adminUser as UserProfile);
+            this.dashboardFacade.setPendingChatUser(moderatorUser as UserProfile);
             this.setTab('chat');
           }
         },
         error: (err: HttpErrorResponse) => {
           const apiError = err.error as ApiErrorResponse;
-          this.toast.error('Errore', apiError?.message || "Impossibile recuperare l'account Amministratore.");
+          this.toast.error('Errore', apiError?.message || "Impossibile recuperare il contatto di supporto.");
           console.error(err);
         }
       });

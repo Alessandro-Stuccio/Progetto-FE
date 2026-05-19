@@ -33,6 +33,10 @@ export class UserService {
     return this.http.get<ClientBasicInfo>(`${this.apiUrl}/api/users/admin`);
   }
 
+  getModerator(): Observable<ClientBasicInfo> {
+    return this.http.get<ClientBasicInfo>(`${this.apiUrl}/api/users/moderator`);
+  }
+
   getMyClients(): Observable<ClientBasicInfo[]> {
     return this.http.get<ClientBasicInfo[]>(`${this.apiUrl}/api/users/clients`);
   }

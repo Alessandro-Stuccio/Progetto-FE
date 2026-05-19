@@ -140,11 +140,11 @@ export class ChatTabComponent implements OnInit, OnDestroy {
     if (!myRole || !targetRole) return false;
 
     if (myRole === 'ADMIN') {
-      return true; // Admin può chattare con qualsiasi ruolo
+      return targetRole !== 'ADMIN';
     }
 
     if (myRole === 'INSURANCE_MANAGER') {
-      return targetRole === 'ADMIN';
+      return targetRole === 'MODERATOR';
     }
 
     if (myRole === 'MODERATOR') {
@@ -152,11 +152,11 @@ export class ChatTabComponent implements OnInit, OnDestroy {
     }
 
     if (myRole === 'CLIENT') {
-      return targetRole === 'PERSONAL_TRAINER' || targetRole === 'NUTRITIONIST' || targetRole === 'MODERATOR' || targetRole === 'ADMIN';
+      return targetRole === 'PERSONAL_TRAINER' || targetRole === 'NUTRITIONIST' || targetRole === 'MODERATOR';
     }
 
     if (myRole === 'PERSONAL_TRAINER' || myRole === 'NUTRITIONIST') {
-      return targetRole === 'CLIENT' || targetRole === 'MODERATOR' || targetRole === 'ADMIN';
+      return targetRole === 'CLIENT' || targetRole === 'MODERATOR';
     }
 
     return false;
@@ -331,10 +331,10 @@ export class ChatTabComponent implements OnInit, OnDestroy {
         convs.push({ otherUserId: c.id, otherUserName: `${c.firstName} ${c.lastName}`, otherUserRole: 'Cliente', lastMessage: undefined, lastMessageTime: undefined, unreadCount: 0 });
       });
     }
-    // Insurance Manager: può chattare solo con Admin
+    // Insurance Manager: può chattare solo con Moderatore
     if (this.isInsurance && this.allUsers?.length > 0) {
-      this.allUsers.filter(u => u.role === 'ADMIN').forEach((a: any) => {
-        convs.push({ otherUserId: a.id, otherUserName: `${a.firstName} ${a.lastName}`, otherUserRole: 'Admin', lastMessage: undefined, lastMessageTime: undefined, unreadCount: 0 });
+      this.allUsers.filter(u => u.role === 'MODERATOR').forEach((m: any) => {
+        convs.push({ otherUserId: m.id, otherUserName: `${m.firstName} ${m.lastName}`, otherUserRole: 'Moderatore', lastMessage: undefined, lastMessageTime: undefined, unreadCount: 0 });
       });
     }
     // Per Admin e Moderatori non prepopoliamo le chat vuote nella lista, utilizzeranno il picker.
