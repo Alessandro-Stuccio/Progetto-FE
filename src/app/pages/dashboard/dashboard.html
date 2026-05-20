@@ -604,16 +604,16 @@
             class="w-full text-[0.62rem] font-semibold text-[var(--color-text-muted)] uppercase tracking-[0.12em] pb-[0.3rem] border-b border-[var(--color-border-subtle)] mt-1">
             Abbonamento</div>
           <div class="subscription-card w-full rounded-xl p-4 flex flex-col gap-2"
-            [class.inactive]="!subscription.isActive">
+            [class.inactive]="!subscription.active">
             <div class="text-[0.95rem] font-semibold text-[var(--color-text-main)]">{{ subscription.planName }}</div>
             <div class="sub-status flex items-center gap-2 text-[0.78rem] text-[var(--color-text-muted)]">
               <span class="sub-dot w-[7px] h-[7px] rounded-full bg-[var(--color-border-subtle)] flex-shrink-0"
-                [class.active]="subscription.isActive"></span>
-              {{ subscription.isActive ? 'Attivo' : 'Scaduto' }}
+                [class.active]="subscription.active"></span>
+              {{ subscription.active ? 'Attivo' : 'Scaduto' }}
             </div>
             <div class="text-[0.77rem] text-[var(--color-text-muted)]">Scade il {{ subscription.endDate | date:'d MMMM yyyy':'':'it' }}
             </div>
-            <div class="text-[0.74rem] text-[#b8922a] font-medium" *ngIf="subscription.isActive">{{
+            <div class="text-[0.74rem] text-[#b8922a] font-medium" *ngIf="subscription.active">{{
               getSubscriptionDaysLeft() }} giorni rimanenti</div>
             <div class="sub-credits flex gap-2 mt-1">
               <div
