@@ -90,6 +90,10 @@ export class ChatService {
     return this.http.post<number>(`${this.apiUrl}/api/chat/create/${receiverId}`, {});
   }
 
+  closeChat(chatId: number): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/api/chat/${chatId}/close`, {});
+  }
+
   markAsRead(chatId: number, otherUserId: number): Observable<any> {
     this.optimisticMarkAsRead(otherUserId);
     return this.http.put(
