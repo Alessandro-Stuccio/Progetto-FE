@@ -35,6 +35,7 @@ export class ChatTabComponent implements OnInit, OnDestroy {
   chatInput: string = '';
   chatLoading: boolean = false;
   chatView: 'list' | 'conversation' = 'list';
+  closingChat: boolean = false;
   private subscriptions: any[] = [];
   private conversationsLoaded = false;  // Flag: true dopo il primo load
 
@@ -135,30 +136,46 @@ export class ChatTabComponent implements OnInit, OnDestroy {
     }
   }
 
+  isConversationWithModerator(): boolean {
+    const role = this.activeConversation?.otherUserRole;
+    return role === 'MODERATOR' || role === 'Moderatore';
+  }
+
+  closeActiveChat(): void {
+    if (!this.activeConversation?.chatId || this.closingChat) return;
+    this.closingChat = true;
+    const deletedChatId = this.activeConversation.chatId;
+    const sub = this.chatService.closeChat(deletedChatId).subscribe({
+      next: () => {
+        this.chatConversations = this.chatConversations.filter(c => c.chatId !== deletedChatId);
+        this.closingChat = false;
+        this.backToConversations();
+      },
+      error: () => { this.closingChat = false; }
+    });
+    this.subscriptions.push(sub);
+  }
+
   private canStartConversationWith(targetRole: string): boolean {
     const myRole = this.currentUser?.role;
     if (!myRole || !targetRole) return false;
 
     if (myRole === 'ADMIN') {
-      return targetRole !== 'ADMIN';
+      return targetRole !== 'ADMIN'; // Admin chatta con tutti tranne altri Admin
     }
-
     if (myRole === 'INSURANCE_MANAGER') {
-      return targetRole === 'MODERATOR';
+      return targetRole === 'ADMIN'; // Solo Admin
     }
-
     if (myRole === 'MODERATOR') {
-      return targetRole === 'CLIENT' || targetRole === 'PERSONAL_TRAINER' || targetRole === 'NUTRITIONIST' || targetRole === 'ADMIN';
+      return targetRole === 'CLIENT' || targetRole === 'PERSONAL_TRAINER'
+          || targetRole === 'NUTRITIONIST' || targetRole === 'ADMIN' || targetRole === 'MODERATOR';
     }
-
     if (myRole === 'CLIENT') {
       return targetRole === 'PERSONAL_TRAINER' || targetRole === 'NUTRITIONIST' || targetRole === 'MODERATOR';
     }
-
     if (myRole === 'PERSONAL_TRAINER' || myRole === 'NUTRITIONIST') {
       return targetRole === 'CLIENT' || targetRole === 'MODERATOR';
     }
-
     return false;
   }
 
@@ -240,6 +257,8 @@ export class ChatTabComponent implements OnInit, OnDestroy {
     // Subscribe a messaggi real-time dal WebSocket (per la conversazione attiva)
     const msgSub = this.chatService.messages$.subscribe(msgs => {
       if (this.activeConversation && msgs.length > 0) {
+        // Guard: ignora messaggi di un'altra chat (evita overlap durante transizione)
+        if (this.activeConversation.chatId && msgs.every(m => m.chatId !== this.activeConversation!.chatId)) return;
         // Mantieni i messaggi locali ottimistici (id < 0) non ancora confermati dal server
         const localOptimistic = this.chatMessages.filter(m => m.id < 0 &&
           !msgs.some(sm => sm.senderId === m.senderId && sm.content === m.content));
@@ -331,10 +350,10 @@ export class ChatTabComponent implements OnInit, OnDestroy {
         convs.push({ otherUserId: c.id, otherUserName: `${c.firstName} ${c.lastName}`, otherUserRole: 'Cliente', lastMessage: undefined, lastMessageTime: undefined, unreadCount: 0 });
       });
     }
-    // Insurance Manager: può chattare solo con Moderatore
+    // Insurance Manager: può chattare solo con Admin
     if (this.isInsurance && this.allUsers?.length > 0) {
-      this.allUsers.filter(u => u.role === 'MODERATOR').forEach((m: any) => {
-        convs.push({ otherUserId: m.id, otherUserName: `${m.firstName} ${m.lastName}`, otherUserRole: 'Moderatore', lastMessage: undefined, lastMessageTime: undefined, unreadCount: 0 });
+      this.allUsers.filter(u => u.role === 'ADMIN').forEach((a: any) => {
+        convs.push({ otherUserId: a.id, otherUserName: `${a.firstName} ${a.lastName}`, otherUserRole: 'Admin', lastMessage: undefined, lastMessageTime: undefined, unreadCount: 0 });
       });
     }
     // Per Admin e Moderatori non prepopoliamo le chat vuote nella lista, utilizzeranno il picker.
@@ -347,6 +366,11 @@ export class ChatTabComponent implements OnInit, OnDestroy {
     this.chatService.activeConversation = conv;  // Persisti nel service
     this.chatView = 'conversation';
     this.chatLoading = true;
+
+    // Svuota subito UI e service per evitare overlap di messaggi tra chat diverse
+    this.chatMessages = [];
+    this.chatService.clearMessages();
+    this.chatService.stopMessagePolling();
 
     // Se non abbiamo ancora il chatId, dobbiamo crearlo/recuperarlo tramite backend
     if (!conv.chatId) {

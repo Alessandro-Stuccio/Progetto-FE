@@ -7,10 +7,10 @@
         <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
       </svg>
     </button>
-    <h3 class="font-['Clash_Display'] text-[1.4rem] sm:text-[1.8rem] font-black text-[var(--color-text-main)]">{{
+    <h3 class="font-['Clash_Display'] text-[1.4rem] sm:text-[1.8rem] font-medium tracking-[-0.02em] text-[var(--color-text-main)]">{{
       selectedClient.firstName }} {{ selectedClient.lastName }}</h3>
   </div>
-  <h3 class="font-['Clash_Display'] text-[1.4rem] sm:text-[1.8rem] font-black text-[var(--color-text-main)] mb-1"
+  <h3 class="font-['Clash_Display'] text-[1.4rem] sm:text-[1.8rem] font-medium tracking-[-0.02em] text-[var(--color-text-main)] mb-1"
     *ngIf="!selectedClient">I Miei Clienti</h3>
   <p class="text-[0.78rem] sm:text-[0.85rem] text-[var(--color-text-muted)] mb-4 sm:mb-6" *ngIf="!selectedClient">{{ myClients.length }}
     clienti assegnati</p>

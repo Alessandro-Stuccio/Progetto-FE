@@ -4,22 +4,22 @@
   <div class="text-center" *ngIf="!selectedClient">
     <div class="relative inline-block mb-3">
       <div
-        class="w-20 h-20 rounded-full bg-gradient-to-br from-[#312e81] to-[#6366f1] border-[3px] border-[var(--color-accent-gold)] text-white flex items-center justify-center text-[1.8rem] font-black font-['Clash_Display'] shadow-lg">
+        class="w-20 h-20 rounded-full bg-gradient-to-br from-[var(--color-primary-navy)] to-[#2d5fa8] border-[3px] border-[var(--color-accent-gold)] text-white flex items-center justify-center text-[1.8rem] font-medium font-['Clash_Display'] tracking-[-0.02em] shadow-lg">
         {{ getInitials() }}</div>
     </div>
-    <h2 class="font-['Clash_Display'] text-[1.6rem] font-black text-[var(--color-text-main)] leading-tight">Gestione Polizze</h2>
+    <h2 class="font-['Clash_Display'] text-[1.6rem] font-medium text-[var(--color-text-main)] leading-tight tracking-[-0.02em]">Gestione Polizze</h2>
     <p class="text-[0.82rem] text-[var(--color-text-muted)] mt-1">Panoramica assicurativa dei clienti Kore</p>
   </div>
 
   <!-- KPI -->
   <div class="grid grid-cols-2 gap-3" *ngIf="!selectedClient">
     <div class="bg-white rounded-2xl border border-[var(--color-border-subtle)] p-4 shadow-sm text-center">
-      <div class="text-[1.8rem] font-black text-[#6366f1] leading-none">{{ activePolicies }}</div>
+      <div class="font-['Clash_Display'] text-[1.8rem] font-medium text-[var(--color-primary-navy)] leading-none tracking-[-0.025em]">{{ activePolicies }}</div>
       <div class="text-[0.6rem] text-[var(--color-text-muted)] uppercase tracking-[0.10em] mt-1.5 font-semibold">Polizze attive</div>
       <div class="mt-2 text-[1.2rem]">🛡️</div>
     </div>
     <div class="bg-white rounded-2xl border border-[var(--color-border-subtle)] p-4 shadow-sm text-center">
-      <div class="text-[1.8rem] font-black text-red-500 leading-none">{{ expiredPolicies }}</div>
+      <div class="font-['Clash_Display'] text-[1.8rem] font-medium text-red-500 leading-none tracking-[-0.025em]">{{ expiredPolicies }}</div>
       <div class="text-[0.6rem] text-[var(--color-text-muted)] uppercase tracking-[0.10em] mt-1.5 font-semibold">Polizze scadute</div>
       <div class="mt-2 text-[1.2rem]">⚠️</div>
     </div>
@@ -38,7 +38,7 @@
   <!-- Lista clienti con polizza -->
   <div class="flex flex-col gap-2.5" *ngIf="!selectedClient && filteredClients.length > 0">
     <div
-      class="flex items-center gap-3 bg-white border border-[var(--color-border-subtle)] rounded-2xl p-4 shadow-sm cursor-pointer hover:border-[#6366f1]/40 hover:shadow-md transition-all active:scale-[0.98]"
+      class="flex items-center gap-3 bg-white border border-[var(--color-border-subtle)] rounded-2xl p-4 shadow-sm cursor-pointer hover:border-[var(--color-accent-gold)]/40 hover:shadow-md transition-all active:scale-[0.98]"
       *ngFor="let sub of filteredClients" (click)="openClientDocs(sub)">
       <div
         class="w-11 h-11 rounded-full bg-[var(--color-primary-navy)] flex items-center justify-center border-2 border-[var(--color-accent-gold)]/40 flex-shrink-0">
@@ -76,7 +76,7 @@
           <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
         </svg>
       </button>
-      <h3 class="font-['Clash_Display'] text-[1.4rem] font-black text-[var(--color-text-main)]">{{ selectedClient.user.firstName }}
+      <h3 class="font-['Clash_Display'] text-[1.4rem] font-medium text-[var(--color-text-main)] tracking-[-0.02em]">{{ selectedClient.user.firstName }}
         {{ selectedClient.user.lastName }}</h3>
     </div>
 
@@ -109,7 +109,7 @@
     <!-- Upload polizza (Drag & Drop) SOLO PC -->
     <div
       class="relative border-2 border-dashed rounded-xl p-6 hidden sm:flex flex-col items-center justify-center gap-3 transition-all cursor-pointer mb-5"
-      [class.border-[#6366f1]]="!isDragOver" [class.bg-indigo-50/50]="!isDragOver" [class.border-[var(--color-accent-gold)]]="isDragOver"
+      [class.border-[var(--color-primary-navy)]]="!isDragOver" [class.bg-[var(--color-bg-subtle)]]="!isDragOver" [class.border-[var(--color-accent-gold)]]="isDragOver"
       [class.bg-amber-50]="isDragOver" [class.opacity-60]="isUploading" [class.pointer-events-none]="isUploading"
       (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)" (drop)="onDrop($event)">
 
@@ -131,7 +131,7 @@
 
     <!-- Upload polizza (Pulsante classico) SOLO MOBILE -->
     <label
-      class="flex sm:hidden items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-[#312e81] to-[#6366f1] text-white text-[0.85rem] font-bold cursor-pointer transition-all active:scale-[0.97] mb-5"
+      class="flex sm:hidden items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-[var(--color-primary-navy)] to-[#2d5fa8] text-white text-[0.85rem] font-bold cursor-pointer transition-all active:scale-[0.97] mb-5"
       [class.opacity-50]="isUploading" [class.pointer-events-none]="isUploading">
       <input type="file" accept="application/pdf" class="hidden" (change)="onFileSelected($event)"
         [disabled]="isUploading">
@@ -140,12 +140,12 @@
     </label>
 
     <div class="flex items-center justify-center py-8" *ngIf="docsLoading">
-      <div class="w-6 h-6 border-2 border-[#6366f1] border-t-transparent rounded-full animate-spin"></div>
+      <div class="w-6 h-6 border-2 border-[var(--color-primary-navy)] border-t-transparent rounded-full animate-spin"></div>
     </div>
     <div class="flex flex-col gap-2.5" *ngIf="!docsLoading && clientDocs.length > 0">
       <div class="flex items-center gap-3 bg-white rounded-xl border border-[var(--color-border-subtle)] p-4 shadow-sm"
         *ngFor="let doc of clientDocs">
-        <div class="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center text-[1.1rem] flex-shrink-0">📋
+        <div class="w-10 h-10 rounded-lg bg-[var(--color-bg-subtle)] flex items-center justify-center text-[1.1rem] flex-shrink-0">📋
         </div>
         <div class="flex-1 min-w-0">
           <div class="text-[0.85rem] font-bold text-[var(--color-text-main)] truncate">{{ doc.fileName }}</div>
@@ -184,7 +184,7 @@
     *ngIf="pdfOpen" (click)="closePdf()">
     <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl h-[85vh] sm:h-[88vh] flex flex-col overflow-hidden"
       (click)="$event.stopPropagation()">
-      <div class="flex items-center justify-between px-4 sm:px-6 py-3 bg-[#312e81] flex-shrink-0">
+      <div class="flex items-center justify-between px-4 sm:px-6 py-3 bg-[var(--color-primary-navy)] flex-shrink-0">
         <div class="flex items-center gap-3 min-w-0 flex-1">
           <div class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-[1rem] flex-shrink-0">📄
           </div><span class="text-white text-[0.85rem] font-semibold truncate">{{ pdfName }}</span>
@@ -207,7 +207,7 @@
       </div>
       <div class="flex-1 bg-[#525659] relative overflow-hidden">
         <div class="absolute inset-0 flex flex-col items-center justify-center gap-3" *ngIf="pdfLoading">
-          <div class="w-8 h-8 border-2 border-[#6366f1] border-t-transparent rounded-full animate-spin"></div><span
+          <div class="w-8 h-8 border-2 border-[var(--color-primary-navy)] border-t-transparent rounded-full animate-spin"></div><span
             class="text-white/60 text-[0.82rem]">Caricamento...</span>
         </div>
         <iframe *ngIf="pdfUrl && !pdfLoading" [src]="pdfUrl" class="w-full h-full border-0"></iframe>

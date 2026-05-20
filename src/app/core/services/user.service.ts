@@ -45,6 +45,10 @@ export class UserService {
     return this.http.get<UserProfile[]>(`${this.apiUrl}/api/admin/users`);
   }
 
+  getInsuranceUsers(): Observable<UserProfile[]> {
+    return this.http.get<UserProfile[]>(`${this.apiUrl}/api/insurance/users`);
+  }
+
   createUser(data: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/api/admin/users`, data);
   }

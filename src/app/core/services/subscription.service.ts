@@ -25,6 +25,10 @@ export class SubscriptionService {
     return this.http.get<Subscription[]>(`${this.apiUrl}/api/admin/subscriptions`);
   }
 
+  getInsuranceSubscriptions(): Observable<Subscription[]> {
+    return this.http.get<Subscription[]>(`${this.apiUrl}/api/insurance/subscriptions`);
+  }
+
   private usersBaseByMode(mode: UserManagementMode): string {
     return mode === 'moderator'
       ? `${this.apiUrl}/api/moderator/users`

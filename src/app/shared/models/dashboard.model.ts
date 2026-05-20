@@ -48,6 +48,7 @@ export interface ManagedUserPayload {
   password?: string;
   role: string;
   planId?: number;
+  paymentFrequency?: string;
   assignedPTId?: number;
   assignedNutritionistId?: number;
 }
@@ -96,6 +97,7 @@ export interface ClientBasicInfo {
   lastName: string;
   email: string;
   profilePictureUrl?: string;
+  role?: string;
 }
 
 /** Item nell'elenco "clienti da monitorare" (da ClientAttentionItem.java in ProfessionalStatsResponse). */

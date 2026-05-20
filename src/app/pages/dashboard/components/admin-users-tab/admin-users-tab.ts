@@ -34,7 +34,7 @@ export class AdminUsersTabComponent {
   // Modale creazione utente
   showCreateModal: boolean = false;
   currentStep: number = 1;
-  newUser: any = { firstName: '', lastName: '', email: '', password: '', role: 'CLIENT', planId: null, assignedPTId: null, assignedNutritionistId: null };
+  newUser: any = { firstName: '', lastName: '', email: '', password: '', role: 'CLIENT', planId: null, paymentFrequency: 'UNICA_SOLUZIONE', assignedPTId: null, assignedNutritionistId: null };
   createError: string = '';
   creating: boolean = false;
   showPassword: boolean = false;
@@ -136,7 +136,7 @@ export class AdminUsersTabComponent {
   }
 
   openCreateModal(): void {
-    this.newUser = { firstName: '', lastName: '', email: '', password: '', role: 'CLIENT', planId: null, assignedPTId: null, assignedNutritionistId: null };
+    this.newUser = { firstName: '', lastName: '', email: '', password: '', role: 'CLIENT', planId: null, paymentFrequency: 'UNICA_SOLUZIONE', assignedPTId: null, assignedNutritionistId: null };
     this.createError = '';
     this.currentStep = 1;
     this.showCreateModal = true;
@@ -189,6 +189,7 @@ export class AdminUsersTabComponent {
 
     if (this.isClientRole) {
       if (this.newUser.planId) payload.planId = this.newUser.planId;
+      if (this.newUser.paymentFrequency) payload.paymentFrequency = this.newUser.paymentFrequency;
       if (this.newUser.assignedPTId) payload.assignedPTId = this.newUser.assignedPTId;
       if (this.newUser.assignedNutritionistId) payload.assignedNutritionistId = this.newUser.assignedNutritionistId;
     }
@@ -343,6 +344,14 @@ export class AdminUsersTabComponent {
         this.cdr.detectChanges();
       }
     });
+  }
+
+  canEditUser(user: any): boolean {
+    if (this.mode === 'moderator') {
+      return this.moderatorAllowedRoles.includes(user.role);
+    }
+    // Admin mode: può editare solo MODERATOR e INSURANCE_MANAGER
+    return user.role === 'MODERATOR' || user.role === 'INSURANCE_MANAGER';
   }
 
   getRoleLabel(role: string): string {

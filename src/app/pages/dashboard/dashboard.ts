@@ -358,6 +358,24 @@ export class DashboardComponent implements OnInit, OnDestroy {
       return;
     }
 
+    if (this.isInsuranceManager()) {
+      forkJoin({
+        users: this.userService.getInsuranceUsers().pipe(catchError(() => of([]))),
+        subs: this.subscriptionService.getInsuranceSubscriptions().pipe(catchError(() => of([])))
+      })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (result) => {
+          this.allUsers = result.users || [];
+          this.chatUsers = [...this.allUsers];
+          this.allSubscriptions = result.subs || [];
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        }
+      });
+      return;
+    }
+
     forkJoin({
       users: this.userService.getAllUsers().pipe(catchError(() => of([]))),
       plans: this.planService.getPlans().pipe(catchError(() => of([]))),
