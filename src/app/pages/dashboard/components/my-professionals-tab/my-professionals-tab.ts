@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, OnChanges, OnInit, SimpleChange
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ReviewService, ReviewResponse } from '../../../../core/services/review.service';
+import { ProfessionalSummary, AuthUser } from '../../../../shared/models/dashboard.model';
 
 @Component({
     selector: 'app-my-professionals-tab',
@@ -11,8 +12,11 @@ import { ReviewService, ReviewResponse } from '../../../../core/services/review.
     styleUrls: ['./my-professionals-tab.css']
 })
 export class MyProfessionalsTabComponent implements OnChanges, OnInit {
-    @Input() professionals: any[] = [];
-    @Input() currentUser: any = null;
+    @Input() professionals: ProfessionalSummary[] = [];
+
+    private _currentUser: AuthUser | null = null;
+    @Input() set currentUser(value: AuthUser | null) { this._currentUser = value; }
+    get currentUser(): AuthUser { return this._currentUser!; }
     @Output() bookProfessional = new EventEmitter<any>();
 
     private reviewService = inject(ReviewService);

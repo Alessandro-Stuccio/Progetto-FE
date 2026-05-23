@@ -1,11 +1,12 @@
 import {
-  Component, inject, OnInit, OnDestroy, ChangeDetectorRef, HostListener, ViewChild, DestroyRef
+  Component, inject, OnInit, OnDestroy, HostListener, ViewChild, DestroyRef,
+  signal, ChangeDetectionStrategy
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { catchError, of, switchMap, forkJoin } from 'rxjs';
+import { catchError, map, of, switchMap, forkJoin, Observable } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 
 import { AuthService } from '../../core/services/auth.service';
@@ -16,6 +17,8 @@ import { ChatService } from '../../core/services/chat.service';
 import { AvailabilityService } from '../../core/services/availability.service';
 import { DashboardFacadeService } from '../../core/services/dashboard-facade.service';
 import { ToastService } from '../../core/services/toast.service';
+import { RoleService } from '../../core/services/role.service';
+import { StorageService } from '../../core/services/storage.service';
 
 import { HomeTabComponent } from './components/home-tab/home-tab';
 import { CalendarTabComponent } from './components/calendar-tab/calendar-tab';
@@ -30,6 +33,7 @@ import { MyServicesTabComponent } from './components/my-services-tab/my-services
 import { AdminStatsTabComponent } from './components/admin-stats-tab/admin-stats-tab';
 import { ToastComponent } from '../../shared/components/ui/toast/toast';
 import { PullToRefreshDirective } from '../../shared/directives/pull-to-refresh.directive';
+import { ProfileEditModalComponent } from '../../shared/components/ui/profile-edit-modal/profile-edit-modal';
 
 import {
   AuthUser,
@@ -43,7 +47,6 @@ import {
   ProfessionalSlot,
   Booking,
   ProfessionalSummary,
-  ProfileEditData,
   ApiErrorResponse,
   TabId,
   UserRole
@@ -52,17 +55,19 @@ import {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule, FormsModule, HomeTabComponent, CalendarTabComponent, ChatTabComponent,
     ClientsTabComponent, AdminHomeTabComponent, AdminUsersTabComponent, AdminPlansTabComponent,
     InsuranceHomeTabComponent, MyProfessionalsTabComponent, MyServicesTabComponent,
-    AdminStatsTabComponent, ToastComponent, PullToRefreshDirective
+    AdminStatsTabComponent, ToastComponent, PullToRefreshDirective,
+    ProfileEditModalComponent
   ],
   templateUrl: './dashboard.html',
   styleUrls: ['./dashboard.css']
 })
 export class DashboardComponent implements OnInit, OnDestroy {
-  @ViewChild(ChatTabComponent) 
+  @ViewChild(ChatTabComponent)
   set chatTabComponent(content: ChatTabComponent | undefined) {
     this._chatTabComponent = content;
     if (content) {
@@ -76,11 +81,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
       }
     }
   }
-  
+
   get chatTabComponent(): ChatTabComponent | undefined {
     return this._chatTabComponent;
   }
   private _chatTabComponent?: ChatTabComponent;
+
+  @ViewChild(ProfileEditModalComponent) profileModal!: ProfileEditModalComponent;
 
   private authService = inject(AuthService);
   private userService = inject(UserService);
@@ -90,59 +97,86 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private availabilityService = inject(AvailabilityService);
   public dashboardFacade = inject(DashboardFacadeService);
   private router = inject(Router);
-  private cdr = inject(ChangeDetectorRef);
   private toast = inject(ToastService);
+  private roleService = inject(RoleService);
+  private storageService = inject(StorageService);
   private destroyRef = inject(DestroyRef);
 
-  currentUser: AuthUser | null = null;
-  dashboardData: DashboardData | null = null;
-  isLoading: boolean = true;
-  isProfileOpen: boolean = false;
-  myClients: ClientBasicInfo[] = [];
+  private _currentUser = signal<AuthUser | null>(null);
+  get currentUser(): AuthUser | null { return this._currentUser(); }
 
-  allUsers: UserProfile[] = [];
-  chatUsers: UserProfile[] = [];
-  allPlans: Plan[] = [];
-  allSubscriptions: Subscription[] = [];
+  private _dashboardData = signal<DashboardData | null>(null);
+  get dashboardData(): DashboardData | null { return this._dashboardData(); }
 
-  activeTab: TabId = 'home';
-  globalUnreadCount: number = 0;
+  private _isLoading = signal(true);
+  get isLoading(): boolean { return this._isLoading(); }
 
-  proStats: ProStats | null = null;
-  activityFeed: ActivityFeedItem[] = [];
+  private _isProfileOpen = signal(false);
+  get isProfileOpen(): boolean { return this._isProfileOpen(); }
 
-  isPopupOpen: boolean = false;
-  popupTitle: string = '';
-  popupMessage: string = '';
+  private _myClients = signal<ClientBasicInfo[]>([]);
+  get myClients(): ClientBasicInfo[] { return this._myClients(); }
+
+  private _allUsers = signal<UserProfile[]>([]);
+  get allUsers(): UserProfile[] { return this._allUsers(); }
+
+  private _chatUsers = signal<UserProfile[]>([]);
+  get chatUsers(): UserProfile[] { return this._chatUsers(); }
+
+  private _allPlans = signal<Plan[]>([]);
+  get allPlans(): Plan[] { return this._allPlans(); }
+
+  private _allSubscriptions = signal<Subscription[]>([]);
+  get allSubscriptions(): Subscription[] { return this._allSubscriptions(); }
+
+  private _activeTab = signal<TabId>('home');
+  get activeTab(): TabId { return this._activeTab(); }
+
+  private _globalUnreadCount = signal(0);
+  get globalUnreadCount(): number { return this._globalUnreadCount(); }
+
+  private _proStats = signal<ProStats | null>(null);
+  get proStats(): ProStats | null { return this._proStats(); }
+
+  private _activityFeed = signal<ActivityFeedItem[]>([]);
+  get activityFeed(): ActivityFeedItem[] { return this._activityFeed(); }
+
+  private _weekDays = signal<Date[]>([]);
+  get weekDays(): Date[] { return this._weekDays(); }
+
+  private _showCancelBookingModal = signal(false);
+  get showCancelBookingModal(): boolean { return this._showCancelBookingModal(); }
+
+  private _isPopupOpen = signal(false);
+  get isPopupOpen(): boolean { return this._isPopupOpen(); }
+
+  private _popupTitle = signal('');
+  get popupTitle(): string { return this._popupTitle(); }
+
+  private _popupMessage = signal('');
+  get popupMessage(): string { return this._popupMessage(); }
+
+  // Internal flags — not in template, stay plain boolean
+  private usersLoaded = false;
+  private plansLoaded = false;
+  private subsLoaded = false;
+
 
   calendarState$ = this.dashboardFacade.calendarState$;
   bookingState$ = this.dashboardFacade.bookingState$;
 
   currentWeekStart: Date = new Date();
-  weekDays: Date[] = [];
-
   visibleDayCount: number = 7;
   dayOffset: number = 0;
 
-
-
-  isProfileEditOpen: boolean = false;
-  isSavingProfile: boolean = false;
-  profileEditData: ProfileEditData = {
-    firstName: '',
-    lastName: '',
-    password: '',
-    profilePicture: ''
-  };
-
   openPopup(title: string, message: string): void {
-    this.popupTitle = title;
-    this.popupMessage = message;
-    this.isPopupOpen = true;
+    this._popupTitle.set(title);
+    this._popupMessage.set(message);
+    this._isPopupOpen.set(true);
   }
 
   closePopup(): void {
-    this.isPopupOpen = false;
+    this._isPopupOpen.set(false);
   }
 
   showPopupMessage(title: string, message: string, type: 'success' | 'error' | 'warning' = 'success'): void {
@@ -155,47 +189,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-  openProfileEditModal(): void {
-    this.profileEditData = {
-      firstName: this.profile?.firstName || '',
-      lastName: this.profile?.lastName || '',
-      password: '',
-      profilePicture: this.currentUser?.profilePicture || ''
-    };
-    this.isProfileEditOpen = true;
-  }
-
-  closeProfileEditModal(): void {
-    this.isProfileEditOpen = false;
-  }
-
-  saveProfileChanges(): void {
-    if (!this.currentUser) return;
-    this.isSavingProfile = true;
-
-    this.userService.updateProfile(this.profileEditData)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: () => {
-          this.isSavingProfile = false;
-          this.closeProfileEditModal();
-          this.toast.success('Successo', 'Profilo aggiornato con successo.');
-
-          if (this.currentUser) {
-            this.currentUser.profilePicture = this.profileEditData.profilePicture;
-            localStorage.setItem('user', JSON.stringify(this.currentUser));
-          }
-
-          this.loadDashboardData();
-        },
-        error: (err: HttpErrorResponse) => {
-          this.isSavingProfile = false;
-          const apiError = err.error as ApiErrorResponse;
-          this.toast.error('Errore', apiError?.message || 'Impossibile aggiornare il profilo.');
-          console.error(err);
-        }
-      });
-  }
+  openProfileEditModal(): void { this.profileModal.open(); }
+  closeProfileEditModal(): void { this.profileModal.close(); }
 
   contactAdmin(): void {
     this.closeProfile();
@@ -220,28 +215,27 @@ export class DashboardComponent implements OnInit, OnDestroy {
         error: (err: HttpErrorResponse) => {
           const apiError = err.error as ApiErrorResponse;
           this.toast.error('Errore', apiError?.message || "Impossibile recuperare il contatto di supporto.");
-          console.error(err);
         }
       });
   }
 
   ngOnInit(): void {
-    const userString = localStorage.getItem('user');
-    if (userString) {
-      this.currentUser = JSON.parse(userString);
+    const savedUser = this.storageService.get<AuthUser>('user');
+    if (savedUser) {
+      this._currentUser.set(savedUser);
       this.initWeek();
       this.updateVisibleDays();
       this.loadDashboardData();
 
-      if (this.currentUser) {
-         this.chatService.init(this.currentUser.id, this.currentUser.email);
+      const user = this._currentUser();
+      if (user) {
+        this.chatService.init(user.id, user.email);
       }
 
       this.chatService.unreadCount$
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(count => {
-          this.globalUnreadCount = count;
-          this.cdr.detectChanges();
+          this._globalUnreadCount.set(count);
         });
 
       this.dashboardFacade.actionSuccess$
@@ -261,7 +255,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   @HostListener('window:resize')
   onResize(): void {
     this.updateVisibleDays();
-    this.cdr.detectChanges();
   }
 
   updateVisibleDays(): void {
@@ -278,7 +271,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   loadDashboardData(): void {
     if (this.isAdmin() || this.isModerator() || this.isInsuranceManager()) {
-      this.loadAdminInsuranceData();
+      this.loadAdminHomeData();
       return;
     }
 
@@ -286,7 +279,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     this.userService.getDashboard().pipe(
       switchMap(data => {
-        this.dashboardData = data;
+        this._dashboardData.set(data);
         if (this.isProfessional()) {
           return this.userService.getMyClients();
         }
@@ -296,106 +289,102 @@ export class DashboardComponent implements OnInit, OnDestroy {
     ).subscribe({
       next: (clients) => {
         if (this.isProfessional()) {
-          this.myClients = Array.isArray(clients) ? clients : [];
+          this._myClients.set(Array.isArray(clients) ? clients : []);
           this.loadProStats();
         }
         this.loadActivityFeed();
-        this.isLoading = false;
-        this.cdr.detectChanges();
+        this._isLoading.set(false);
       },
-      error: (err: HttpErrorResponse) => {
-        console.error('Errore nel caricamento della dashboard', err);
-        this.isLoading = false;
-        this.cdr.detectChanges();
+      error: () => {
+        this._isLoading.set(false);
       }
     });
   }
 
-  private loadAdminInsuranceData(): void {
+  private buildUsersObservable(): Observable<{ allUsers: UserProfile[]; chatUsers: UserProfile[] }> {
     if (this.isModerator()) {
-      forkJoin({
-        users: this.userService.getUsersByMode('moderator').pipe(
-          switchMap(users => {
-            if (!users) return of({ allUsers: [], chatUsers: [] });
-            return this.userService.getModeratorChatContacts().pipe(
-              catchError(() => of([])),
-              switchMap(contacts => {
-                const allU = users || [];
-                const cont = contacts || [];
-                const manageableUsers = [...allU, ...cont];
-                return this.userService.getAdmin().pipe(
-                  catchError(() => of(null)),
-                  switchMap(adminUser => {
-                    const merged = [...manageableUsers, adminUser as unknown as UserProfile].filter((u, index, arr) =>
-                      u && typeof u.id !== 'undefined' && arr.findIndex(x => x?.id === u.id) === index
-                    );
-                    return of({ allUsers: allU, chatUsers: merged });
-                  })
-                );
-              })
-            );
-          }),
-          catchError(() => of({ allUsers: [], chatUsers: [] }))
-        ),
-        plans: this.planService.getPlans().pipe(
-          catchError(() => of([]))
-        ),
-        subs: this.subscriptionService.getAllSubscriptionsByMode('moderator').pipe(
-          catchError(() => of([]))
-        )
-      })
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (result) => {
-          this.allUsers = result.users.allUsers;
-          this.chatUsers = result.users.chatUsers;
-          this.allPlans = Array.isArray(result.plans) ? result.plans : [];
-          this.allSubscriptions = result.subs || [];
-          this.isLoading = false;
-          this.cdr.detectChanges();
-        }
-      });
-      return;
+      return this.userService.getUsersByMode('moderator').pipe(
+        switchMap(users => {
+          if (!users) return of({ allUsers: [], chatUsers: [] });
+          return this.userService.getModeratorChatContacts().pipe(
+            catchError(() => of([])),
+            switchMap(contacts => {
+              const allU = users || [];
+              const cont = contacts || [];
+              const manageableUsers = [...allU, ...cont];
+              return this.userService.getAdmin().pipe(
+                catchError(() => of(null)),
+                map(adminUser => {
+                  const merged = [...manageableUsers, adminUser as unknown as UserProfile].filter((u, index, arr) =>
+                    u && typeof u.id !== 'undefined' && arr.findIndex(x => x?.id === u.id) === index
+                  );
+                  return { allUsers: allU, chatUsers: merged };
+                })
+              );
+            })
+          );
+        }),
+        catchError(() => of({ allUsers: [], chatUsers: [] }))
+      );
     }
 
     if (this.isInsuranceManager()) {
-      forkJoin({
-        users: this.userService.getInsuranceUsers().pipe(catchError(() => of([]))),
-        subs: this.subscriptionService.getInsuranceSubscriptions().pipe(catchError(() => of([])))
-      })
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (result) => {
-          this.allUsers = result.users || [];
-          this.chatUsers = [...this.allUsers];
-          this.allSubscriptions = result.subs || [];
-          this.isLoading = false;
-          this.cdr.detectChanges();
-        }
-      });
-      return;
+      return this.userService.getInsuranceUsers().pipe(
+        catchError(() => of([])),
+        map(users => ({ allUsers: users || [], chatUsers: [...(users || [])] }))
+      );
     }
 
+    return this.userService.getAllUsers().pipe(
+      catchError(() => of([])),
+      map(users => ({ allUsers: users || [], chatUsers: [...(users || [])] }))
+    );
+  }
+
+  private buildSubsObservable(): Observable<Subscription[]> {
+    if (this.isModerator()) {
+      return this.subscriptionService.getAllSubscriptionsByMode('moderator').pipe(catchError(() => of([])));
+    }
+    if (this.isInsuranceManager()) {
+      return this.subscriptionService.getInsuranceSubscriptions().pipe(catchError(() => of([])));
+    }
+    return this.subscriptionService.getAllSubscriptions().pipe(catchError(() => of([])));
+  }
+
+  private loadAdminHomeData(): void {
     forkJoin({
-      users: this.userService.getAllUsers().pipe(catchError(() => of([]))),
-      plans: this.planService.getPlans().pipe(catchError(() => of([]))),
-      subs: this.subscriptionService.getAllSubscriptions().pipe(catchError(() => of([])))
+      users: this.buildUsersObservable(),
+      subs: this.buildSubsObservable()
     })
     .pipe(takeUntilDestroyed(this.destroyRef))
     .subscribe({
       next: (result) => {
-        this.allUsers = result.users || [];
-        this.chatUsers = [...this.allUsers];
-        this.allPlans = result.plans || [];
-        this.allSubscriptions = result.subs || [];
-        this.isLoading = false;
-        this.cdr.detectChanges();
+        this._allUsers.set(result.users.allUsers);
+        this._chatUsers.set(result.users.chatUsers);
+        this._allSubscriptions.set(result.subs);
+        this.usersLoaded = true;
+        this.subsLoaded = true;
+        this._isLoading.set(false);
       }
     });
   }
 
+  private loadAdminPlans(): void {
+    if (this.plansLoaded || this.isInsuranceManager()) return;
+    this.planService.getPlans()
+      .pipe(catchError(() => of([])), takeUntilDestroyed(this.destroyRef))
+      .subscribe(plans => {
+        this._allPlans.set(plans || []);
+        this.plansLoaded = true;
+      });
+  }
+
   reloadAdminData(): void {
-    this.loadAdminInsuranceData();
+    this.usersLoaded = false;
+    this.plansLoaded = false;
+    this.subsLoaded = false;
+    this.loadAdminHomeData();
+    this.loadAdminPlans();
   }
 
   private loadProStats(): void {
@@ -404,8 +393,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (stats) => {
-          this.proStats = stats;
-          this.cdr.detectChanges();
+          this._proStats.set(stats);
         },
         error: () => { }
       });
@@ -416,8 +404,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (feed) => {
-          this.activityFeed = feed || [];
-          this.cdr.detectChanges();
+          this._activityFeed.set(feed || []);
         },
         error: () => { }
       });
@@ -425,7 +412,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   onPullRefresh(): void {
     if (this.isAdmin() || this.isModerator() || this.isInsuranceManager()) {
-      this.loadAdminInsuranceData();
+      this.reloadAdminData();
     } else {
       this.loadDashboardData();
     }
@@ -436,21 +423,22 @@ export class DashboardComponent implements OnInit, OnDestroy {
   get professionals(): ProfessionalSummary[] { return this.dashboardData?.followingProfessionals ?? []; }
   get bookings(): Booking[] { return this.dashboardData?.upcomingBookings ?? []; }
 
-  isClient(): boolean { return this.currentUser?.role === UserRole.CLIENT; }
-  isProfessional(): boolean {
-    const r = this.currentUser?.role;
-    return r === UserRole.PERSONAL_TRAINER || r === UserRole.NUTRITIONIST;
-  }
-  isAdmin(): boolean { return this.currentUser?.role === UserRole.ADMIN; }
-  isModerator(): boolean { return this.currentUser?.role === UserRole.MODERATOR; }
-  isInsuranceManager(): boolean { return this.currentUser?.role === UserRole.INSURANCE_MANAGER; }
+  isClient(): boolean { return this.roleService.isClient(this.currentUser); }
+  isProfessional(): boolean { return this.roleService.isProfessional(this.currentUser); }
+  isAdmin(): boolean { return this.roleService.isAdmin(this.currentUser); }
+  isModerator(): boolean { return this.roleService.isModerator(this.currentUser); }
+  isInsuranceManager(): boolean { return this.roleService.isInsuranceManager(this.currentUser); }
 
   setTab(tab: TabId | string): void {
-    this.activeTab = tab as TabId;
+    this._activeTab.set(tab as TabId);
     if (tab === 'chat') {
-      this.globalUnreadCount = 0;
+      this._globalUnreadCount.set(0);
     }
-    this.cdr.detectChanges();
+    if (this.isAdmin() || this.isModerator()) {
+      if ((tab === 'admin-users' || tab === 'admin-plans') && !this.plansLoaded) {
+        this.loadAdminPlans();
+      }
+    }
   }
 
   initWeek(): void {
@@ -465,13 +453,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   buildWeekDays(): void {
-    this.weekDays = [];
+    const days: Date[] = [];
     const count = this.visibleDayCount || 7;
     for (let i = 0; i < count; i++) {
       const d = new Date(this.currentWeekStart);
       d.setDate(this.currentWeekStart.getDate() + this.dayOffset + i);
-      this.weekDays.push(d);
+      days.push(d);
     }
+    this._weekDays.set(days);
   }
 
   isFullHour(slot: string): boolean { return this.availabilityService.isFullHour(slot); }
@@ -495,8 +484,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
       acc + this.bookings.filter(b => b.date === this.formatDate(day)).length, 0);
   }
 
-  toggleProfile(): void { this.isProfileOpen = !this.isProfileOpen; }
-  closeProfile(): void { this.isProfileOpen = false; }
+  toggleProfile(): void { this._isProfileOpen.update(v => !v); }
+  closeProfile(): void { this._isProfileOpen.set(false); }
 
   getInitials(): string {
     const f = (this.currentUser?.firstName ?? '').charAt(0);
@@ -516,11 +505,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   onSubscriptionActivated(sub: Subscription): void {
-    if (this.dashboardData) {
-      this.dashboardData = { ...this.dashboardData, subscription: sub };
-    }
+    this._dashboardData.update(d => d ? { ...d, subscription: sub } : null);
     this.toast.success('Abbonamento attivato', `Il piano "${sub.planName}" è ora attivo.`);
-    this.cdr.detectChanges();
   }
 
   closeAvailability(): void {
@@ -646,21 +632,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
     return diffHours >= 24;
   }
 
-  showCancelBookingModal: boolean = false;
-
   openCancelBookingModal(): void {
-    this.showCancelBookingModal = true;
+    this._showCancelBookingModal.set(true);
   }
 
   closeCancelBookingModal(): void {
-    this.showCancelBookingModal = false;
+    this._showCancelBookingModal.set(false);
   }
 
   cancelCurrentBooking(): void {
     if (!this.selectedCallBooking || !this.currentUser) return;
-    this.showCancelBookingModal = false;
+    this._showCancelBookingModal.set(false);
 
-    this.isLoading = true;
+    this._isLoading.set(true);
     this.availabilityService.cancelBooking(this.selectedCallBooking.id)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
@@ -670,7 +654,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
           this.loadDashboardData();
         },
         error: (err: HttpErrorResponse) => {
-          this.isLoading = false;
+          this._isLoading.set(false);
           const apiError = err.error as ApiErrorResponse;
           this.toast.error('Errore', apiError?.message || 'Impossibile annullare la prenotazione in questo momento.');
         }
@@ -680,7 +664,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   getTotalUnread(): number {
     return this.globalUnreadCount;
   }
-
 
   logout(): void {
     this.authService.logout();

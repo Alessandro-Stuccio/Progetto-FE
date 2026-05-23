@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { DocumentService } from '../../../../core/services/document.service';
+import { ClientBasicInfo, AuthUser } from '../../../../shared/models/dashboard.model';
 
 @Component({
   selector: 'app-clients-tab',
@@ -16,8 +17,8 @@ export class ClientsTabComponent {
   private cdr = inject(ChangeDetectorRef);
   private sanitizer = inject(DomSanitizer);
 
-  @Input() myClients: any[] = [];
-  @Input() currentUser: any;
+  @Input() myClients: ClientBasicInfo[] = [];
+  @Input() currentUser: AuthUser | null = null;
   @Output() showPopup = new EventEmitter<{title: string, message: string, type: 'success' | 'error' | 'warning'}>();
 
   selectedClient: any = null;

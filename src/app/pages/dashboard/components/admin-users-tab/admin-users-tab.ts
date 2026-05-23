@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { UserService } from '../../../../core/services/user.service';
 import { SubscriptionService } from '../../../../core/services/subscription.service';
-import { ManagedUserPayload } from '../../../../shared/models/dashboard.model';
+import { ManagedUserPayload, UserProfile, Plan, Subscription, AuthUser } from '../../../../shared/models/dashboard.model';
 import { ToastService } from '../../../../core/services/toast.service';
 
 @Component({
@@ -20,11 +20,11 @@ export class AdminUsersTabComponent {
   private toast = inject(ToastService);
   private fb = inject(FormBuilder);
 
-  @Input() allUsers: any[] = [];
-  @Input() allPlans: any[] = [];
-  @Input() allSubscriptions: any[] = [];
+  @Input() allUsers: UserProfile[] = [];
+  @Input() allPlans: Plan[] = [];
+  @Input() allSubscriptions: Subscription[] = [];
   @Input() mode: 'admin' | 'moderator' = 'admin';
-  @Input() currentUser: any = null;
+  @Input() currentUser: AuthUser | null = null;
   @Output() usersChanged = new EventEmitter<void>();
 
   searchQuery: string = '';
@@ -249,9 +249,6 @@ export class AdminUsersTabComponent {
     this.selectedUserInfo = user;
     // Utilizziamo == invece di === per gestire eventuali mismatch tra stringa e numero (Long di Java)
     this.selectedSubscription = (this.allSubscriptions || []).find(s => s.userId == user.id && s.active);
-    console.log('Opening Info Modal for user:', user.email, 'ID:', user.id);
-    console.log('Active subscriptions count:', (this.allSubscriptions || []).length);
-    console.log('Matched subscription:', this.selectedSubscription);
     this.showInfoModal = true;
   }
 

@@ -124,6 +124,11 @@ export interface Subscription {
   isActive?: boolean;
   remainingPtCredits: number;
   remainingNutritionistCredits: number;
+  /** Campi aggiuntivi da endpoint admin/insurance */
+  monthlyPrice?: number;
+  currentCreditsPT?: number;
+  currentCreditsNutri?: number;
+  userId?: number;
 }
 
 /** Piano di abbonamento (dedotto da admin-plans-tab e backend). */
@@ -153,6 +158,10 @@ export interface ProfessionalSummary {
   profilePicture?: string;
   /** Bio del professionista (esteso dal frontend). */
   professionalBio?: string;
+  /** Campi aggiuntivi usati in chat-tab per costruire i contatti chat */
+  firstName?: string;
+  lastName?: string;
+  email?: string;
 }
 
 // ─────────────────────────────────────────────────────────────

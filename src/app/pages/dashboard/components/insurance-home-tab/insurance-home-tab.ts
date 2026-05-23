@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { DocumentService } from '../../../../core/services/document.service';
+import { AuthUser, Subscription, UserProfile } from '../../../../shared/models/dashboard.model';
 
 @Component({
   selector: 'app-insurance-home-tab',
@@ -16,9 +17,9 @@ export class InsuranceHomeTabComponent {
   private cdr = inject(ChangeDetectorRef);
   private sanitizer = inject(DomSanitizer);
 
-  @Input() currentUser: any;
-  @Input() allSubscriptions: any[] = [];
-  @Input() allUsers: any[] = [];
+  @Input() currentUser: AuthUser | null = null;
+  @Input() allSubscriptions: Subscription[] = [];
+  @Input() allUsers: UserProfile[] = [];
 
   searchQuery: string = '';
   selectedClient: any = null;

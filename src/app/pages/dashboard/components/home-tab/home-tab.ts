@@ -3,7 +3,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PlanService } from '../../../../core/services/plan.service';
 import { SubscriptionService, PaymentFrequency } from '../../../../core/services/subscription.service';
-import { Plan, Subscription } from '../../../../shared/models/dashboard.model';
+import {
+  Plan, Subscription, DashboardData, AuthUser, UserProfile,
+  Booking, ClientBasicInfo, ProfessionalSummary, ProStats, ActivityFeedItem
+} from '../../../../shared/models/dashboard.model';
 
 @Component({
   selector: 'app-home-tab',
@@ -17,22 +20,25 @@ export class HomeTabComponent implements OnInit {
   private subscriptionService = inject(SubscriptionService);
 
   @Input() isLoading: boolean = true;
-  @Input() dashboardData: any = null;
-  @Input() currentUser: any;
-  @Input() profile: any;
+  @Input() dashboardData: DashboardData | null = null;
+
+  private _currentUser: AuthUser | null = null;
+  @Input() set currentUser(value: AuthUser | null) { this._currentUser = value; }
+  get currentUser(): AuthUser { return this._currentUser!; }
+  @Input() profile: UserProfile | undefined;
   @Input() subscription: Subscription | null = null;
-  @Input() bookings: any[] = [];
-  @Input() myClients: any[] = [];
-  @Input() professionals: any[] = [];
+  @Input() bookings: Booking[] = [];
+  @Input() myClients: ClientBasicInfo[] = [];
+  @Input() professionals: ProfessionalSummary[] = [];
   @Input() isProfessional: boolean = false;
   @Input() isClient: boolean = false;
   @Input() weekBookingsCount: number = 0;
 
   // ── Statistiche professionista ──
-  @Input() proStats: any = null;
+  @Input() proStats: ProStats | null = null;
 
   // ── Cronologia attività ──
-  @Input() activityFeed: any[] = [];
+  @Input() activityFeed: ActivityFeedItem[] = [];
 
   // ── Subscription activation ──
   plans: Plan[] = [];

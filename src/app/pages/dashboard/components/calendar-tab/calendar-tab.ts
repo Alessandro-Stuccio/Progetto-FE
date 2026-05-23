@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter, HostListener, ChangeDetectorRef, inject, OnInit, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Booking } from '../../../../shared/models/dashboard.model';
 
 @Component({
   selector: 'app-calendar-tab',
@@ -12,7 +13,7 @@ import { CommonModule } from '@angular/common';
 export class CalendarTabComponent implements OnInit {
   private cdr = inject(ChangeDetectorRef);
 
-  @Input() bookings: any[] = [];
+  @Input() bookings: Booking[] = [];
   @Input() isProfessional: boolean = false;
   @Input() isClient: boolean = false;
   @Input() isLoading: boolean = false;

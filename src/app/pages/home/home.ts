@@ -5,101 +5,108 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 import { AuthService } from '../../core/services/auth.service';
 import { PlanService } from '../../core/services/plan.service';
 import { JobApplicationService } from '../../core/services/job-application.service';
-import { FooterComponent } from '../../shared/components/layout/footer/footer';
 
 @Component({
     selector: 'app-home',
     standalone: true,
-    imports: [CommonModule, RouterModule, ReactiveFormsModule, FooterComponent],
+    imports: [CommonModule, RouterModule, ReactiveFormsModule],
     templateUrl: './home.html',
     styleUrls: ['./home.css']
 })
 export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
+
+    // ── Plans (from backend) ──
     semestralePlans: any[] = [];
     annualePlans: any[] = [];
-    isAnnual: boolean = false;
-    isMobileMenuOpen: boolean = false;
-    isNavScrolled: boolean = false;
-    showBackToTop: boolean = false;
+    isAnnual = false;
 
-    @ViewChild('carouselVideo') carouselVideoRef?: ElementRef<HTMLVideoElement>;
-    @ViewChild('heroVideo') heroVideoRef?: ElementRef<HTMLVideoElement>;
-    @ViewChild('progressBar') progressBarRef?: ElementRef<HTMLDivElement>;
+    // ── Intro ──
+    showIntro = true;
+    introExiting = false;
 
-    carouselVideos = [
-        { key: 'dashboard', title: 'Dashboard', src: 'https://res.cloudinary.com/dpgixeqq0/video/upload/v1774348830/dashboard_d9kgl5.mp4', mobileSrc: 'https://res.cloudinary.com/dpgixeqq0/video/upload/v1774348533/dashboard_rbs4pz.mp4' },
-        { key: 'calendario', title: 'Calendario', src: 'https://res.cloudinary.com/dpgixeqq0/video/upload/v1774348830/calendario_axbrqh.mp4', mobileSrc: 'https://res.cloudinary.com/dpgixeqq0/video/upload/v1774348532/chat_rfr9oh.mp4' },
-        { key: 'prenotazione', title: 'Prenotazione', src: 'https://res.cloudinary.com/dpgixeqq0/video/upload/v1774348830/prenotazione_hqiaw1.mp4', mobileSrc: 'https://res.cloudinary.com/dpgixeqq0/video/upload/v1774348534/prenotazione_eq54m3.mp4' },
-        { key: 'chat', title: 'Chat', src: 'https://res.cloudinary.com/dpgixeqq0/video/upload/v1774348830/chat_godpbw.mp4', mobileSrc: 'https://res.cloudinary.com/dpgixeqq0/video/upload/v1774348532/chat_rfr9oh.mp4' },
-        { key: 'scheda', title: 'Scheda', src: 'https://res.cloudinary.com/dpgixeqq0/video/upload/v1774348836/scheda_mgbfxb.mp4', mobileSrc: 'https://res.cloudinary.com/dpgixeqq0/video/upload/v1774348534/scheda_sr3hsi.mp4' }
-    ];
-    currentCarouselVideoIndex: number = 0;
-    videoProgress: number = 0;
-    isCarouselPlaying: boolean = false;
+    // ── Nav ──
+    isMobileMenuOpen = false;
+    navScrolled = false;
+    navAtDark = true;
 
-    getVideoSrc(video: any): string {
-        // Su mobile (< 768px) usa la variante verticale 9:16 — vedi mobileSrc nell'array.
-        // TODO: i mobileSrc attuali sono ancora ripresi orizzontali. Sostituire con video verticali
-        //       (ripresi da telefono in formato 9:16) quando disponibili da Cloudinary.
-        return window.innerWidth < 768 ? video.mobileSrc : video.src;
-    }
-    private readonly maxCarouselAutoplayRetries = 6;
-    private carouselSectionObserver!: IntersectionObserver;
-    private hasCarouselStarted: boolean = false;
-    private lastIsMobile: boolean = window.innerWidth < 768;
+    // ── Hero parallax + scroll fade ──
+    mouseX = 0;
+    mouseY = 0;
+    heroFade = 1;
+    heroTranslateY = 0;
 
-    @HostListener('window:resize')
-    onResize(): void {
-        const isMobileObj = window.innerWidth < 768;
-        if (this.lastIsMobile !== isMobileObj) {
-            this.lastIsMobile = isMobileObj;
-            if (this.hasCarouselStarted) {
-                this.playCurrentCarouselVideo();
-            }
-        }
-    }
+    // ── Manifesto sticky ──
+    manifestoProgress = 0;
 
-    // FAQ
-    openFaqIndex: number = -1;
-    faqItems = [
-        {
-            question: 'Come funziona il sistema di crediti per le sessioni?',
-            answer: 'Ogni piano include un numero mensile di crediti per sessioni con Personal Trainer e Nutrizionista. I crediti si rinnovano ogni mese e puoi prenotare le sessioni direttamente dalla piattaforma in base alla tua disponibilità.'
-        },
-        {
-            question: 'Posso cambiare piano in qualsiasi momento?',
-            answer: 'Sì, puoi effettuare l\'upgrade o il downgrade del tuo piano in qualsiasi momento. La differenza di prezzo verrà calcolata in modo proporzionale al periodo rimanente del tuo abbonamento attuale.'
-        },
-        {
-            question: 'Come vengono personalizzati gli allenamenti?',
-            answer: 'Il tuo Personal Trainer analizzerà il tuo livello di partenza, i tuoi obiettivi e la tua disponibilità per creare un programma totalmente su misura. Il piano viene aggiornato mensilmente in base ai tuoi progressi reali.'
-        },
-        {
-            question: 'Il piano alimentare tiene conto di intolleranze e preferenze?',
-            answer: 'Assolutamente sì. Il nostro Nutrizionista crea piani alimentari personalizzati che rispettano intolleranze, allergie, preferenze alimentari e il tuo stile di vita, garantendo sempre un approccio sostenibile.'
-        },
-        {
-            question: 'Cosa include la polizza assicurativa sportiva?',
-            answer: 'Ogni membro Kore è coperto da una polizza assicurativa sportiva che protegge durante l\'attività fisica. La copertura è inclusa in tutti i piani senza costi aggiuntivi.'
-        },
-        {
-            question: 'Posso cambiare Personal Trainer o Nutrizionista durante l\'abbonamento?',
-            answer: 'Sì. Se senti che il rapporto non funziona, puoi richiedere la riassegnazione contattando il supporto. La continuità è importante, ma il fit umano lo è di più: vogliamo che tu sia in mani giuste.'
-        },
-        {
-            question: 'Come funziona la cancellazione di una sessione prenotata?',
-            answer: 'Puoi cancellare una sessione fino a 24 ore prima dell\'orario previsto: il credito ti viene restituito automaticamente. Sotto le 24 ore lo slot si libera ma il credito viene consumato — è una tutela per il professionista che ti ha riservato il tempo.'
-        }
-    ];
+    // ── How It Works sticky ──
+    hiwActiveIdx = 0;
 
-    // Form candidatura
+    // ── App Showcase sticky ──
+    appActiveIdx = 0;
+
+    // ── FAQ ──
+    openFaqIndex = -1;
+
+    // ── Job application ──
     applicationForm!: FormGroup;
     selectedFile: File | null = null;
-    fileError: string = '';
-    isSubmitting: boolean = false;
-    submitSuccess: boolean = false;
-    submitError: string = '';
-    isDragging: boolean = false;
+    fileError = '';
+    isSubmitting = false;
+    submitSuccess = false;
+    submitError = '';
+    isDragging = false;
+
+    readonly hiwScenes = [
+        {
+            num: '01', label: 'Inizio', title: 'Analisi e pianificazione',
+            desc: 'Il tuo PT e il tuo nutrizionista analizzano il punto di partenza e definiscono insieme gli obiettivi a breve e lungo termine.',
+            features: ['Anamnesi completa e test di partenza', 'Obiettivi misurabili a 90 giorni', 'Setup operativo del tuo team in 48 ore'],
+            glyphLabel: 'Pianificazione', meta: 'Setup iniziale in 48 ore'
+        },
+        {
+            num: '02', label: 'Costanza', title: 'Azione e progresso',
+            desc: 'Sessioni 1-to-1 con i tuoi professionisti, online o in presenza. Gli stessi che ti conoscono, ogni settimana.',
+            features: ['Sessioni 1-to-1 in app o di persona', 'Scheda aggiornata ogni settimana', 'Chat diretta con il tuo team'],
+            glyphLabel: 'In sessione', meta: 'Sessioni 1-to-1 settimanali'
+        },
+        {
+            num: '03', label: 'Risultato', title: 'Feedback continuo',
+            desc: 'Carichi, alimentazione e protocolli aggiornati sui tuoi progressi reali — non su un programma generico.',
+            features: ["Report mensile dei progressi reali", "Aggiustamenti sul carico e sull'alimentazione", 'Risultati che durano oltre il piano'],
+            glyphLabel: 'Risultati', meta: 'Update settimanale dei protocolli'
+        }
+    ];
+
+    readonly appFeatures = [
+        { eyebrow: 'Calendario', title: 'Prenota le sessioni in due tap', desc: 'Calendario condiviso con il tuo PT e nutrizionista. Cambi orario quando vuoi, senza chiamate o messaggi.' },
+        { eyebrow: 'Chat', title: 'Il tuo team a portata di messaggio', desc: "Comunicazione diretta dentro l'app. Niente WhatsApp, niente strumenti esterni, niente messaggi persi." },
+        { eyebrow: 'Progressi', title: 'I tuoi numeri, sempre con te', desc: 'Crediti rimanenti, scheda allenamento, alimentazione. Tutto sincronizzato e aggiornato in tempo reale.' }
+    ];
+
+    readonly testimonials = [
+        { stars: 5, text: 'Il mio PT mi conosce davvero. Non sono un numero su una lista — è la prima volta che mi capita.', name: 'Marco F.', meta: 'Cliente da 8 mesi' },
+        { stars: 5, text: 'La differenza si è vista già nel primo mese. Programma su misura, niente cose copiate da internet.', name: 'Sofia R.', meta: 'Cliente da 4 mesi' },
+        { stars: 5, text: 'Finalmente un posto dove PT e nutrizionista parlano davvero tra loro. Cambia tutto.', name: 'Alessandro M.', meta: 'Cliente da 1 anno' },
+        { stars: 5, text: "L'app è super semplice. E la polizza è davvero inclusa — verificato dopo una distorsione.", name: 'Giulia T.', meta: 'Cliente da 6 mesi' },
+        { stars: 5, text: 'Risultati reali, accompagnamento vero. Non ho mai trovato un servizio così completo.', name: 'Luca B.', meta: 'Cliente da 7 mesi' },
+        { stars: 5, text: 'Nessun trucco, nessuna promessa esagerata. Solo professionisti veri che lavorano per te.', name: 'Elena C.', meta: 'Cliente da 3 mesi' }
+    ];
+
+    readonly faqItems = [
+        { q: 'Posso scegliere il mio Personal Trainer e Nutrizionista?', a: 'Sì, durante la registrazione scegli tu i tuoi professionisti tra quelli certificati disponibili. Li avrai sempre tu, per tutto il percorso.' },
+        { q: 'Le sessioni sono online o in presenza?', a: 'Entrambe. Ogni professionista offre sessioni online e, a seconda della disponibilità e della città, anche in presenza.' },
+        { q: 'La polizza assicurativa è davvero inclusa?', a: 'Sì, ogni piano include una polizza sportiva attiva dal primo giorno. Zero costi extra, zero burocrazia.' },
+        { q: 'Come funzionano i crediti sessione?', a: 'I crediti si rinnovano ogni mese. Se un mese non li utilizzi tutti, rimangono disponibili fino alla scadenza del tuo abbonamento.' },
+        { q: 'Posso cambiare professionista?', a: 'Sì, se per qualsiasi motivo vuoi cambiare il tuo PT o Nutrizionista, contatta il nostro team e gestiamo noi il trasferimento senza costi aggiuntivi.' },
+        { q: "Posso disdire l'abbonamento?", a: "Il contratto ha la durata del piano scelto (6 o 12 mesi). In caso di necessità documentata, contattaci e valutiamo insieme le opzioni disponibili." }
+    ];
+
+    readonly planFeats = ['Scheda allenamento mensile', 'Piano alimentare personalizzato', 'Chat con i professionisti', 'Prenotazione sessioni in app', 'Polizza assicurativa sportiva'];
+
+    readonly bentoOffsets = [-22, 14, -10, 18, -16, 12, -8];
+
+    @ViewChild('manifestoSection') manifestoSectionRef!: ElementRef;
+    @ViewChild('bentoSection') bentoSectionRef!: ElementRef;
 
     private authService = inject(AuthService);
     private planService = inject(PlanService);
@@ -113,9 +120,35 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     private revealObserver!: IntersectionObserver;
     private counterObserver!: IntersectionObserver;
     private scrollListener!: () => void;
+    private introTimer1?: ReturnType<typeof setTimeout>;
+    private introTimer2?: ReturnType<typeof setTimeout>;
+    private scrollRaf?: number;
+    private mouseRaf?: number;
+    private hiwInterval?: ReturnType<typeof setInterval>;
+    private appInterval?: ReturnType<typeof setInterval>;
 
-    get displayedPlans() {
+    get displayedPlans(): any[] {
         return this.isAnnual ? this.annualePlans : this.semestralePlans;
+    }
+
+    get doubledTestimonials() {
+        return [...this.testimonials, ...this.testimonials];
+    }
+
+    isFeaturedPlan(plan: any): boolean {
+        return plan.monthlyCreditsPT >= 2;
+    }
+
+    get manifestoScale(): number {
+        return 0.92 + this.manifestoProgress * 0.12;
+    }
+
+    get manifestoOpacity(): number {
+        return 0.85 + this.manifestoProgress * 0.15;
+    }
+
+    starsArray(n: number): number[] {
+        return Array(n).fill(0);
     }
 
     toggleBilling(isAnnual: boolean): void {
@@ -136,34 +169,74 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
         this.openFaqIndex = this.openFaqIndex === index ? -1 : index;
     }
 
+    setHiwIdx(i: number): void {
+        this.hiwActiveIdx = i;
+        clearInterval(this.hiwInterval);
+        this.startHiwAutoAdvance();
+    }
+
+    setAppIdx(i: number): void {
+        this.appActiveIdx = i;
+        clearInterval(this.appInterval);
+        this.startAppAutoAdvance();
+    }
+
+    private startHiwAutoAdvance(): void {
+        this.hiwInterval = setInterval(() => {
+            this.zone.run(() => {
+                this.hiwActiveIdx = (this.hiwActiveIdx + 1) % this.hiwScenes.length;
+            });
+        }, 3000);
+    }
+
+    private startAppAutoAdvance(): void {
+        this.appInterval = setInterval(() => {
+            this.zone.run(() => {
+                this.appActiveIdx = (this.appActiveIdx + 1) % this.appFeatures.length;
+            });
+        }, 3000);
+    }
+
+    skipIntro(): void {
+        document.body.style.overflow = '';
+        clearTimeout(this.introTimer1);
+        clearTimeout(this.introTimer2);
+        this.showIntro = false;
+    }
+
     ngOnInit(): void {
+        document.body.style.overflow = 'hidden';
+
+        this.introTimer1 = setTimeout(() => {
+            this.zone.run(() => { this.introExiting = true; });
+        }, 2700);
+        this.introTimer2 = setTimeout(() => {
+            this.zone.run(() => {
+                document.body.style.overflow = '';
+                this.showIntro = false;
+            });
+        }, 3350);
 
         this.applicationForm = this.fb.group({
             firstName: ['', Validators.required],
-            lastName: ['', Validators.required],
+            lastName: [''],
             email: ['', [Validators.required, Validators.email]],
             role: ['', Validators.required],
             message: ['', Validators.required]
         });
-
 
         this.planService.getPlans().subscribe({
             next: (res) => {
                 if (res && res.length > 0) {
                     this.semestralePlans = res.filter((p: any) => p.duration === 'SEMESTRALE');
                     this.annualePlans = res.filter((p: any) => p.duration === 'ANNUALE');
-                } else {
-                    this.semestralePlans = [];
-                    this.annualePlans = [];
                 }
                 this.cdr.detectChanges();
                 setTimeout(() => this.observeNewRevealElements(), 0);
             },
-            error: (err) => {
-                console.error("Errore caricamento piani", err);
+            error: () => {
                 this.semestralePlans = [];
                 this.annualePlans = [];
-                this.cdr.detectChanges();
             }
         });
     }
@@ -173,29 +246,52 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
             this.initScrollReveal();
             this.initCounterAnimation();
             this.initScrollEffects();
-
-            setTimeout(() => {
-                if (this.heroVideoRef && this.heroVideoRef.nativeElement) {
-                    this.heroVideoRef.nativeElement.muted = true;
-                    this.heroVideoRef.nativeElement.play().catch(e => console.warn('Hero video autoplay prevented:', e));
-                }
-            }, 50);
         });
-
-        setTimeout(() => this.initCarouselSectionObserver(), 0);
+        this.startHiwAutoAdvance();
+        this.startAppAutoAdvance();
     }
 
     ngOnDestroy(): void {
         if (this.revealObserver) this.revealObserver.disconnect();
         if (this.counterObserver) this.counterObserver.disconnect();
-        if (this.carouselSectionObserver) this.carouselSectionObserver.disconnect();
+        clearTimeout(this.introTimer1);
+        clearTimeout(this.introTimer2);
+        cancelAnimationFrame(this.scrollRaf!);
+        cancelAnimationFrame(this.mouseRaf!);
+        clearInterval(this.hiwInterval);
+        clearInterval(this.appInterval);
+        document.body.style.overflow = '';
+
         const container = this.el.nativeElement.querySelector('.home-page');
         if (container && this.scrollListener) {
             container.removeEventListener('scroll', this.scrollListener);
         }
     }
 
-    // ── Scroll Reveal ──
+    @HostListener('document:mousemove', ['$event'])
+    onMouseMove(e: MouseEvent): void {
+        cancelAnimationFrame(this.mouseRaf!);
+        this.mouseRaf = requestAnimationFrame(() => {
+            const x = (e.clientX / window.innerWidth - 0.5) * 28;
+            const y = (e.clientY / window.innerHeight - 0.5) * 28;
+            this.zone.run(() => {
+                this.mouseX = x;
+                this.mouseY = y;
+            });
+        });
+    }
+
+    getParallaxTransform(k: number): string {
+        return `translate(${this.mouseX * k}px, ${this.mouseY * k}px)`;
+    }
+
+    private getStickyProgress(el: HTMLElement): number {
+        const rect = el.getBoundingClientRect();
+        const total = rect.height - window.innerHeight;
+        const scrolled = -rect.top;
+        return Math.max(0, Math.min(1, scrolled / total));
+    }
+
     private initScrollReveal(): void {
         this.revealObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -204,8 +300,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
                     this.revealObserver.unobserve(entry.target);
                 }
             });
-        }, { threshold: 0.15 });
-
+        }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
         this.observeNewRevealElements();
     }
 
@@ -215,7 +310,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
         elements.forEach((el: HTMLElement) => this.revealObserver.observe(el));
     }
 
-    // ── Counter Animation ──
     private initCounterAnimation(): void {
         this.counterObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -233,173 +327,77 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     private animateCounter(el: HTMLElement): void {
         const target = parseInt(el.getAttribute('data-counter') || '0', 10);
         const suffix = el.getAttribute('data-counter-suffix') || '';
-        const duration = 1500;
+        const duration = 1800;
         const startTime = performance.now();
-
-        const step = (currentTime: number) => {
-            const elapsed = currentTime - startTime;
-            const progress = Math.min(elapsed / duration, 1);
-            // ease-out cubic
-            const eased = 1 - Math.pow(1 - progress, 3);
-            const current = Math.round(eased * target);
-            el.textContent = current + suffix;
-            if (progress < 1) {
-                requestAnimationFrame(step);
-            }
+        const step = (now: number) => {
+            const t = Math.min((now - startTime) / duration, 1);
+            const v = Math.floor((1 - Math.pow(1 - t, 3)) * target);
+            el.textContent = v + suffix;
+            if (t < 1) requestAnimationFrame(step);
+            else el.textContent = target + suffix;
         };
         requestAnimationFrame(step);
     }
 
-    // ── Scroll Effects (sticky navbar + parallax) ──
     private initScrollEffects(): void {
         const container = this.el.nativeElement.querySelector('.home-page');
         if (!container) return;
 
-        const header = this.el.nativeElement.querySelector('.home-header');
-        const parallaxElements = this.el.nativeElement.querySelectorAll('[data-parallax]');
-
         this.scrollListener = () => {
-            const scrollTop = container.scrollTop;
-            const scrollHeight = container.scrollHeight - container.clientHeight;
-            const scrollPercentage = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+            cancelAnimationFrame(this.scrollRaf!);
+            this.scrollRaf = requestAnimationFrame(() => {
+                const scrollTop = container.scrollTop;
 
-            if (this.progressBarRef) {
-                this.progressBarRef.nativeElement.style.width = scrollPercentage + '%';
-            }
+                // Hero fade
+                const heroH = window.innerHeight * 0.75;
+                const fade = Math.max(0, 1 - scrollTop / heroH);
+                const ty = (1 - fade) * 60;
 
-            // Update angular bindings inside NgZone
-            this.zone.run(() => {
-                this.isNavScrolled = scrollTop > 10;
-                this.showBackToTop = scrollTop > 500;
-            });
+                // Nav: dark zone covers hero (~100vh) + manifesto (~130vh) + dividers (~16vh)
+                const darkZoneH = window.innerHeight * 2.46;
+                const atDark = scrollTop < darkZoneH;
+                const scrolled = scrollTop > 20;
 
-            // Sticky navbar effect
-            if (header) {
-                if (scrollTop > 10) {
-                    header.classList.add('scrolled');
-                } else {
-                    header.classList.remove('scrolled');
+                // Manifesto progress
+                let manifestoP = 0;
+                if (this.manifestoSectionRef?.nativeElement) {
+                    manifestoP = this.getStickyProgress(this.manifestoSectionRef.nativeElement);
                 }
-            }
 
-            // Parallax effect
-            parallaxElements.forEach((el: HTMLElement) => {
-                const speed = parseFloat(el.getAttribute('data-parallax') || '0.3');
-                el.style.transform = `translateY(${scrollTop * speed}px)`;
+                // Bento parallax
+                const bentoCells = this.el.nativeElement.querySelectorAll('.bento-cell');
+                const bentoSec = this.bentoSectionRef?.nativeElement;
+                if (bentoSec && bentoCells.length > 0) {
+                    const rect = bentoSec.getBoundingClientRect();
+                    const vh = window.innerHeight;
+                    const p = Math.max(-0.3, Math.min(1.3, 1 - (rect.top + rect.height * 0.5) / (vh * 0.9)));
+                    bentoCells.forEach((el: HTMLElement, i: number) => {
+                        const off = this.bentoOffsets[i % this.bentoOffsets.length] * p;
+                        el.style.transform = `translateY(${off}px)`;
+                    });
+                }
+
+                this.zone.run(() => {
+                    this.heroFade = fade;
+                    this.heroTranslateY = ty;
+                    this.navAtDark = atDark;
+                    this.navScrolled = scrolled;
+                    this.manifestoProgress = manifestoP;
+                });
             });
         };
 
         container.addEventListener('scroll', this.scrollListener, { passive: true });
+        this.scrollListener();
     }
 
-    scrollToTop(): void {
-        const container = this.el.nativeElement.querySelector('.home-page');
-        if (container) {
-            container.scrollTo({ top: 0, behavior: 'smooth' });
+    goToRegister(planId?: number): void {
+        if (planId) {
+            this.router.navigate(['/register'], { queryParams: { plan: planId } });
+        } else {
+            this.router.navigate(['/register']);
         }
     }
-
-    goToRegister(planId: number): void {
-        this.router.navigate(['/register'], { queryParams: { plan: planId } });
-    }
-
-    // ── Carousel Section Observer ──
-    private initCarouselSectionObserver(): void {
-        const section = this.el.nativeElement.querySelector('.experience-carousel-section');
-        if (!section) return;
-
-        this.carouselSectionObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting && !this.hasCarouselStarted) {
-                    this.hasCarouselStarted = true;
-                    this.zone.run(() => this.playCurrentCarouselVideo());
-                    this.carouselSectionObserver.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.3 });
-
-        this.carouselSectionObserver.observe(section);
-    }
-
-    nextCarouselVideo(): void {
-        this.currentCarouselVideoIndex = (this.currentCarouselVideoIndex + 1) % this.carouselVideos.length;
-        this.videoProgress = 0;
-        this.playCurrentCarouselVideo();
-    }
-
-    previousCarouselVideo(): void {
-        this.currentCarouselVideoIndex =
-            (this.currentCarouselVideoIndex - 1 + this.carouselVideos.length) % this.carouselVideos.length;
-        this.videoProgress = 0;
-        this.playCurrentCarouselVideo();
-    }
-
-    selectCarouselVideo(index: number): void {
-        if (index < 0 || index >= this.carouselVideos.length || index === this.currentCarouselVideoIndex) {
-            return;
-        }
-
-        this.currentCarouselVideoIndex = index;
-        this.videoProgress = 0;
-        this.playCurrentCarouselVideo();
-    }
-
-    onCarouselVideoEnded(): void {
-        this.nextCarouselVideo();
-    }
-
-    onCarouselPlayClick(): void {
-        this.isCarouselPlaying = true;
-        this.playCurrentCarouselVideo();
-    }
-
-    onVideoTimeUpdate(): void {
-        const videoEl = this.carouselVideoRef?.nativeElement;
-        if (!videoEl || !videoEl.duration) return;
-        this.videoProgress = (videoEl.currentTime / videoEl.duration) * 100;
-    }
-
-    getCardTransform(index: number): string {
-        const diff = index - this.currentCarouselVideoIndex;
-        const offset = diff * 8;
-        return `translateX(${offset}px)`;
-    }
-
-    getCardOpacity(index: number): number {
-        const dist = Math.abs(index - this.currentCarouselVideoIndex);
-        if (dist === 0) return 1;
-        return Math.max(0.45, 1 - dist * 0.2);
-    }
-
-    private playCurrentCarouselVideo(retryCount: number = 0): void {
-        this.cdr.detectChanges();
-
-        queueMicrotask(() => {
-            const videoEl = this.carouselVideoRef?.nativeElement;
-            if (!videoEl) {
-                return;
-            }
-
-
-            videoEl.muted = true;
-            videoEl.defaultMuted = true;
-            videoEl.playsInline = true;
-            videoEl.autoplay = true;
-
-            videoEl.load();
-            videoEl.play().then(() => {
-                this.isCarouselPlaying = true;
-                this.cdr.detectChanges();
-            }).catch(() => {
-
-                if (retryCount < this.maxCarouselAutoplayRetries) {
-                    setTimeout(() => this.playCurrentCarouselVideo(retryCount + 1), 180);
-                }
-            });
-        });
-    }
-
-    // ── File handling ──
 
     onFileSelected(event: Event): void {
         const input = event.target as HTMLInputElement;
@@ -444,23 +442,17 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
         this.selectedFile = file;
     }
 
-    // ── Submit ──
-
     submitApplication(): void {
         if (this.applicationForm.invalid) {
             this.applicationForm.markAllAsTouched();
             return;
         }
-
         this.isSubmitting = true;
         this.submitError = '';
 
         const formData = new FormData();
-
-
         const jsonBlob = new Blob([JSON.stringify(this.applicationForm.value)], { type: 'application/json' });
         formData.append('data', jsonBlob);
-
         if (this.selectedFile) {
             formData.append('cv', this.selectedFile);
         }
@@ -471,7 +463,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.submitSuccess = true;
                 this.cdr.detectChanges();
             },
-            error: (err) => {
+            error: (err: any) => {
                 this.isSubmitting = false;
                 this.submitError = err.error?.message || 'Si è verificato un errore. Riprova più tardi.';
                 this.cdr.detectChanges();

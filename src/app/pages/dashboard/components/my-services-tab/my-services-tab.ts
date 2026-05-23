@@ -2,6 +2,7 @@ import { Component, Input, inject, ChangeDetectorRef, OnInit } from '@angular/co
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { DocumentService } from '../../../../core/services/document.service';
+import { AuthUser } from '../../../../shared/models/dashboard.model';
 
 @Component({
   selector: 'app-my-services-tab',
@@ -15,7 +16,7 @@ export class MyServicesTabComponent implements OnInit {
   private cdr = inject(ChangeDetectorRef);
   private sanitizer = inject(DomSanitizer);
 
-  @Input() currentUser: any;
+  @Input() currentUser: AuthUser | null = null;
 
   activeTab: string = 'scheda';
   docs: any[] = [];

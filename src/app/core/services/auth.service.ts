@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { StorageService } from './storage.service';
 
 export interface AuthResponse {
   token: string;
@@ -19,6 +20,7 @@ export interface AuthResponse {
 })
 export class AuthService {
   private http = inject(HttpClient);
+  private storage = inject(StorageService);
 
   private apiUrl = environment.apiUrl;
   private baseUrl = `${this.apiUrl}/api/auth`;
@@ -26,8 +28,8 @@ export class AuthService {
   login(credentials: any): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.baseUrl}/login`, credentials).pipe(
       tap(response => {
-        localStorage.setItem('token', response.token);
-        localStorage.setItem('user', JSON.stringify(response));
+        this.storage.set('token', response.token);
+        this.storage.set('user', response);
       })
     );
   }
@@ -37,12 +39,12 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    return !!localStorage.getItem('token');
+    return !!this.storage.getString('token');
   }
 
   logout(): void {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    this.storage.remove('token');
+    this.storage.remove('user');
   }
 
   forgotPassword(email: string): Observable<any> {

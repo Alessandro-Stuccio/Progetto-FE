@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChatService, ChatMessage, Conversation } from '../../../../core/services/chat.service';
 import { SocketService } from '../../../../core/services/socket.service';
+import { AuthUser, UserProfile, ProfessionalSummary, ClientBasicInfo } from '../../../../shared/models/dashboard.model';
+import { StorageService } from '../../../../core/services/storage.service';
 
 @Component({
   selector: 'app-chat-tab',
@@ -16,18 +18,21 @@ export class ChatTabComponent implements OnInit, OnDestroy {
   private chatService = inject(ChatService);
   private socketService = inject(SocketService);
   private cdr = inject(ChangeDetectorRef);
+  private storageService = inject(StorageService);
 
   @ViewChild('messagesContainer') messagesContainer!: ElementRef;
 
-  @Input() currentUser: any;
+  private _currentUser: AuthUser | null = null;
+  @Input() set currentUser(value: AuthUser | null) { this._currentUser = value; }
+  get currentUser(): AuthUser { return this._currentUser!; }
   @Input() isProfessional: boolean = false;
   @Input() isClient: boolean = false;
   @Input() isInsurance: boolean = false;
   @Input() isAdmin: boolean = false;
   @Input() isModerator: boolean = false;
-  @Input() professionals: any[] = [];
-  @Input() myClients: any[] = [];
-  @Input() allUsers: any[] = [];
+  @Input() professionals: ProfessionalSummary[] = [];
+  @Input() myClients: ClientBasicInfo[] = [];
+  @Input() allUsers: UserProfile[] = [];
 
   chatConversations: Conversation[] = [];
   chatMessages: ChatMessage[] = [];
@@ -48,16 +53,11 @@ export class ChatTabComponent implements OnInit, OnDestroy {
   }
 
   private loadStoredEmptyConvs(): Conversation[] {
-    try {
-      const stored = localStorage.getItem(this.emptyConvsCacheKey);
-      return stored ? JSON.parse(stored) : [];
-    } catch { return []; }
+    return this.storageService.get<Conversation[]>(this.emptyConvsCacheKey) ?? [];
   }
 
   private saveStoredEmptyConvs(convs: Conversation[]): void {
-    try {
-      localStorage.setItem(this.emptyConvsCacheKey, JSON.stringify(convs));
-    } catch { }
+    this.storageService.set(this.emptyConvsCacheKey, convs);
   }
 
   get filteredPickerUsers(): any[] {

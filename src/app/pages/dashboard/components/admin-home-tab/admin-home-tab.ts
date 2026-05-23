@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { AuthUser, UserProfile, Plan, Subscription } from '../../../../shared/models/dashboard.model';
 
 @Component({
   selector: 'app-admin-home-tab',
@@ -9,10 +10,10 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./admin-home-tab.css']
 })
 export class AdminHomeTabComponent {
-  @Input() currentUser: any;
-  @Input() allUsers: any[] = [];
-  @Input() allPlans: any[] = [];
-  @Input() allSubscriptions: any[] = [];
+  @Input() currentUser: AuthUser | null = null;
+  @Input() allUsers: UserProfile[] = [];
+  @Input() allPlans: Plan[] = [];
+  @Input() allSubscriptions: Subscription[] = [];
   @Input() isModerator: boolean = false;
   @Output() setTabEvent = new EventEmitter<string>();
 
