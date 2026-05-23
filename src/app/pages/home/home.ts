@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, AfterViewInit, OnDestroy, ChangeDetectorRef, ElementRef, NgZone, ViewChild, HostListener } from '@angular/core';
+import { Component, inject, OnInit, AfterViewInit, OnDestroy, ChangeDetectorRef, ElementRef, NgZone, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -30,8 +30,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     navAtDark = true;
 
     // ── Hero parallax + scroll fade ──
-    mouseX = 0;
-    mouseY = 0;
     heroFade = 1;
     heroTranslateY = 0;
 
@@ -124,8 +122,11 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     private introTimer2?: ReturnType<typeof setTimeout>;
     private scrollRaf?: number;
     private mouseRaf?: number;
+    private mouseListenerFn?: (e: MouseEvent) => void;
     private hiwInterval?: ReturnType<typeof setInterval>;
     private appInterval?: ReturnType<typeof setInterval>;
+    private hiwObserver?: IntersectionObserver;
+    private appObserver?: IntersectionObserver;
 
     get displayedPlans(): any[] {
         return this.isAnnual ? this.annualePlans : this.semestralePlans;
@@ -208,14 +209,14 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
         document.body.style.overflow = 'hidden';
 
         this.introTimer1 = setTimeout(() => {
-            this.zone.run(() => { this.introExiting = true; });
-        }, 2700);
+            this.introExiting = true;
+            this.cdr.detectChanges();
+        }, 3000);
         this.introTimer2 = setTimeout(() => {
-            this.zone.run(() => {
-                document.body.style.overflow = '';
-                this.showIntro = false;
-            });
-        }, 3350);
+            document.body.style.overflow = '';
+            this.showIntro = false;
+            this.cdr.detectChanges();
+        }, 3750);
 
         this.applicationForm = this.fb.group({
             firstName: ['', Validators.required],
@@ -246,14 +247,16 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
             this.initScrollReveal();
             this.initCounterAnimation();
             this.initScrollEffects();
+            this.initParallax();
+            this.initCarouselObservers();
         });
-        this.startHiwAutoAdvance();
-        this.startAppAutoAdvance();
     }
 
     ngOnDestroy(): void {
         if (this.revealObserver) this.revealObserver.disconnect();
         if (this.counterObserver) this.counterObserver.disconnect();
+        this.hiwObserver?.disconnect();
+        this.appObserver?.disconnect();
         clearTimeout(this.introTimer1);
         clearTimeout(this.introTimer2);
         cancelAnimationFrame(this.scrollRaf!);
@@ -266,23 +269,68 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
         if (container && this.scrollListener) {
             container.removeEventListener('scroll', this.scrollListener);
         }
+        if (this.mouseListenerFn) {
+            document.removeEventListener('mousemove', this.mouseListenerFn);
+        }
     }
 
-    @HostListener('document:mousemove', ['$event'])
-    onMouseMove(e: MouseEvent): void {
-        cancelAnimationFrame(this.mouseRaf!);
-        this.mouseRaf = requestAnimationFrame(() => {
-            const x = (e.clientX / window.innerWidth - 0.5) * 28;
-            const y = (e.clientY / window.innerHeight - 0.5) * 28;
-            this.zone.run(() => {
-                this.mouseX = x;
-                this.mouseY = y;
+    private initParallax(): void {
+        const host = this.el.nativeElement;
+        this.mouseListenerFn = (e: MouseEvent) => {
+            cancelAnimationFrame(this.mouseRaf!);
+            this.mouseRaf = requestAnimationFrame(() => {
+                const x = (e.clientX / window.innerWidth - 0.5) * 28;
+                const y = (e.clientY / window.innerHeight - 0.5) * 28;
+                const heroGrid    = host.querySelector('.hero__grid')      as HTMLElement | null;
+                const heroOrbGold = host.querySelector('.hero__orb--gold') as HTMLElement | null;
+                const heroOrbNavy = host.querySelector('.hero__orb--navy') as HTMLElement | null;
+                const heroGhost   = host.querySelector('.hero__ghost')     as HTMLElement | null;
+                if (heroGrid)    heroGrid.style.transform    = `translate(${x * 0.3}px,${y * 0.3}px)`;
+                if (heroOrbGold) heroOrbGold.style.transform = `translate(${x * 2.2}px,${y * 2.2}px)`;
+                if (heroOrbNavy) heroOrbNavy.style.transform = `translate(${x * -1.4}px,${y * -1.4}px)`;
+                if (heroGhost)   heroGhost.style.transform   = `translate(${x * 0.6}px,${y * 0.6}px)`;
             });
-        });
+        };
+        document.addEventListener('mousemove', this.mouseListenerFn, { passive: true });
     }
 
-    getParallaxTransform(k: number): string {
-        return `translate(${this.mouseX * k}px, ${this.mouseY * k}px)`;
+    private initCarouselObservers(): void {
+        const opts: IntersectionObserverInit = { threshold: 0.25 };
+
+        const hiwSection = this.el.nativeElement.querySelector('.sticky-scene');
+        if (hiwSection) {
+            this.hiwObserver = new IntersectionObserver(([entry]) => {
+                if (entry.isIntersecting) {
+                    if (!this.hiwInterval) this.startHiwAutoAdvance();
+                } else {
+                    clearInterval(this.hiwInterval);
+                    this.hiwInterval = undefined;
+                }
+            }, opts);
+            this.hiwObserver.observe(hiwSection);
+        }
+
+        const appSection = this.el.nativeElement.querySelector('.app-showcase');
+        if (appSection) {
+            this.appObserver = new IntersectionObserver(([entry]) => {
+                if (entry.isIntersecting) {
+                    if (!this.appInterval) this.startAppAutoAdvance();
+                } else {
+                    clearInterval(this.appInterval);
+                    this.appInterval = undefined;
+                }
+            }, opts);
+            this.appObserver.observe(appSection);
+        }
+    }
+
+    scrollToSection(id: string): void {
+        const section   = this.el.nativeElement.querySelector(`#${id}`) as HTMLElement | null;
+        const container = this.el.nativeElement.querySelector('.home-page') as HTMLElement | null;
+        if (section && container) {
+            const top = section.getBoundingClientRect().top + container.scrollTop - 68;
+            container.scrollTo({ top, behavior: 'smooth' });
+        }
     }
 
     private getStickyProgress(el: HTMLElement): number {
@@ -347,15 +395,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
             cancelAnimationFrame(this.scrollRaf!);
             this.scrollRaf = requestAnimationFrame(() => {
                 const scrollTop = container.scrollTop;
-
-                // Hero fade
-                const heroH = window.innerHeight * 0.75;
-                const fade = Math.max(0, 1 - scrollTop / heroH);
-                const ty = (1 - fade) * 60;
-
-                // Nav: dark zone covers hero (~100vh) + manifesto (~130vh) + dividers (~16vh)
-                const darkZoneH = window.innerHeight * 2.46;
-                const atDark = scrollTop < darkZoneH;
                 const scrolled = scrollTop > 20;
 
                 // Manifesto progress
@@ -378,9 +417,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
                 }
 
                 this.zone.run(() => {
-                    this.heroFade = fade;
-                    this.heroTranslateY = ty;
-                    this.navAtDark = atDark;
                     this.navScrolled = scrolled;
                     this.manifestoProgress = manifestoP;
                 });

@@ -17,14 +17,14 @@
   }
 
   <!-- ══ NAVBAR ════════════════════════════════════════════════════════ -->
-  <header class="navbar" [class.navbar--scrolled]="navScrolled" [class.navbar--dark]="navAtDark">
+  <header class="navbar" [class.navbar--scrolled]="navScrolled">
     <div class="container navbar__inner">
       <a routerLink="/" class="navbar__logo">Kore<span class="navbar__dot">.</span></a>
       <nav class="navbar__links" aria-label="Navigazione">
-        <a href="#come-funziona" class="navbar__link">Come funziona</a>
-        <a href="#piani" class="navbar__link">Piani</a>
-        <a href="#app" class="navbar__link">L'app</a>
-        <a href="#faq" class="navbar__link">FAQ</a>
+        <a class="navbar__link" (click)="scrollToSection('come-funziona')">Come funziona</a>
+        <a class="navbar__link" (click)="scrollToSection('piani')">Piani</a>
+        <a class="navbar__link" (click)="scrollToSection('app')">L'app</a>
+        <a class="navbar__link" (click)="scrollToSection('faq')">FAQ</a>
       </nav>
       <div class="navbar__actions">
         <a routerLink="/login" class="navbar__btn-ghost">Accedi</a>
@@ -38,11 +38,11 @@
     </div>
     <div class="navbar__mob" [class.navbar__mob--open]="isMobileMenuOpen" [attr.aria-hidden]="!isMobileMenuOpen">
       <div class="navbar__mob-inner">
-        <a href="#come-funziona" class="navbar__mob-link" (click)="closeMobileMenu()">Come funziona</a>
-        <a href="#piani" class="navbar__mob-link" (click)="closeMobileMenu()">Piani</a>
-        <a href="#professionisti" class="navbar__mob-link" (click)="closeMobileMenu()">Professionisti</a>
-        <a href="#app" class="navbar__mob-link" (click)="closeMobileMenu()">L'app</a>
-        <a href="#faq" class="navbar__mob-link" (click)="closeMobileMenu()">FAQ</a>
+        <a class="navbar__mob-link" (click)="scrollToSection('come-funziona'); closeMobileMenu()">Come funziona</a>
+        <a class="navbar__mob-link" (click)="scrollToSection('piani'); closeMobileMenu()">Piani</a>
+        <a class="navbar__mob-link" (click)="scrollToSection('professionisti'); closeMobileMenu()">Professionisti</a>
+        <a class="navbar__mob-link" (click)="scrollToSection('app'); closeMobileMenu()">L'app</a>
+        <a class="navbar__mob-link" (click)="scrollToSection('faq'); closeMobileMenu()">FAQ</a>
         <div class="navbar__mob-actions">
           <a routerLink="/login" class="btn btn-ghost btn-full" (click)="closeMobileMenu()">Accedi</a>
           <a routerLink="/register" class="btn btn-gold btn-full" (click)="closeMobileMenu()">Inizia ora</a>
@@ -54,15 +54,13 @@
   <!-- ══ HERO — dark cinematic ══════════════════════════════════════════ -->
   <section class="hero hero--dark" id="hero" aria-label="Benvenuto in Kore">
     <div class="hero__bg" aria-hidden="true">
-      <div class="hero__grid" [style.transform]="getParallaxTransform(0.3)"></div>
-      <div class="hero__orb hero__orb--gold parallax-layer" [style.transform]="getParallaxTransform(2.2)"></div>
-      <div class="hero__orb hero__orb--navy parallax-layer" [style.transform]="getParallaxTransform(-1.4)"></div>
+      <div class="hero__grid"></div>
+      <div class="hero__orb hero__orb--gold parallax-layer"></div>
+      <div class="hero__orb hero__orb--navy parallax-layer"></div>
       <div class="hero__grain"></div>
     </div>
 
-    <div class="hero__inner container"
-         [style.opacity]="heroFade"
-         [style.transform]="'translateY(' + heroTranslateY + 'px)'">
+    <div class="hero__inner container">
       <div class="hero__copy">
         <span class="eyebrow hero__eyebrow">personal trainer · nutrizionista · polizza sportiva</span>
         <h1 class="hero__title">
@@ -76,12 +74,12 @@
           <a routerLink="/register" class="btn btn-gold-lg">Scegli il tuo piano
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </a>
-          <a href="#come-funziona" class="btn-ghost-dark-lg">Scopri il metodo</a>
+          <a class="btn-ghost-dark-lg" (click)="scrollToSection('come-funziona')">Scopri il metodo</a>
         </div>
       </div>
 
       <div class="hero__deco" aria-hidden="true">
-        <span class="hero__ghost" [style.transform]="getParallaxTransform(0.6)">KORE</span>
+        <span class="hero__ghost">KORE</span>
         <div class="hero__stat hero__stat--1">
           <span class="hero__stat-num">500+</span>
           <span class="hero__stat-lbl">Clienti attivi</span>
@@ -93,7 +91,7 @@
       </div>
     </div>
 
-    <div class="hero__scroll" aria-hidden="true" [style.opacity]="heroFade">
+    <div class="hero__scroll" aria-hidden="true">
       <div class="hero__scroll-line"></div>
     </div>
   </section>
@@ -661,17 +659,17 @@
         <div class="footer__links">
           <div>
             <div class="footer__col-title">Prodotto</div>
-            <a href="#come-funziona" class="footer__link">Come funziona</a>
-            <a href="#piani" class="footer__link">Piani</a>
-            <a href="#app" class="footer__link">L'app</a>
-            <a href="#perche" class="footer__link">Perché Kore</a>
+            <a class="footer__link" (click)="scrollToSection('come-funziona')">Come funziona</a>
+            <a class="footer__link" (click)="scrollToSection('piani')">Piani</a>
+            <a class="footer__link" (click)="scrollToSection('app')">L'app</a>
+            <a class="footer__link" (click)="scrollToSection('perche')">Perché Kore</a>
           </div>
           <div>
             <div class="footer__col-title">Azienda</div>
-            <a href="#professionisti" class="footer__link">Professionisti</a>
-            <a href="#testimonianze" class="footer__link">Testimonianze</a>
-            <a href="#faq" class="footer__link">FAQ</a>
-            <a href="#lavora-con-noi" class="footer__link">Lavora con noi</a>
+            <a class="footer__link" (click)="scrollToSection('professionisti')">Professionisti</a>
+            <a class="footer__link" (click)="scrollToSection('testimonianze')">Testimonianze</a>
+            <a class="footer__link" (click)="scrollToSection('faq')">FAQ</a>
+            <a class="footer__link" (click)="scrollToSection('lavora-con-noi')">Lavora con noi</a>
           </div>
           <div>
             <div class="footer__col-title">Account</div>
