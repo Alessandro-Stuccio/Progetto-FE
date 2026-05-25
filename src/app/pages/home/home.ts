@@ -105,6 +105,22 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
     @ViewChild('manifestoSection') manifestoSectionRef!: ElementRef;
     @ViewChild('bentoSection') bentoSectionRef!: ElementRef;
+    @ViewChild('carouselVideo') carouselVideoRef?: ElementRef<HTMLVideoElement>;
+
+    // ── Video Carousel ──
+    carouselVideos = [
+        { key: 'dashboard',   title: 'Dashboard',    src: 'https://res.cloudinary.com/dpgixeqq0/video/upload/v1774348830/dashboard_d9kgl5.mp4',    mobileSrc: 'https://res.cloudinary.com/dpgixeqq0/video/upload/v1774348533/dashboard_rbs4pz.mp4' },
+        { key: 'calendario',  title: 'Calendario',   src: 'https://res.cloudinary.com/dpgixeqq0/video/upload/v1774348830/calendario_axbrqh.mp4',   mobileSrc: 'https://res.cloudinary.com/dpgixeqq0/video/upload/v1774348532/chat_rfr9oh.mp4' },
+        { key: 'prenotazione',title: 'Prenotazione', src: 'https://res.cloudinary.com/dpgixeqq0/video/upload/v1774348830/prenotazione_hqiaw1.mp4', mobileSrc: 'https://res.cloudinary.com/dpgixeqq0/video/upload/v1774348534/prenotazione_eq54m3.mp4' },
+        { key: 'chat',        title: 'Chat',         src: 'https://res.cloudinary.com/dpgixeqq0/video/upload/v1774348830/chat_godpbw.mp4',         mobileSrc: 'https://res.cloudinary.com/dpgixeqq0/video/upload/v1774348532/chat_rfr9oh.mp4' },
+        { key: 'scheda',      title: 'Scheda',       src: 'https://res.cloudinary.com/dpgixeqq0/video/upload/v1774348836/scheda_mgbfxb.mp4',       mobileSrc: 'https://res.cloudinary.com/dpgixeqq0/video/upload/v1774348534/scheda_sr3hsi.mp4' }
+    ];
+    currentCarouselVideoIndex = 0;
+    videoProgress = 0;
+    isCarouselPlaying = false;
+    private hasCarouselStarted = false;
+    private carouselSectionObserver!: IntersectionObserver;
+    private readonly maxCarouselAutoplayRetries = 3;
 
     private authService = inject(AuthService);
     private planService = inject(PlanService);
@@ -249,12 +265,14 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
             this.initScrollEffects();
             this.initParallax();
             this.initCarouselObservers();
+            this.initCarouselSectionObserver();
         });
     }
 
     ngOnDestroy(): void {
         if (this.revealObserver) this.revealObserver.disconnect();
         if (this.counterObserver) this.counterObserver.disconnect();
+        if (this.carouselSectionObserver) this.carouselSectionObserver.disconnect();
         this.hiwObserver?.disconnect();
         this.appObserver?.disconnect();
         clearTimeout(this.introTimer1);
@@ -310,7 +328,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
             this.hiwObserver.observe(hiwSection);
         }
 
-        const appSection = this.el.nativeElement.querySelector('.app-showcase');
+        const appSection = this.el.nativeElement.querySelector('.experience-carousel-section');
         if (appSection) {
             this.appObserver = new IntersectionObserver(([entry]) => {
                 if (entry.isIntersecting) {
@@ -476,6 +494,93 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
             return;
         }
         this.selectedFile = file;
+    }
+
+    // ── Video Carousel methods ──────────────────────────────────────────
+
+    getVideoSrc(video: any): string {
+        return window.innerWidth < 768 ? video.mobileSrc : video.src;
+    }
+
+    nextCarouselVideo(): void {
+        this.currentCarouselVideoIndex = (this.currentCarouselVideoIndex + 1) % this.carouselVideos.length;
+        this.videoProgress = 0;
+        this.playCurrentCarouselVideo();
+    }
+
+    previousCarouselVideo(): void {
+        this.currentCarouselVideoIndex = (this.currentCarouselVideoIndex - 1 + this.carouselVideos.length) % this.carouselVideos.length;
+        this.videoProgress = 0;
+        this.playCurrentCarouselVideo();
+    }
+
+    selectCarouselVideo(index: number): void {
+        if (index < 0 || index >= this.carouselVideos.length || index === this.currentCarouselVideoIndex) return;
+        this.currentCarouselVideoIndex = index;
+        this.videoProgress = 0;
+        this.playCurrentCarouselVideo();
+    }
+
+    onCarouselVideoEnded(): void {
+        this.nextCarouselVideo();
+    }
+
+    onCarouselPlayClick(): void {
+        this.isCarouselPlaying = true;
+        this.playCurrentCarouselVideo();
+    }
+
+    onVideoTimeUpdate(): void {
+        const videoEl = this.carouselVideoRef?.nativeElement;
+        if (!videoEl || !videoEl.duration) return;
+        this.videoProgress = (videoEl.currentTime / videoEl.duration) * 100;
+    }
+
+    getCardTransform(index: number): string {
+        const diff = index - this.currentCarouselVideoIndex;
+        return `translateX(${diff * 8}px)`;
+    }
+
+    getCardOpacity(index: number): number {
+        const dist = Math.abs(index - this.currentCarouselVideoIndex);
+        return dist === 0 ? 1 : Math.max(0.45, 1 - dist * 0.2);
+    }
+
+    private initCarouselSectionObserver(): void {
+        const section = this.el.nativeElement.querySelector('.experience-carousel-section');
+        if (!section) return;
+
+        this.carouselSectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !this.hasCarouselStarted) {
+                    this.hasCarouselStarted = true;
+                    this.zone.run(() => this.playCurrentCarouselVideo());
+                    this.carouselSectionObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.3 });
+
+        this.carouselSectionObserver.observe(section);
+    }
+
+    private playCurrentCarouselVideo(retryCount: number = 0): void {
+        this.cdr.detectChanges();
+        queueMicrotask(() => {
+            const videoEl = this.carouselVideoRef?.nativeElement;
+            if (!videoEl) return;
+            videoEl.muted = true;
+            videoEl.defaultMuted = true;
+            videoEl.playsInline = true;
+            videoEl.load();
+            videoEl.play().then(() => {
+                this.isCarouselPlaying = true;
+                this.cdr.detectChanges();
+            }).catch(() => {
+                if (retryCount < this.maxCarouselAutoplayRetries) {
+                    setTimeout(() => this.playCurrentCarouselVideo(retryCount + 1), 180);
+                }
+            });
+        });
     }
 
     submitApplication(): void {

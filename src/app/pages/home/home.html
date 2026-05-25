@@ -96,65 +96,30 @@
     </div>
   </section>
   
-  <!-- ══ HOW IT WORKS — sticky scene ═══════════════════════════════════ -->
-  <section class="sticky-scene" id="come-funziona">
-    <div class="sticky-scene__inner">
-      <div class="scene-grid">
-        <div class="scene-text-stack">
-          @for (s of hiwScenes; track s.num; let i = $index) {
-            <div class="scene-text-item" [class.active]="i === hiwActiveIdx">
-              <div class="scene-num-row">
-                <span class="scene-num">{{ s.num }}</span>
-                <span class="scene-num-label">{{ s.label }}</span>
-              </div>
-              <h3 class="scene-title">{{ s.title }}</h3>
-              <p class="scene-desc">{{ s.desc }}</p>
-              <ul class="scene-features">
-                @for (f of s.features; track f) {
-                  <li class="scene-feature">
-                    <span class="scene-feature-dot" aria-hidden="true">
-                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                    </span>
-                    <span class="scene-feature-text">{{ f }}</span>
-                  </li>
-                }
-              </ul>
-            </div>
-          }
-        </div>
+  <!-- ══ COME FUNZIONA ═════════════════════════════════════════════════ -->
+  <section class="cfs" id="come-funziona">
+    <div class="section-hd" data-reveal>
+      <p class="text-eyebrow">Il metodo</p>
+      <h2 class="section-h2">Tre passi.<br>Un percorso continuo.</h2>
+    </div>
 
-        <div class="scene-visual-stack">
-          @for (s of hiwScenes; track s.num; let i = $index) {
-            <div class="scene-visual-item" [class.active]="i === hiwActiveIdx">
-              <div class="scene-visual-card">
-                <div class="scene-card-top">
-                  <span class="scene-card-badge">Step {{ s.num }}</span>
-                  <div class="scene-card-dots" aria-hidden="true">
-                    @for (d of hiwScenes; track d.num; let di = $index) {
-                      <span class="scene-card-dot" [class.live]="di === i"></span>
-                    }
-                  </div>
-                </div>
-                <span class="scene-visual-glyph">{{ s.num }}</span>
-                <div class="scene-card-bottom">
-                  <span class="scene-card-label">{{ s.glyphLabel }}</span>
-                  <div class="scene-card-meta">
-                    <span class="scene-card-meta-icon">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                    </span>
-                    <span class="scene-card-meta-text">{{ s.meta }}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          }
-        </div>
+    <div class="cfs__grid">
+      <div class="cfs__step" data-reveal>
+        <span class="cfs__num">01</span>
+        <div class="cfs__connector" aria-hidden="true"></div>
+        <h3 class="cfs__title">Analisi e pianificazione</h3>
+        <p class="cfs__desc">Il tuo PT e il tuo nutrizionista — assegnati a te — analizzano il punto di partenza e definiscono insieme gli obiettivi a breve e lungo termine.</p>
       </div>
-
-      <div class="scene-progress" aria-hidden="true">
-        @for (s of hiwScenes; track s.num; let i = $index) {
-          <div class="scene-progress-dot" [class.active]="i === hiwActiveIdx" (click)="setHiwIdx(i)"></div>
-        }
+      <div class="cfs__step" data-reveal>
+        <span class="cfs__num">02</span>
+        <div class="cfs__connector" aria-hidden="true"></div>
+        <h3 class="cfs__title">Azione e costanza</h3>
+        <p class="cfs__desc">Sessioni 1-to-1 prenotabili con i crediti del tuo piano. Online o in presenza, sempre con gli stessi professionisti che ti conoscono.</p>
+      </div>
+      <div class="cfs__step" data-reveal>
+        <span class="cfs__num">03</span>
+        <h3 class="cfs__title">Feedback e risultati</h3>
+        <p class="cfs__desc">Carichi, alimentazione e protocolli aggiornati ogni settimana sui tuoi progressi reali — non su un programma generico scaricato da internet.</p>
       </div>
     </div>
   </section>
@@ -263,111 +228,72 @@
     </div>
   </section>
 
-  <!-- ══ APP SHOWCASE — sticky ════════════════════════════════════════ -->
-  <section class="app-showcase" id="app">
-    <div class="app-showcase__inner">
-      <div class="app-grid">
-        <div class="app-feature-side">
-          <div class="app-feature-stack">
-            @for (f of appFeatures; track f.eyebrow; let i = $index) {
-              <div class="app-feature-item" [class.active]="i === appActiveIdx">
-                <span class="eyebrow app-feature-eyebrow">{{ f.eyebrow }}</span>
-                <h3 class="app-feature-title">{{ f.title }}</h3>
-                <p class="app-feature-desc">{{ f.desc }}</p>
-              </div>
-            }
-          </div>
-          <div class="scene-progress">
-            @for (f of appFeatures; track f.eyebrow; let i = $index) {
-              <div class="scene-progress-dot" [class.active]="i === appActiveIdx" (click)="setAppIdx(i)"></div>
-            }
-          </div>
-        </div>
+  <!-- ══ VIDEO CAROUSEL — L'app ═══════════════════════════════════════ -->
+  <section class="experience-carousel-section" id="app">
+    <div class="section-hd" data-reveal>
+      <p class="text-eyebrow">L'esperienza</p>
+      <h2 class="section-h2">Vivi l'app in anteprima</h2>
+      <p class="section-sub">Dashboard, prenotazioni, chat, scheda, calendario. Tutto in un'unica piattaforma.</p>
+    </div>
 
-        <div class="phone-mockup">
-          <div class="phone-screen">
-            <!-- Screen 0: Calendario -->
-            @if (appActiveIdx === 0) {
-              <div class="phone-screen-content active">
-                <div class="phone-mock-card">
-                  <div class="phone-mock-title">Calendario · Settimana</div>
-                  <div class="phone-mock-sub">3 sessioni prenotate</div>
-                </div>
-                <div class="phone-mock-card" style="border-left: 2px solid var(--gold)">
-                  <div class="phone-mock-title" style="font-size:.7rem">Lun 14 · 18:00</div>
-                  <div class="phone-mock-sub">PT · Marco</div>
-                </div>
-                <div class="phone-mock-card" style="border-left: 2px solid rgba(232,212,160,.5)">
-                  <div class="phone-mock-title" style="font-size:.7rem">Mer 16 · 19:30</div>
-                  <div class="phone-mock-sub">Nutri · Sofia</div>
-                </div>
-                <div class="phone-mock-card" style="border-left: 2px solid var(--gold)">
-                  <div class="phone-mock-title" style="font-size:.7rem">Ven 18 · 17:00</div>
-                  <div class="phone-mock-sub">PT · Marco</div>
-                </div>
-                <span class="phone-mock-pill" style="align-self:flex-start">+ Prenota</span>
-              </div>
-            }
-            <!-- Screen 1: Chat -->
-            @if (appActiveIdx === 1) {
-              <div class="phone-screen-content active">
-                <div class="phone-mock-card">
-                  <div class="phone-mock-title">Chat · Marco (PT)</div>
-                  <div class="phone-mock-sub">Online ora</div>
-                </div>
-                <div class="phone-mock-row" style="align-self:flex-start;max-width:78%">
-                  <div class="phone-mock-avatar">M</div>
-                  <div class="phone-mock-card" style="flex:1;padding:8px 10px">
-                    <div class="phone-mock-msg">Per domani ti aggiorno il carico sulle panche. Va bene?</div>
-                  </div>
-                </div>
-                <div style="align-self:flex-end;max-width:70%">
-                  <div class="phone-mock-card" style="background:rgba(201,169,110,.18);border-color:rgba(201,169,110,.3);padding:8px 10px">
-                    <div class="phone-mock-msg" style="color:rgba(255,255,255,.88)">Perfetto, grazie!</div>
-                  </div>
-                </div>
-                <div class="phone-mock-row" style="align-self:flex-start;max-width:70%">
-                  <div class="phone-mock-avatar">M</div>
-                  <div class="phone-mock-card" style="flex:1;padding:8px 10px">
-                    <div class="phone-mock-msg">Ti mando la scheda aggiornata ✓</div>
-                  </div>
-                </div>
-              </div>
-            }
-            <!-- Screen 2: Progressi -->
-            @if (appActiveIdx === 2) {
-              <div class="phone-screen-content active">
-                <div class="phone-mock-card">
-                  <div class="phone-mock-title">Ciao, Mario</div>
-                  <div class="phone-mock-sub">Piano Plus attivo</div>
-                </div>
-                <div style="display:flex;gap:8px">
-                  <div class="phone-mock-stat" style="flex:1">
-                    <div>
-                      <div class="phone-mock-stat-num">2</div>
-                      <div class="phone-mock-stat-lbl">Crediti PT</div>
-                    </div>
-                  </div>
-                  <div class="phone-mock-stat" style="flex:1">
-                    <div>
-                      <div class="phone-mock-stat-num">1</div>
-                      <div class="phone-mock-stat-lbl">Cr. Nutri</div>
-                    </div>
-                  </div>
-                </div>
-                <div class="phone-mock-card">
-                  <div class="phone-mock-title">Settimana</div>
-                  <div class="phone-mock-sub">3 / 4 obiettivi</div>
-                  <div class="phone-mock-bar"><div class="phone-mock-bar-fill" style="width:75%"></div></div>
-                </div>
-                <div class="phone-mock-card">
-                  <div class="phone-mock-title">Prossimo step</div>
-                  <div class="phone-mock-sub">Aumenta proteine · +15g/die</div>
-                </div>
+    <div class="experience-carousel" data-reveal>
+      <div class="carousel-stories-bar">
+        @for (video of carouselVideos; track video.key; let i = $index) {
+          <div class="stories-segment"
+               [class.completed]="i < currentCarouselVideoIndex"
+               [class.active]="i === currentCarouselVideoIndex"
+               (click)="selectCarouselVideo(i)">
+            <div class="stories-segment-fill"
+                 [style.width.%]="i < currentCarouselVideoIndex ? 100 : (i === currentCarouselVideoIndex ? videoProgress : 0)">
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="carousel-video-wrapper">
+        <video
+          #carouselVideo
+          class="experience-video"
+          muted
+          playsinline
+          preload="none"
+          (ended)="onCarouselVideoEnded()"
+          (timeupdate)="onVideoTimeUpdate()"
+          [attr.aria-label]="'Demo sezione ' + carouselVideos[currentCarouselVideoIndex].title"
+          [src]="getVideoSrc(carouselVideos[currentCarouselVideoIndex])">
+        </video>
+
+        @if (!isCarouselPlaying) {
+          <button
+            type="button"
+            class="carousel-play-overlay"
+            (click)="onCarouselPlayClick()"
+            aria-label="Avvia il video">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+          </button>
+        }
+
+        <div class="carousel-tap-zone prev-zone" (click)="previousCarouselVideo()" aria-label="Video precedente"></div>
+        <div class="carousel-tap-zone next-zone" (click)="nextCarouselVideo()" aria-label="Video successivo"></div>
+      </div>
+
+      <div class="carousel-card-strip">
+        @for (video of carouselVideos; track video.key; let i = $index) {
+          <div class="carousel-card"
+               [class.active]="i === currentCarouselVideoIndex"
+               [style.transform]="getCardTransform(i)"
+               [style.opacity]="getCardOpacity(i)"
+               (click)="selectCarouselVideo(i)">
+            <span class="carousel-card-title">{{ video.title }}</span>
+            @if (i === currentCarouselVideoIndex) {
+              <div class="carousel-card-progress-track">
+                <div class="carousel-card-progress-bar" [style.width.%]="videoProgress"></div>
               </div>
             }
           </div>
-        </div>
+        }
       </div>
     </div>
   </section>
