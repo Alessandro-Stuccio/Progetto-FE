@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, BehaviorSubject, Subject, catchError } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { SocketService, WsIncomingMessage } from './socket.service';
+import { SocketService, WsIncomingMessage, WsStatusUpdate } from './socket.service';
 
 // ── Interfacce DTO ──────────────────────────────────────────
 
@@ -128,6 +128,11 @@ export class ChatService {
       this.unreadCountSubject.next(update.unreadCount);
     });
     this.wsSubscriptions.push(unreadSub);
+
+    const statusSub = this.socketService.statusUpdate$.subscribe(update => {
+      this.updateMessagesStatus(update.chatId, update.status);
+    });
+    this.wsSubscriptions.push(statusSub);
 
 
     this.startGlobalPolling();
@@ -267,6 +272,7 @@ export class ChatService {
         ...updated[idx],
         lastMessage: wsMsg.content,
         lastMessageTime: wsMsg.createdAt,
+        terminated: false,
         unreadCount: (wsMsg.senderId !== currentUserId && this.socketService.currentRoomId !== wsMsg.roomId)
           ? updated[idx].unreadCount + 1
           : updated[idx].unreadCount
@@ -285,6 +291,15 @@ export class ChatService {
       };
       this.conversationsSubject.next([newConv, ...convs]);
     }
+  }
+
+  private updateMessagesStatus(chatId: number, status: 'SENT' | 'DELIVERED' | 'READ'): void {
+    const msgs = this.messagesSubject.value;
+    if (!msgs.some(m => m.chatId === chatId)) return;
+    const order: Record<string, number> = { SENT: 0, DELIVERED: 1, READ: 2 };
+    this.messagesSubject.next(msgs.map(m =>
+      m.chatId === chatId && order[status] > (order[m.status] ?? 0) ? { ...m, status } : m
+    ));
   }
 
   // ══════════════════════════════════════════════════════════════

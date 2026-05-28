@@ -33,6 +33,7 @@ export type TabId =
   | 'admin-users'
   | 'admin-plans'
   | 'admin-stats'
+  | 'admin-documents'
   | 'insurance';
 
 // ─────────────────────────────────────────────────────────────
@@ -84,8 +85,6 @@ export interface UserProfile {
   specialization?: string;
   averageRating?: number;
   activeClientsCount?: number;
-  // Da UserResponseDTO (tabelle admin/moderator) — stessa relazione, case diverso
-  assignedPTName?: string;
   professionalBio?: string;
   createdAt?: string;
 }
@@ -117,17 +116,15 @@ export interface ClientAttentionItem {
 export interface Subscription {
   id: number;
   planName: string;
+  userName?: string;
   startDate: string;
   endDate: string;
   /** `isActive` nel DTO Java; Jackson lo serializza come `active`. */
   active: boolean;
   isActive?: boolean;
-  remainingPtCredits: number;
-  remainingNutritionistCredits: number;
-  /** Campi aggiuntivi da endpoint admin/insurance */
+  currentCreditsPT: number;
+  currentCreditsNutri: number;
   monthlyPrice?: number;
-  currentCreditsPT?: number;
-  currentCreditsNutri?: number;
   userId?: number;
 }
 
@@ -152,6 +149,8 @@ export interface ProfessionalSummary {
   fullName: string;
   averageRating?: number;
   currentActiveClients?: number;
+  /** Jackson serializza `isSoldOut()` come `soldOut` (strips `is` prefix). */
+  soldOut?: boolean;
   isSoldOut?: boolean;
   role: UserRole;
   /** Campo aggiuntivo dal frontend (non nel Java DTO base). */
@@ -290,4 +289,55 @@ export interface ApiErrorResponse {
   message: string;
   path: string;
   validationErrors?: Record<string, string>;
+}
+
+// ─────────────────────────────────────────────────────────────
+// Admin Statistics
+// ─────────────────────────────────────────────────────────────
+
+export interface AdminStatsCredits {
+  ptAvailable: number;
+  ptTotal: number;
+  ptConsumed: number;
+  ptPercentUsed: number;
+  nutriAvailable: number;
+  nutriTotal: number;
+  nutriConsumed: number;
+  nutriPercentUsed: number;
+}
+
+export interface AdminStatsMonthlyUserCount {
+  month: string;
+  year: number;
+  count: number;
+}
+
+export interface AdminStatsPlanPopularity {
+  name: string;
+  activeCount: number;
+  percentage: number;
+  monthlyPrice: number;
+  fullPrice: number;
+}
+
+export interface AdminStatsProfessionalWorkload {
+  name: string;
+  role: string;
+  clientCount: number;
+}
+
+/** Risposta dashboard statistiche admin (da AdminStatsResponse.java). */
+export interface AdminStatsResponse {
+  usersByRole: Record<string, number>;
+  totalUsers: number;
+  usersPerMonth: AdminStatsMonthlyUserCount[];
+  planPopularity: AdminStatsPlanPopularity[];
+  totalActiveSubscriptions: number;
+  totalSubscriptions: number;
+  credits: AdminStatsCredits;
+  monthlyRevenue: number;
+  yearlyRevenue: number;
+  bookingsThisMonth: number;
+  bookingsTotal: number;
+  professionalWorkload: AdminStatsProfessionalWorkload[];
 }

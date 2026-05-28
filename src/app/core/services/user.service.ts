@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 
 import {
@@ -11,7 +12,9 @@ import {
   ProfileEditData,
   ActivityFeedItem,
   UserManagementMode,
-  ManagedUserPayload
+  ManagedUserPayload,
+  AdminStatsResponse,
+  Booking
 } from '../../shared/models/dashboard.model';
 
 @Injectable({
@@ -34,7 +37,7 @@ export class UserService {
   }
 
   getModerator(): Observable<ClientBasicInfo> {
-    return this.http.get<ClientBasicInfo>(`${this.apiUrl}/api/users/moderator`);
+    return this.http.get<ClientBasicInfo>(`${this.apiUrl}/api/chat/moderator`);
   }
 
   getMyClients(): Observable<ClientBasicInfo[]> {
@@ -46,7 +49,7 @@ export class UserService {
   }
 
   getInsuranceUsers(): Observable<UserProfile[]> {
-    return this.http.get<UserProfile[]>(`${this.apiUrl}/api/insurance/users`);
+    return this.http.get<UserProfile[]>(`${this.apiUrl}/api/insurance/clients`);
   }
 
   createUser(data: any): Observable<any> {
@@ -92,10 +95,39 @@ export class UserService {
   }
 
   getActivityFeed(days: number = 14, size: number = 15): Observable<ActivityFeedItem[]> {
-    return this.http.get<ActivityFeedItem[]>(`${this.apiUrl}/api/activity/feed?days=${days}&size=${size}`);
+    return this.http.get<any[]>(`${this.apiUrl}/api/activity/feed?days=${days}&size=${size}`).pipe(
+      map(items => (items || []).map(item => ({
+        type: item.type,
+        text: item.text,
+        timestamp: item.timestamp,
+        icon: item.type === 'BOOKING' ? '📅' : item.type === 'DOCUMENT' ? '📄' : '🔔',
+        timeAgo: this._timeAgo(item.timestamp)
+      } as ActivityFeedItem)))
+    );
   }
 
-  getAdminStats(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/api/admin/stats`);
+  private _timeAgo(timestamp: string): string {
+    if (!timestamp) return '';
+    const diff = Date.now() - new Date(timestamp).getTime();
+    const minutes = Math.floor(diff / 60000);
+    if (minutes < 1) return 'adesso';
+    if (minutes < 60) return `${minutes} min fa`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours} ore fa`;
+    const days = Math.floor(hours / 24);
+    if (days === 1) return 'ieri';
+    return `${days} giorni fa`;
+  }
+
+  getAdminStats(): Observable<AdminStatsResponse> {
+    return this.http.get<AdminStatsResponse>(`${this.apiUrl}/api/admin/stats`);
+  }
+
+  getProfessionalBookings(): Observable<Booking[]> {
+    return this.http.get<Booking[]>(`${this.apiUrl}/api/professional/bookings`);
+  }
+
+  getInsuranceChatContacts(): Observable<UserProfile[]> {
+    return this.http.get<UserProfile[]>(`${this.apiUrl}/api/insurance/chat-contacts`);
   }
 }

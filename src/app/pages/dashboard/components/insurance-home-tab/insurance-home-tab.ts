@@ -28,6 +28,10 @@ export class InsuranceHomeTabComponent {
   isUploading: boolean = false;
   isDragOver: boolean = false;
 
+  editingNotesDocId: number | null = null;
+  editingNotes: string = '';
+  savingNotes: boolean = false;
+
   get isMobile(): boolean {
     return window.innerWidth < 640;
   }
@@ -63,7 +67,8 @@ export class InsuranceHomeTabComponent {
   openClientDocs(sub: any): void {
     this.selectedClient = sub;
     this.docsLoading = true;
-    this.authService.getClientDocumentsByType(sub.userId, 'INSURANCE_POLICE').subscribe({
+    this.editingNotesDocId = null;
+    this.authService.getClientPolicies(sub.userId).subscribe({
       next: (docs) => { this.clientDocs = docs; this.docsLoading = false; this.cdr.detectChanges(); },
       error: () => { this.clientDocs = []; this.docsLoading = false; this.cdr.detectChanges(); }
     });
@@ -73,7 +78,7 @@ export class InsuranceHomeTabComponent {
 
   viewPdf(doc: any): void {
     this.pdfLoading = true; this.pdfName = doc.fileName; this.pdfOpen = true; this.cdr.detectChanges();
-    this.authService.downloadDocument(doc.id).subscribe({
+    this.authService.downloadPolicy(doc.id).subscribe({
       next: (blob) => {
         if (this.blobUrl) URL.revokeObjectURL(this.blobUrl);
         this.blobUrl = URL.createObjectURL(blob);
@@ -140,10 +145,10 @@ export class InsuranceHomeTabComponent {
   private uploadFile(file: File): void {
     if (!this.selectedClient || !this.currentUser) return;
     this.isUploading = true;
-    this.authService.uploadDocument(file, this.selectedClient.userId, 'INSURANCE_POLICE').subscribe({
+    this.authService.uploadInsurancePolicy(file, this.selectedClient.userId).subscribe({
       next: () => {
         this.isUploading = false;
-        this.openClientDocs(this.selectedClient); // ricarica docs
+        this.openClientDocs(this.selectedClient);
       },
       error: () => { this.isUploading = false; }
     });
@@ -151,9 +156,34 @@ export class InsuranceHomeTabComponent {
 
   deleteDoc(doc: any): void {
     if (!confirm('Eliminare questo documento?')) return;
-    this.authService.deleteDocument(doc.id).subscribe({
+    this.authService.deletePolicy(doc.id).subscribe({
       next: () => { this.clientDocs = this.clientDocs.filter(d => d.id !== doc.id); this.cdr.detectChanges(); },
       error: () => { }
+    });
+  }
+
+  startEditNotes(doc: any): void {
+    this.editingNotesDocId = doc.id;
+    this.editingNotes = doc.notes || '';
+  }
+
+  cancelEditNotes(): void {
+    this.editingNotesDocId = null;
+    this.editingNotes = '';
+  }
+
+  saveNotes(doc: any): void {
+    if (this.savingNotes) return;
+    this.savingNotes = true;
+    this.authService.updatePolicyNotes(doc.id, this.editingNotes).subscribe({
+      next: (res) => {
+        doc.notes = this.editingNotes;
+        this.editingNotesDocId = null;
+        this.editingNotes = '';
+        this.savingNotes = false;
+        this.cdr.detectChanges();
+      },
+      error: () => { this.savingNotes = false; }
     });
   }
 

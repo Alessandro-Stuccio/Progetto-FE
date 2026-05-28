@@ -31,6 +31,7 @@ import { InsuranceHomeTabComponent } from './components/insurance-home-tab/insur
 import { MyProfessionalsTabComponent } from './components/my-professionals-tab/my-professionals-tab';
 import { MyServicesTabComponent } from './components/my-services-tab/my-services-tab';
 import { AdminStatsTabComponent } from './components/admin-stats-tab/admin-stats-tab';
+import { AdminDocumentsTabComponent } from './components/admin-documents-tab/admin-documents-tab';
 import { ToastComponent } from '../../shared/components/ui/toast/toast';
 import { PullToRefreshDirective } from '../../shared/directives/pull-to-refresh.directive';
 import { ProfileEditModalComponent } from '../../shared/components/ui/profile-edit-modal/profile-edit-modal';
@@ -60,7 +61,7 @@ import {
     CommonModule, FormsModule, HomeTabComponent, CalendarTabComponent, ChatTabComponent,
     ClientsTabComponent, AdminHomeTabComponent, AdminUsersTabComponent, AdminPlansTabComponent,
     InsuranceHomeTabComponent, MyProfessionalsTabComponent, MyServicesTabComponent,
-    AdminStatsTabComponent, ToastComponent, PullToRefreshDirective,
+    AdminStatsTabComponent, AdminDocumentsTabComponent, ToastComponent, PullToRefreshDirective,
     ProfileEditModalComponent
   ],
   templateUrl: './dashboard.html',
@@ -141,6 +142,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private _activityFeed = signal<ActivityFeedItem[]>([]);
   get activityFeed(): ActivityFeedItem[] { return this._activityFeed(); }
 
+  private _professionalBookings = signal<Booking[]>([]);
+  get professionalBookings(): Booking[] { return this._professionalBookings(); }
+
   private _weekDays = signal<Date[]>([]);
   get weekDays(): Date[] { return this._weekDays(); }
 
@@ -203,10 +207,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (moderatorUser) => {
           if (this.activeTab === 'chat' && this._chatTabComponent) {
-            const wasExisting = this._chatTabComponent.startConversationWith(moderatorUser);
-            if (wasExisting) {
-              this.toast.success('Chat Supporto', 'Hai già una conversazione aperta con il supporto. Ti abbiamo reindirizzato alla chat esistente.');
-            }
+            this._chatTabComponent.startConversationWith(moderatorUser);
+            this._chatTabComponent.reopenTerminatedConversation();
           } else {
             this.dashboardFacade.setPendingChatUser(moderatorUser as UserProfile);
             this.setTab('chat');
@@ -277,21 +279,27 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     if (!this.currentUser) return;
 
+    if (this.isProfessional()) {
+      this.userService.getMyClients()
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (clients) => {
+            this._myClients.set(Array.isArray(clients) ? clients : []);
+            this.loadProStats();
+            this.loadActivityFeed();
+            this.loadProfessionalBookings();
+            this._isLoading.set(false);
+          },
+          error: () => this._isLoading.set(false)
+        });
+      return;
+    }
+
     this.userService.getDashboard().pipe(
-      switchMap(data => {
-        this._dashboardData.set(data);
-        if (this.isProfessional()) {
-          return this.userService.getMyClients();
-        }
-        return of([] as ClientBasicInfo[]);
-      }),
       takeUntilDestroyed(this.destroyRef)
     ).subscribe({
-      next: (clients) => {
-        if (this.isProfessional()) {
-          this._myClients.set(Array.isArray(clients) ? clients : []);
-          this.loadProStats();
-        }
+      next: (data) => {
+        this._dashboardData.set(data);
         this.loadActivityFeed();
         this._isLoading.set(false);
       },
@@ -331,7 +339,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     if (this.isInsuranceManager()) {
       return this.userService.getInsuranceUsers().pipe(
         catchError(() => of([])),
-        map(users => ({ allUsers: users || [], chatUsers: [...(users || [])] }))
+        switchMap(clients => this.userService.getInsuranceChatContacts().pipe(
+          catchError(() => of([])),
+          map(contacts => ({ allUsers: clients || [], chatUsers: contacts || [] }))
+        ))
       );
     }
 
@@ -410,6 +421,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
       });
   }
 
+  private loadProfessionalBookings(): void {
+    if (!this.isProfessional()) return;
+    this.userService.getProfessionalBookings()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (bookings) => {
+          this._professionalBookings.set(Array.isArray(bookings) ? bookings : []);
+        },
+        error: () => { }
+      });
+  }
+
   onPullRefresh(): void {
     if (this.isAdmin() || this.isModerator() || this.isInsuranceManager()) {
       this.reloadAdminData();
@@ -421,7 +444,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
   get profile(): UserProfile | undefined { return this.dashboardData?.profile; }
   get subscription(): Subscription | null | undefined { return this.dashboardData?.subscription; }
   get professionals(): ProfessionalSummary[] { return this.dashboardData?.followingProfessionals ?? []; }
-  get bookings(): Booking[] { return this.dashboardData?.upcomingBookings ?? []; }
+  get bookings(): Booking[] {
+    return this.isProfessional()
+      ? this._professionalBookings()
+      : this.dashboardData?.upcomingBookings ?? [];
+  }
 
   isClient(): boolean { return this.roleService.isClient(this.currentUser); }
   isProfessional(): boolean { return this.roleService.isProfessional(this.currentUser); }

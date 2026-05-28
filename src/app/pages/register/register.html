@@ -240,9 +240,9 @@
                 *ngFor="let pt of filteredPts"
                 class="rp-prof"
                 [class.rp-prof--selected]="registerForm.value.selectedPtId === pt.id"
-                [class.rp-prof--full]="pt.isSoldOut"
-                (click)="!pt.isSoldOut && selectPt(pt.id)"
-                [attr.aria-disabled]="pt.isSoldOut"
+                [class.rp-prof--full]="pt.soldOut"
+                (click)="!pt.soldOut && selectPt(pt.id)"
+                [attr.aria-disabled]="pt.soldOut"
                 role="button">
                 <div class="rp-prof__avatar">
                   <img *ngIf="pt.profilePicture" [src]="pt.profilePicture" [alt]="pt.fullName" class="rp-prof__img">
@@ -252,7 +252,7 @@
                   <span class="rp-prof__name">{{ pt.fullName }}</span>
                   <span class="rp-prof__rating">★ {{ pt.averageRating | number:'1.1-1' }}/5</span>
                 </div>
-                <span *ngIf="pt.isSoldOut" class="rp-prof__sold">Completo</span>
+                <span *ngIf="pt.soldOut" class="rp-prof__sold">Completo</span>
                 <div *ngIf="registerForm.value.selectedPtId === pt.id" class="rp-prof__tick" aria-hidden="true">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                 </div>
@@ -281,9 +281,9 @@
                 *ngFor="let nut of filteredNuts"
                 class="rp-prof"
                 [class.rp-prof--selected]="registerForm.value.selectedNutritionistId === nut.id"
-                [class.rp-prof--full]="nut.isSoldOut"
-                (click)="!nut.isSoldOut && selectNut(nut.id)"
-                [attr.aria-disabled]="nut.isSoldOut"
+                [class.rp-prof--full]="nut.soldOut"
+                (click)="!nut.soldOut && selectNut(nut.id)"
+                [attr.aria-disabled]="nut.soldOut"
                 role="button">
                 <div class="rp-prof__avatar">
                   <img *ngIf="nut.profilePicture" [src]="nut.profilePicture" [alt]="nut.fullName" class="rp-prof__img">
@@ -293,7 +293,7 @@
                   <span class="rp-prof__name">{{ nut.fullName }}</span>
                   <span class="rp-prof__rating">★ {{ nut.averageRating | number:'1.1-1' }}/5</span>
                 </div>
-                <span *ngIf="nut.isSoldOut" class="rp-prof__sold">Completo</span>
+                <span *ngIf="nut.soldOut" class="rp-prof__sold">Completo</span>
                 <div *ngIf="registerForm.value.selectedNutritionistId === nut.id" class="rp-prof__tick" aria-hidden="true">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                 </div>

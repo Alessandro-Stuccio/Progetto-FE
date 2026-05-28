@@ -111,6 +111,16 @@
         </svg>
         Statistiche
       </button>
+      <button class="desktop-nav-item px-3.5 py-[0.4rem] rounded-lg text-[0.82rem] font-semibold
+                       transition-all whitespace-nowrap" *ngIf="isAdmin() || isModerator()" [class.active]="activeTab === 'admin-documents'"
+        (click)="setTab('admin-documents')">
+        <svg class="w-[16px] h-[16px] mr-1.5 inline-block align-[-2px]" fill="none" stroke="currentColor"
+          viewBox="0 0 24 24" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+        Documenti
+      </button>
       <!-- INSURANCE: nessun tab separato Polizze, tutto in Home -->
     </nav>
 
@@ -132,13 +142,13 @@
                        bg-[var(--bg-subtle)] border border-[var(--border-medium)] rounded-[6px]
                        text-[var(--text-secondary)] text-[0.8rem] font-semibold transition-all">
             <span>💪</span>
-            <span class="tabular-nums">{{ subscription?.remainingPtCredits }}</span>
+            <span class="tabular-nums">{{ subscription?.currentCreditsPT }}</span>
           </div>
           <div class="topbar-credit-badge flex items-center gap-1 px-2 py-[0.2rem]
                        bg-[var(--bg-subtle)] border border-[var(--border-medium)] rounded-[6px]
                        text-[var(--text-secondary)] text-[0.8rem] font-semibold transition-all">
             <span>🥗</span>
-            <span class="tabular-nums">{{ subscription?.remainingNutritionistCredits }}</span>
+            <span class="tabular-nums">{{ subscription?.currentCreditsNutri }}</span>
           </div>
         </div>
       </div>
@@ -274,6 +284,13 @@
     </app-admin-stats-tab>
 
     <!-- ┌──────────────────────────────────────────────────────┐
+         │  TAB: ADMIN DOCUMENTI (admin e moderatori)           │
+         └──────────────────────────────────────────────────────┘ -->
+    <app-admin-documents-tab class="flex-1 overflow-y-auto" *ngIf="activeTab === 'admin-documents' && (isAdmin() || isModerator())"
+      [allUsers]="allUsers" [currentUser]="currentUser">
+    </app-admin-documents-tab>
+
+    <!-- ┌──────────────────────────────────────────────────────┐
          │  TAB: INSURANCE HOME (solo insurance manager)        │
          └──────────────────────────────────────────────────────┘ -->
     <app-insurance-home-tab class="flex-1 overflow-y-auto"
@@ -394,6 +411,17 @@
         </path>
       </svg>
       <span class="text-[0.62rem] font-semibold tracking-[0.02em]">Stats</span>
+    </button>
+
+    <!-- Tab: Documenti (admin e moderatori) -->
+    <button class="bottom-nav-item flex-1 flex flex-col items-center justify-center gap-[3px] py-2 transition-all"
+      *ngIf="isAdmin() || isModerator()" [class.active]="activeTab === 'admin-documents'" (click)="setTab('admin-documents')">
+      <svg class="w-[22px] h-[22px]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+        </path>
+      </svg>
+      <span class="text-[0.62rem] font-semibold tracking-[0.02em]">Documenti</span>
     </button>
 
   </nav>
@@ -546,7 +574,7 @@
         <div class="skeleton-line wide h-[13px] rounded-md bg-[var(--color-border-subtle)] w-4/5"></div>
         <div class="skeleton-line narrow h-[13px] rounded-md bg-[var(--color-border-subtle)] w-[48%]"></div>
       </ng-container>
-      <ng-container *ngIf="!isLoading && dashboardData">
+      <ng-container *ngIf="!isLoading && (dashboardData || currentUser)">
         <div class="panel-avatar-wrap relative mb-1">
           <img *ngIf="currentUser?.profilePicture" [src]="currentUser?.profilePicture" alt="Avatar"
             class="w-[82px] h-[82px] rounded-full object-cover border-2 border-[var(--color-accent-gold)] relative z-[1]">
@@ -557,10 +585,10 @@
           <div class="panel-avatar-ring absolute rounded-full border border-[var(--color-accent-gold)]/28" style="inset: -6px"></div>
         </div>
         <div class="font-['Clash_Display'] text-[1.35rem] font-medium text-[var(--text-primary)] text-center tracking-[-0.01em]">{{
-          profile?.firstName }} {{ profile?.lastName }}</div>
+          (profile?.firstName || currentUser?.firstName) }} {{ (profile?.lastName || currentUser?.lastName) }}</div>
         <div
           class="bg-[var(--color-primary-navy)]/8 border border-[var(--color-primary-navy)]/20 text-[var(--color-primary-navy)] px-4 py-[0.22rem] rounded-full text-[0.68rem] font-semibold tracking-[0.12em] uppercase">
-          {{ profile?.role }}</div>
+          {{ (profile?.role || currentUser?.role) }}</div>
 
         <button *ngIf="isProfessional()" class="btn-availability" (click)="openAvailability()">
           <span class="btn-availability-icon">📅</span> Gestisci Disponibilità <span
@@ -577,7 +605,7 @@
             <div class="flex flex-col gap-[0.08rem] min-w-0">
               <span class="text-[0.60rem] text-[var(--color-text-muted)] uppercase tracking-[0.10em] font-semibold">Email</span>
               <span class="text-[0.84rem] text-[var(--color-text-main)] overflow-hidden text-ellipsis whitespace-nowrap">{{
-                profile?.email }}</span>
+                (profile?.email || currentUser?.email) }}</span>
             </div>
           </div>
 
@@ -620,13 +648,13 @@
                 class="credit-item flex-1 bg-white border border-[var(--color-border-subtle)] rounded-lg p-2 flex flex-col items-center gap-[0.2rem]">
                 <span class="text-base">💪</span><span
                   class="text-[0.58rem] text-[var(--color-text-muted)] uppercase tracking-[0.08em]">PT</span>
-                <span class="text-[1.1rem] font-bold text-[#b8922a]">{{ subscription.remainingPtCredits }}</span>
+                <span class="text-[1.1rem] font-bold text-[#b8922a]">{{ subscription.currentCreditsPT }}</span>
               </div>
               <div
                 class="credit-item flex-1 bg-white border border-[var(--color-border-subtle)] rounded-lg p-2 flex flex-col items-center gap-[0.2rem]">
                 <span class="text-base">🥗</span><span
                   class="text-[0.58rem] text-[var(--color-text-muted)] uppercase tracking-[0.08em]">Nutrizione</span>
-                <span class="text-[1.1rem] font-bold text-[#b8922a]">{{ subscription.remainingNutritionistCredits
+                <span class="text-[1.1rem] font-bold text-[#b8922a]">{{ subscription.currentCreditsNutri
                   }}</span>
               </div>
             </div>

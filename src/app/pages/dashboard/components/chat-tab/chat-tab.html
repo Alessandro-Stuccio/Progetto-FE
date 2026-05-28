@@ -116,7 +116,7 @@
           <div class="text-[0.65rem] text-[var(--color-text-muted)]">{{ getRoleLabel(activeConversation.otherUserRole) }}</div>
         </div>
         <button
-          *ngIf="!isModerator && activeConversation?.chatId && isConversationWithModerator() && !activeConversation?.terminated"
+          *ngIf="isModerator && activeConversation?.chatId && !activeConversation?.terminated"
           (click)="closeActiveChat()"
           [disabled]="closingChat"
           class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border border-red-200 text-red-500 bg-red-50 hover:bg-red-100 hover:border-red-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0">
@@ -209,12 +209,27 @@
           </button>
         </div>
       </div>
-      <div *ngIf="activeConversation?.terminated"
+      <!-- Banner terminata: moderatore vede solo info statica -->
+      <div *ngIf="activeConversation?.terminated && isModerator"
         class="flex-shrink-0 flex items-center justify-center gap-2 px-4 py-3 bg-gray-50 border-t border-[var(--color-border-subtle)]">
         <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"/>
         </svg>
         <span class="text-xs text-gray-400">Questa conversazione è stata terminata.</span>
+      </div>
+      <!-- Banner terminata: altri utenti possono riaprire con nuova richiesta -->
+      <div *ngIf="activeConversation?.terminated && !isModerator"
+        class="flex-shrink-0 flex items-center justify-between gap-2 px-4 py-3 bg-gray-50 border-t border-[var(--color-border-subtle)]">
+        <div class="flex items-center gap-2">
+          <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"/>
+          </svg>
+          <span class="text-xs text-gray-400">Conversazione terminata.</span>
+        </div>
+        <button (click)="reopenTerminatedConversation()"
+          class="text-xs font-semibold text-[var(--color-primary-navy)] border border-[var(--color-primary-navy)]/30 rounded-lg px-3 py-1.5 hover:bg-[var(--color-primary-navy)]/5 transition-colors flex-shrink-0">
+          Nuova richiesta
+        </button>
       </div>
     </ng-container>
   </div>

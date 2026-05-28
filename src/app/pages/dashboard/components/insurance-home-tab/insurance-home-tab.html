@@ -143,32 +143,65 @@
       <div class="w-6 h-6 border-2 border-[var(--color-primary-navy)] border-t-transparent rounded-full animate-spin"></div>
     </div>
     <div class="flex flex-col gap-2.5" *ngIf="!docsLoading && clientDocs.length > 0">
-      <div class="flex items-center gap-3 bg-white rounded-xl border border-[var(--color-border-subtle)] p-4 shadow-sm"
+      <div class="flex flex-col bg-white rounded-xl border border-[var(--color-border-subtle)] shadow-sm overflow-hidden"
         *ngFor="let doc of clientDocs">
-        <div class="w-10 h-10 rounded-lg bg-[var(--color-bg-subtle)] flex items-center justify-center text-[1.1rem] flex-shrink-0">📋
+        <!-- Riga principale -->
+        <div class="flex items-center gap-3 p-4">
+          <div class="w-10 h-10 rounded-lg bg-[var(--color-bg-subtle)] flex items-center justify-center text-[1.1rem] flex-shrink-0">📋
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="text-[0.85rem] font-bold text-[var(--color-text-main)] truncate">{{ doc.fileName }}</div>
+            <div class="text-[0.68rem] text-[var(--color-text-muted)]">{{ formatDate(doc.uploadDate) }}</div>
+            <div *ngIf="doc.notes && editingNotesDocId !== doc.id"
+              class="text-[0.72rem] text-[var(--color-text-secondary)] mt-0.5 truncate italic">{{ doc.notes }}</div>
+          </div>
+          <div class="flex items-center gap-1.5 flex-shrink-0">
+            <!-- Visualizza -->
+            <button
+              class="w-8 h-8 rounded-lg bg-[var(--color-bg-subtle)] border border-[var(--color-border-subtle)] flex items-center justify-center text-[var(--color-primary-navy)] hover:bg-[var(--color-primary-navy)] hover:text-white transition-all"
+              title="Visualizza" (click)="viewPdf(doc)">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+            </button>
+            <!-- Modifica note -->
+            <button
+              class="w-8 h-8 rounded-lg bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-500 hover:bg-amber-500 hover:text-white hover:border-amber-500 transition-all"
+              title="Modifica note" (click)="startEditNotes(doc)">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+            </button>
+            <!-- Elimina -->
+            <button
+              class="w-8 h-8 rounded-lg bg-red-50 border border-red-200 flex items-center justify-center text-red-400 hover:bg-red-500 hover:text-white hover:border-red-500 transition-all"
+              title="Elimina" (click)="deleteDoc(doc)">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </button>
+          </div>
         </div>
-        <div class="flex-1 min-w-0">
-          <div class="text-[0.85rem] font-bold text-[var(--color-text-main)] truncate">{{ doc.fileName }}</div>
-          <div class="text-[0.68rem] text-[var(--color-text-muted)]">{{ formatDate(doc.uploadDate) }}</div>
-        </div>
-        <div class="flex items-center gap-1.5 flex-shrink-0">
-          <button
-            class="w-8 h-8 rounded-lg bg-[var(--color-bg-subtle)] border border-[var(--color-border-subtle)] flex items-center justify-center text-[var(--color-primary-navy)] hover:bg-[var(--color-primary-navy)] hover:text-white transition-all"
-            (click)="viewPdf(doc)">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              <path stroke-linecap="round" stroke-linejoin="round"
-                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-            </svg>
-          </button>
-          <button
-            class="w-8 h-8 rounded-lg bg-red-50 border border-red-200 flex items-center justify-center text-red-400 hover:bg-red-500 hover:text-white hover:border-red-500 transition-all"
-            title="Elimina" (click)="deleteDoc(doc)">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round"
-                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-            </svg>
-          </button>
+        <!-- Inline edit note -->
+        <div *ngIf="editingNotesDocId === doc.id"
+          class="px-4 pb-4 flex flex-col gap-2 border-t border-[var(--color-border-subtle)] pt-3">
+          <textarea
+            class="w-full resize-none rounded-lg border border-[var(--color-border-subtle)] bg-[var(--color-bg-subtle)] px-3 py-2 text-[0.83rem] text-[var(--color-text-main)] focus:outline-none focus:border-[var(--color-accent-gold)]/60 transition-all"
+            rows="2" placeholder="Note sulla polizza..." [(ngModel)]="editingNotes"></textarea>
+          <div class="flex gap-2 justify-end">
+            <button (click)="cancelEditNotes()"
+              class="px-3 py-1.5 text-[0.78rem] font-medium text-[var(--color-text-muted)] hover:text-[var(--color-text-main)] transition-colors">
+              Annulla
+            </button>
+            <button (click)="saveNotes(doc)" [disabled]="savingNotes"
+              class="px-3 py-1.5 rounded-lg text-[0.78rem] font-semibold bg-[var(--color-primary-navy)] text-white hover:bg-[var(--navy-deep)] transition-colors disabled:opacity-50">
+              {{ savingNotes ? 'Salvo...' : 'Salva' }}
+            </button>
+          </div>
         </div>
       </div>
     </div>

@@ -41,5 +41,29 @@ export class DocumentService {
   updateDocumentNotes(documentId: number, notes: string): Observable<any> {
     return this.http.put(`${this.apiUrl}/api/documents/${documentId}/notes`, { notes });
   }
+
+  // ── Insurance-specific endpoints (/api/insurance/**) ──────────
+
+  uploadInsurancePolicy(file: File, clientId: number): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post(`${this.apiUrl}/api/insurance/clients/${clientId}/policy`, formData);
+  }
+
+  getClientPolicies(clientId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/api/insurance/clients/${clientId}/policies`);
+  }
+
+  downloadPolicy(documentId: number): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/api/insurance/policies/${documentId}/download`, { responseType: 'blob' });
+  }
+
+  deletePolicy(documentId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/api/insurance/policies/${documentId}`);
+  }
+
+  updatePolicyNotes(documentId: number, notes: string): Observable<any> {
+    return this.http.put(`${this.apiUrl}/api/insurance/policies/${documentId}/notes`, { notes });
+  }
 }
 

@@ -33,6 +33,12 @@ export interface WsUnreadUpdate {
   unreadCount: number;
 }
 
+/** Aggiornamento status messaggi (DELIVERED o READ) */
+export interface WsStatusUpdate {
+  chatId: number;
+  status: 'SENT' | 'DELIVERED' | 'READ';
+}
+
 @Injectable({ providedIn: 'root' })
 export class SocketService {
   private zone = inject(NgZone);
@@ -57,6 +63,10 @@ export class SocketService {
   /** Typing indicator dall'altro utente */
   private typingSubject = new Subject<WsTypingEvent>();
   typing$ = this.typingSubject.asObservable();
+
+  /** Aggiornamento status messaggi (DELIVERED/READ) */
+  private statusUpdateSubject = new Subject<WsStatusUpdate>();
+  statusUpdate$ = this.statusUpdateSubject.asObservable();
 
   // ── Subscription attive per stanza ─────────────────────────
   private roomSubscription: StompSubscription | null = null;
@@ -270,8 +280,12 @@ export class SocketService {
               unreadCount: payload.unreadCount
             });
           } else if (payload.type === 'NEW_MESSAGE') {
-
             this.incomingMessageSubject.next(payload.message);
+          } else if (payload.type === 'DELIVERED_UPDATE' || payload.type === 'READ_UPDATE') {
+            this.statusUpdateSubject.next({
+              chatId: payload.message.chatId,
+              status: payload.message.status
+            });
           }
         });
       }

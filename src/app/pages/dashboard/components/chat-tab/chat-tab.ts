@@ -141,6 +141,13 @@ export class ChatTabComponent implements OnInit, OnDestroy {
     return role === 'MODERATOR' || role === 'Moderatore';
   }
 
+  reopenTerminatedConversation(): void {
+    if (this.activeConversation?.terminated) {
+      this.activeConversation = { ...this.activeConversation, terminated: false };
+      this.chatService.activeConversation = this.activeConversation;
+    }
+  }
+
   closeActiveChat(): void {
     if (!this.activeConversation?.chatId || this.closingChat) return;
     this.closingChat = true;
@@ -164,7 +171,7 @@ export class ChatTabComponent implements OnInit, OnDestroy {
       return targetRole !== 'ADMIN'; // Admin chatta con tutti tranne altri Admin
     }
     if (myRole === 'INSURANCE_MANAGER') {
-      return targetRole === 'ADMIN'; // Solo Admin
+      return targetRole === 'ADMIN' || targetRole === 'MODERATOR';
     }
     if (myRole === 'MODERATOR') {
       return targetRole === 'CLIENT' || targetRole === 'PERSONAL_TRAINER'
@@ -265,9 +272,11 @@ export class ChatTabComponent implements OnInit, OnDestroy {
 
         // Ordina i messaggi e aggiorna solo se c'è una variazione
         const sorted = this.sortMessages([...msgs, ...localOptimistic]);
+        const hasStatusChange = sorted.some((m, i) => this.chatMessages[i]?.status !== m.status);
         if (sorted.length !== this.chatMessages.length ||
           (sorted.length > 0 && sorted[sorted.length - 1].id !== this.chatMessages[this.chatMessages.length - 1]?.id) ||
-          localOptimistic.length > 0) {
+          localOptimistic.length > 0 ||
+          hasStatusChange) {
           this.chatMessages = sorted;
           this.cdr.detectChanges();
           setTimeout(() => this.scrollToBottom(), 50);
