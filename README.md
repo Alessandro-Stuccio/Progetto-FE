@@ -1,59 +1,267 @@
-# Progetto
+# Kore — Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.4.
+### Piattaforma SaaS per il Wellness Integrato · Single Page Application
 
-## Development server
+![Angular](https://img.shields.io/badge/Angular-21-DD0031?logo=angular&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-06B6D4?logo=tailwindcss&logoColor=white)
+![RxJS](https://img.shields.io/badge/RxJS-7.8-B7178C?logo=reactivex&logoColor=white)
+![STOMP](https://img.shields.io/badge/WebSocket-STOMP-010101?logo=socketdotio&logoColor=white)
+![Vitest](https://img.shields.io/badge/tests-Vitest-6E9F18?logo=vitest&logoColor=white)
+![License](https://img.shields.io/badge/license-MIT-blue)
 
-To start a local development server, run:
+Frontend di **Kore**, la piattaforma SaaS che riunisce in un unico abbonamento Personal Trainer,
+Nutrizionisti e copertura assicurativa. È una **Single Page Application** Angular 21 a *standalone
+components*, con dashboard che si adatta al ruolo dell'utente, chat real-time su WebSocket e un
+design system su misura in Tailwind CSS.
 
-```bash
-ng serve
+---
+
+## Indice
+
+1. [Panoramica](#panoramica)
+2. [Tech Stack](#tech-stack)
+3. [Struttura del progetto](#struttura-del-progetto)
+4. [Architettura](#architettura)
+5. [Routing & Guardie](#routing--guardie)
+6. [Autenticazione](#autenticazione)
+7. [Servizi principali](#servizi-principali)
+8. [Real-time (chat)](#real-time-chat)
+9. [Design system](#design-system)
+10. [Quick Start](#quick-start)
+11. [Script disponibili](#script-disponibili)
+12. [Build & Environments](#build--environments)
+13. [Testing](#testing)
+14. [Licenza](#licenza)
+
+---
+
+## Panoramica
+
+L'applicazione consuma le API REST del backend Spring Boot di Kore (`/api`) e si collega al canale
+WebSocket `/ws` per la messaggistica in tempo reale. Dopo il login, l'utente accede a una
+**dashboard a tab** che mostra funzionalità e dati diversi a seconda del ruolo (CLIENT,
+PERSONAL_TRAINER, NUTRITIONIST, MODERATOR, INSURANCE_MANAGER, ADMIN).
+
+Caratteristiche principali:
+
+- SPA a **standalone components** con **lazy-loading** di tutte le route.
+- Autenticazione **JWT** con interceptor e guardie funzionali.
+- **Chat real-time** STOMP/WebSocket con fallback in polling.
+- **Design system** Tailwind con palette Navy/Gold e tipografia dedicata.
+- Locale **italiano** (`it`).
+
+---
+
+## Tech Stack
+
+| Categoria | Tecnologia |
+|---|---|
+| Framework | Angular 21.1 (standalone components, lazy-loading) |
+| Linguaggio | TypeScript 5.9 |
+| Reattività / stato | RxJS 7.8 (`BehaviorSubject` / `Subject`, no NgRx) |
+| Styling | Tailwind CSS 3.4.19 + PostCSS + Autoprefixer |
+| Real-time | `@stomp/stompjs` 7.3 (con fallback polling) |
+| Testing | Vitest 4.0.8 + jsdom |
+| Build / CLI | Angular CLI 21.1 (`@angular/build`) |
+| Locale | Italiano (`it`) |
+
+---
+
+## Struttura del progetto
+
+```
+Progetto-FE/
+├── package.json
+├── angular.json
+├── tailwind.config.js
+├── postcss.config.js
+└── src/
+    ├── index.html              # <title>Kore.</title>, meta PWA
+    ├── styles.css              # direttive Tailwind + design token (:root)
+    ├── environments/
+    │   ├── environment.ts             # produzione (apiUrl Render)
+    │   └── environment.development.ts # sviluppo (apiUrl localhost:8080)
+    └── app/
+        ├── app.routes.ts       # definizione delle route (lazy-loaded)
+        ├── core/
+        │   ├── guards/         # auth.guard
+        │   ├── interceptors/   # auth (JWT Bearer) + no-cache
+        │   └── services/       # auth, user, role, chat, socket, plan, ...
+        ├── pages/
+        │   ├── home/           # landing pubblica
+        │   ├── login/  register/  reset-password/  oauth-callback/
+        │   ├── dashboard/      # dashboard + tab per ruolo
+        │   └── clients-list/   # directory clienti (vista professionista)
+        └── shared/
+            ├── components/
+            │   ├── layout/     # navbar, footer
+            │   └── ui/         # button, card, badge, modal, skeleton, toast, ...
+            ├── directives/     # scroll-reveal, pull-to-refresh, count-up
+            ├── pipes/          # role-label, date-formatter
+            └── models/         # interfacce TypeScript (dashboard.model.ts)
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+I tab della **dashboard** comprendono: home, calendario, chat, clienti, prenotazione consulti,
+"i miei professionisti", servizi, directory professionisti, e i pannelli amministrativi
+(utenti, piani, statistiche, documenti) e assicurativo.
 
-## Code scaffolding
+---
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Architettura
 
-```bash
-ng generate component component-name
+- **Standalone components** (API Angular 21, nessun `NgModule`).
+- **Lazy-loading** di tutte le route via `loadComponent()` per il code-splitting.
+- **Stato** gestito con RxJS (`BehaviorSubject` / `Subject`); nessuna libreria esterna (no NgRx/Akita).
+- **Interceptor funzionali** (`HttpInterceptorFn`) e **guardie funzionali** (`CanActivateFn`).
+- **Signals** usati dove utile (es. titolo applicazione).
+
+---
+
+## Routing & Guardie
+
+Definito in `src/app/app.routes.ts`. Tutte le route sono lazy-loaded.
+
+| Path | Componente | Accesso |
+|---|---|---|
+| `/` | Home (landing) | Pubblico |
+| `/login` | Login | Pubblico |
+| `/register` | Registrazione | Pubblico |
+| `/reset-password` | Reset password | Pubblico |
+| `/dashboard` | Dashboard (a tab per ruolo) | `authGuard` |
+| `/clients` | Lista clienti (vista professionista) | `authGuard` |
+
+`authGuard` verifica la presenza del token in `localStorage` e, se assente, reindirizza a `/login`.
+
+---
+
+## Autenticazione
+
+Flusso JWT:
+
+1. L'utente effettua il login tramite `auth.service.ts`.
+2. Il backend restituisce un `AuthResponse` con il token JWT.
+3. Token e dati utente vengono salvati in `localStorage` tramite `StorageService`.
+4. `authGuard` protegge le route autenticate verificando la presenza del token.
+5. `authInterceptor` aggiunge automaticamente l'header `Authorization: Bearer <token>` a tutte le richieste, escluse quelle verso `/api/auth/`.
+6. `no-cache.interceptor` aggiunge gli header anti-cache alle richieste GET.
+
+Il logout rimuove token e utente dal `localStorage`.
+
+---
+
+## Servizi principali
+
+In `src/app/core/services/`:
+
+| Servizio | Responsabilità |
+|---|---|
+| `auth.service` | Login, registrazione, reset password, gestione token |
+| `user.service` | Dashboard, profili utente, endpoint admin/moderator |
+| `role.service` | Controllo del ruolo corrente (isClient, isProfessional, isAdmin, ...) |
+| `plan.service` | Piani di abbonamento |
+| `subscription.service` | Attivazione abbonamenti, gestione crediti |
+| `document.service` | Upload/download documenti, polizze |
+| `review.service` | Recensioni |
+| `slot.service` / `availability.service` | Slot e disponibilità dei professionisti |
+| `job-application.service` | Candidature lavorative |
+| `chat.service` | API di alto livello per la chat (real-time + fallback) |
+| `socket.service` | Connessione STOMP/WebSocket |
+| `toast.service` | Notifiche toast |
+| `storage.service` | Wrapper su `localStorage` |
+| `dashboard-facade.service` | Aggregazione dei dati di dashboard |
+
+---
+
+## Real-time (chat)
+
+La chat usa **STOMP su WebSocket** tramite `@stomp/stompjs`.
+
+- **`socket.service.ts`** — gestisce il ciclo di vita della connessione STOMP: token JWT negli header del frame **CONNECT**, heartbeat 10s, riconnessione automatica dopo 3s.
+- **`chat.service.ts`** — API di alto livello sopra `socket.service`; se il WebSocket cade, attiva un **fallback in polling** ogni 3 secondi.
+
+Canali STOMP:
+
+- `/topic/chat/{roomId}` — messaggi della stanza (broadcast)
+- `/user/queue/notifications` — notifiche private (nuovo messaggio, conteggio non letti, delivered/read)
+- `/app/chat.join`, `/app/chat.leave`, `/app/chat.send`, `/app/chat.typing`, `/app/chat.read` — comandi client → server
+
+Funzionalità: aggiornamenti ottimistici della UI, indicatori di digitazione, stati messaggio
+(`SENT`, `DELIVERED`, `READ`), sincronizzazione dei non letti, anteprima dell'ultimo messaggio.
+
+---
+
+## Design system
+
+Tema Tailwind con design token definiti in `src/styles.css` e `tailwind.config.js`.
+
+- **Palette** — Navy `#1A3462` (primario) con varianti deep/mid + Gold `#C9A96E` (accento) con varianti light/dark; sfondi off-white, colori di stato success/error/warning.
+- **Tipografia** — *Clash Display* (display), *Plus Jakarta Sans* (testo), *JetBrains Mono* (monospace).
+- **Raggi** — da 8px (sm) a 32px (2xl).
+- **Ombre & gradienti** — ombre card sm/md/lg, glow gold/navy, gradiente navy→gold, mesh decorativa.
+- **Branding** — logo "**Kore.**" (con il punto in oro), tagline *"Allenati. Mangia bene. Proteggi il futuro."*, tema PWA navy, locale italiano.
+
+---
+
+## Quick Start
+
+### Prerequisiti
+
+- **Node.js + npm**
+- Il **backend Kore** in esecuzione su `http://localhost:8080` (vedi README del backend)
+
+### Avvio
+
+```powershell
+npm install
+npm start
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+L'applicazione è disponibile su `http://localhost:4200` e ricarica automaticamente ad ogni
+modifica dei file sorgente. In sviluppo punta al backend su `http://localhost:8080`.
 
-```bash
-ng generate --help
+---
+
+## Script disponibili
+
+| Comando | Descrizione |
+|---|---|
+| `npm start` | Avvia il dev server (`ng serve`) su `http://localhost:4200` |
+| `npm run build` | Build di produzione in `dist/` |
+| `npm run watch` | Build in watch mode (configurazione development) |
+| `npm test` | Esegue i test con Vitest |
+| `npm run ng` | Accesso diretto alla Angular CLI |
+
+---
+
+## Build & Environments
+
+```powershell
+npm run build
 ```
 
-## Building
+Compila l'applicazione e genera gli artefatti in `dist/`. La build di produzione (default)
+ottimizza il bundle (output hashing, budget su initial bundle e stili).
 
-To build the project run:
+| Configurazione | File | `apiUrl` |
+|---|---|---|
+| Sviluppo | `src/environments/environment.development.ts` | `http://localhost:8080` |
+| Produzione | `src/environments/environment.ts` | `https://backend-tesi-l6ca.onrender.com` |
 
-```bash
-ng build
+La sostituzione del file di environment avviene automaticamente in base alla configurazione di build.
+
+---
+
+## Testing
+
+```powershell
+npm test
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+I test girano con **Vitest** + **jsdom** sui file `*.spec.ts`.
 
-## Running unit tests
+---
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+## Licenza
 
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Distribuito con licenza **MIT**.
