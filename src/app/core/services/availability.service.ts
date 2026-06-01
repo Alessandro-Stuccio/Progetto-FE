@@ -6,39 +6,27 @@ import { ProfessionalSlot, SlotPayload, BookingRequest } from '../../shared/mode
 const START_HOUR = 8;
 const END_HOUR = 21;
 
-/**
- * Service responsabile della logica di disponibilità, slot e prenotazioni.
- * Estrae dal DashboardComponent tutte le operazioni non-presentazionali
- * legate al calendario, alla gestione slot del professionista e alla
- * prenotazione da parte del cliente.
- */
+// Qui sta tutta la logica di calendario, slot e prenotazioni che prima stava
+// dentro al DashboardComponent. Le chiamate HTTP le gira allo SlotService; i
+// metodi "puri" più sotto servono solo a preparare i dati per la vista.
 @Injectable({ providedIn: 'root' })
 export class AvailabilityService {
   private slotService = inject(SlotService);
 
-  // ── HTTP: Slot professionista ────────────────────────────
-
-  /** Carica tutti gli slot di un professionista. */
   loadProfessionalSlots(professionalId: number): Observable<ProfessionalSlot[]> {
     return this.slotService.getProfessionalSlots(professionalId);
   }
 
-  /** Crea nuovi slot di disponibilità per il professionista autenticato. */
   createSlots(slots: SlotPayload[]): Observable<void> {
     return this.slotService.createProfessionalSlots(slots);
   }
 
-  /** Elimina un singolo slot del professionista autenticato. */
   deleteSlot(slotId: number): Observable<void> {
     return this.slotService.deleteProfessionalSlot(slotId);
   }
 
-  // ── HTTP: Booking cliente ────────────────────────────────
-
-  /**
-   * Carica gli slot disponibili di un professionista, filtrati a partire da
-   * domani. Slot nel passato e nella giornata corrente vengono esclusi.
-   */
+  // Per la prenotazione mostriamo solo gli slot da domani in poi: oggi e i
+  // giorni passati non sono prenotabili, quindi li filtriamo via.
   getAvailableSlotsFromTomorrow(professionalId: number): Observable<ProfessionalSlot[]> {
     return this.loadProfessionalSlots(professionalId).pipe(
       map(slots => {
@@ -53,19 +41,15 @@ export class AvailabilityService {
     );
   }
 
-  /** Crea una prenotazione. */
   createBooking(request: BookingRequest): Observable<void> {
     return this.slotService.createBooking(request);
   }
 
-  /** Annulla una prenotazione. */
   cancelBooking(bookingId: number): Observable<void> {
     return this.slotService.cancelBooking(bookingId);
   }
 
-  // ── Pure: Costruzione giorni e time slots ─────────────────
-
-  /** Genera la lista dei 7 giorni della settimana prossima (lun–dom). */
+  // Costruisce i 7 giorni della prossima settimana, da lunedì a domenica.
   buildNextWeekDays(): Date[] {
     const today = new Date();
     const dow = today.getDay();
@@ -81,7 +65,7 @@ export class AvailabilityService {
     });
   }
 
-  /** Genera una griglia di fasce orarie da 30 minuti. */
+  // Le fasce orarie selezionabili, una ogni 30 minuti dalle 8 alle 21.
   buildTimeSlots(): string[] {
     const slots: string[] = [];
     for (let h = START_HOUR; h < END_HOUR; h++) {
@@ -91,7 +75,6 @@ export class AvailabilityService {
     return slots;
   }
 
-  /** Formatta una Date in stringa "yyyy-MM-dd". */
   formatDate(date: Date): string {
     const y = date.getFullYear();
     const m = (date.getMonth() + 1).toString().padStart(2, '0');
@@ -99,12 +82,12 @@ export class AvailabilityService {
     return `${y}-${m}-${d}`;
   }
 
-  /** Chiave univoca per identificare uno slot (es. "2026-04-14|09:00"). */
+  // Chiave che identifica univocamente uno slot, nella forma "data|ora".
   slotKey(day: Date, time: string): string {
     return `${this.formatDate(day)}|${time}`;
   }
 
-  /** Label leggibile per la settimana prossima (es. "14 aprile – 20 aprile 2026"). */
+  // Intestazione leggibile della settimana, tipo "14 aprile – 20 aprile 2026".
   getNextWeekLabel(days: Date[]): string {
     if (days.length === 0) return '';
     const first = days[0];
@@ -113,27 +96,20 @@ export class AvailabilityService {
     return `${first.toLocaleDateString('it-IT', opts)} – ${last.toLocaleDateString('it-IT', { ...opts, year: 'numeric' })}`;
   }
 
-  /** Nome abbreviato del giorno (es. "LUN"). */
   getDayName(date: Date): string {
     return date.toLocaleDateString('it-IT', { weekday: 'short' }).toUpperCase();
   }
 
-  /** Numero del giorno nel mese (es. 14). */
   getDayNumber(date: Date): number {
     return date.getDate();
   }
 
-  /** Verifica se una fascia oraria è un'ora piena (":00"). */
   isFullHour(slot: string): boolean {
     return slot.endsWith(':00');
   }
 
-  // ── Pure: Booking day/slot helpers ─────────────────────────
-
-  /**
-   * Data una lista di slot, estrae i giorni unici (senza ore)
-   * ordinati cronologicamente.
-   */
+  // Dalla lista degli slot ricava i giorni distinti (azzerando l'ora) e li
+  // mette in ordine cronologico: sono i giorni cliccabili in prenotazione.
   buildBookingDays(slots: ProfessionalSlot[]): Date[] {
     const uniqueTimestamps = new Set<number>();
 
@@ -148,9 +124,7 @@ export class AvailabilityService {
       .sort((a, b) => a.getTime() - b.getTime());
   }
 
-  /**
-   * Filtra e ordina gli slot appartenenti a un determinato giorno.
-   */
+  // Tiene solo gli slot del giorno scelto e li ordina per orario.
   getSlotsForDay(slots: ProfessionalSlot[], day: Date): ProfessionalSlot[] {
     const dayTime = day.getTime();
 
@@ -163,19 +137,14 @@ export class AvailabilityService {
       .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
   }
 
-  /** Restituisce "HH:mm" da un ISO datetime string. */
   getSlotTimeLabel(slot: ProfessionalSlot): string {
     const d = new Date(slot.startTime);
     return `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
   }
 
-  // ── Pure: Costruzione payload ─────────────────────────────
-
-  /**
-   * Converte i Set di chiavi "date|time" selezionati dall'utente in un
-   * array di SlotPayload pronto per l'invio al backend.
-   * Ogni slot ha durata fissa di 30 minuti.
-   */
+  // Quando il professionista conferma le fasce selezionate, qui trasformiamo le
+  // chiavi "data|ora" nel formato che si aspetta il backend. Ogni slot dura
+  // sempre 30 minuti, quindi l'orario di fine lo calcoliamo da quello di inizio.
   buildSlotPayloads(selectedKeys: Set<string>): SlotPayload[] {
     const pad = (n: number) => n.toString().padStart(2, '0');
 

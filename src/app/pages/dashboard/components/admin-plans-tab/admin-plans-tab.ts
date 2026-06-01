@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { PlanService } from '../../../../core/services/plan.service';
 import { ToastService } from '../../../../core/services/toast.service';
 import { Plan, Subscription } from '../../../../shared/models/dashboard.model';
-@Component({ selector: 'app-admin-plans-tab', standalone: true, imports: [CommonModule, FormsModule], templateUrl: './admin-plans-tab.html', styleUrls: ['./admin-plans-tab.css'] })
+@Component({ selector: 'app-admin-plans-tab', standalone: true, imports: [CommonModule, FormsModule], templateUrl: './admin-plans-tab.html' })
 export class AdminPlansTabComponent {
   private authService = inject(PlanService);
   private cdr = inject(ChangeDetectorRef);
@@ -25,17 +25,18 @@ export class AdminPlansTabComponent {
   editError: string = '';
   editing: boolean = false;
 
-  // Modale conferma eliminazione
-  showDeleteModal: boolean = false;
-  planToDelete: any = null;
-  deleting: boolean = false;
+  // Modale conferma disabilitazione
+  showDisableModal: boolean = false;
+  planToDisable: any = null;
+  disabling: boolean = false;
 
   getActiveSubsForPlan(planName: string): number { return this.allSubscriptions.filter(s => s.active && s.planName === planName).length; }
   getTotalSubsForPlan(planName: string): number { return this.allSubscriptions.filter(s => s.planName === planName).length; }
   getDurationLabel(duration: string): string { switch (duration) { case 'SEMESTRALE': return '6 mesi'; case 'ANNUALE': return '12 mesi'; default: return duration; } }
-  canDeletePlan(plan: any): boolean { return this.getTotalSubsForPlan(plan.name) === 0; }
+  isPlanActive(plan: any): boolean { return plan?.active !== false; }
+  canDisablePlan(plan: any): boolean { return this.getTotalSubsForPlan(plan.name) === 0; }
 
-  // ── Create ──
+  // Create
   openCreateModal(): void {
     this.newPlan = { name: '', duration: 'SEMESTRALE', fullPrice: 0, monthlyInstallmentPrice: 0, monthlyCreditsPT: 0, monthlyCreditsNutri: 0 };
     this.createError = '';
@@ -89,7 +90,7 @@ export class AdminPlansTabComponent {
     });
   }
 
-  // ── Edit ──
+  // Edit
   openEditModal(plan: any): void {
     this.editPlan = { ...plan };
     this.editError = '';
@@ -143,29 +144,42 @@ export class AdminPlansTabComponent {
     });
   }
 
-  // ── Delete (styled modal) ──
-  openDeleteModal(plan: any): void {
-    this.planToDelete = plan;
-    this.showDeleteModal = true;
+  // Disabilita (modale di conferma)
+  openDisableModal(plan: any): void {
+    this.planToDisable = plan;
+    this.showDisableModal = true;
   }
-  closeDeleteModal(): void { this.showDeleteModal = false; this.planToDelete = null; }
+  closeDisableModal(): void { this.showDisableModal = false; this.planToDisable = null; }
 
-  confirmDeletePlan(): void {
-    if (!this.planToDelete) return;
-    this.deleting = true;
-    this.authService.deletePlan(this.planToDelete.id).subscribe({
+  confirmDisablePlan(): void {
+    if (!this.planToDisable) return;
+    this.disabling = true;
+    this.authService.disablePlan(this.planToDisable.id).subscribe({
       next: () => {
-        this.deleting = false;
-        this.showDeleteModal = false;
-        this.toast.success('Eliminato', 'Piano eliminato con successo.');
-        this.planToDelete = null;
+        this.disabling = false;
+        this.showDisableModal = false;
+        this.toast.success('Disabilitato', 'Piano disabilitato con successo.');
+        this.planToDisable = null;
         this.plansChanged.emit();
       },
       error: (err) => {
-        this.deleting = false;
-        this.showDeleteModal = false;
-        this.toast.error('Errore', err.error?.error || 'Impossibile eliminare il piano');
-        this.planToDelete = null;
+        this.disabling = false;
+        this.showDisableModal = false;
+        this.toast.error('Errore', err.error?.error || 'Impossibile disabilitare il piano');
+        this.planToDisable = null;
+      }
+    });
+  }
+
+  // Riabilita
+  enablePlan(plan: any): void {
+    this.authService.enablePlan(plan.id).subscribe({
+      next: () => {
+        this.toast.success('Riabilitato', `Il piano "${plan.name}" è stato riabilitato.`);
+        this.plansChanged.emit();
+      },
+      error: (err) => {
+        this.toast.error('Errore', err.error?.error || 'Impossibile riabilitare il piano');
       }
     });
   }

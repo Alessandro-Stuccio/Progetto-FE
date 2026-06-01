@@ -1,6 +1,6 @@
 <div class="register-page" [class.rp--step2]="currentStep === 2">
 
-  <!-- ════════════ LEFT — Hero panel (step 1 only) ════════════ -->
+  <!-- LEFT — Hero panel (step 1 only) -->
   <div class="rp-left" aria-hidden="true">
     <div class="rp-left__orb rp-left__orb--gold glow-orb-gold"></div>
     <div class="rp-left__orb rp-left__orb--navy glow-orb-navy"></div>
@@ -33,7 +33,7 @@
     </div>
   </div>
 
-  <!-- ════════════ RIGHT — Form ════════════ -->
+  <!-- RIGHT — Form -->
   <div class="rp-right">
     <a routerLink="/" class="btn-back" aria-label="Torna alla home">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
@@ -49,7 +49,7 @@
 
       <form [formGroup]="registerForm" class="rp-form" [class.rp-form--wide]="currentStep === 2">
 
-        <!-- ── Stepper + heading (step 1 e 2) ── -->
+        <!-- Stepper + heading (step 1 e 2) -->
         <ng-container *ngIf="currentStep !== 3">
           <div class="rp-head">
             <div class="rp-hd-text">
@@ -76,7 +76,7 @@
           </div>
         </ng-container>
 
-        <!-- ══════ STEP 1 — Dati personali ══════ -->
+        <!-- STEP 1 — Dati personali -->
         <div *ngIf="currentStep === 1" class="rp-step-body">
 
           <!-- Avatar upload -->
@@ -185,7 +185,7 @@
           </p>
         </div>
 
-        <!-- ══════ STEP 2 — Piano + Professionisti ══════ -->
+        <!-- STEP 2 — Piano + Professionisti -->
         <div *ngIf="currentStep === 2" class="rp-step-body">
 
           <!-- Scegli piano -->
@@ -326,7 +326,7 @@
           </div>
         </div>
 
-        <!-- ══════ STEP 3 — Successo ══════ -->
+        <!-- STEP 3 — Successo -->
         <div *ngIf="currentStep === 3" class="rp-success">
           <div class="rp-success__ring" aria-hidden="true">
             <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
@@ -342,14 +342,14 @@
 
 </div>
 
-<!-- ── Toast ── -->
+<!-- Toast -->
 <div *ngIf="toast" class="rp-toast" [class.rp-toast--success]="toast.type === 'success'" [class.rp-toast--error]="toast.type === 'error'" role="alert">
   <span class="rp-toast__icon">{{ toast.type === 'success' ? '✓' : '!' }}</span>
   <span class="rp-toast__msg">{{ toast.message }}</span>
   <button class="rp-toast__close" type="button" (click)="dismissToast()" aria-label="Chiudi notifica">✕</button>
 </div>
 
-<!-- ── Modal recensioni ── -->
+<!-- Modal recensioni -->
 <div class="rp-modal-overlay" *ngIf="reviewsModal" (click)="closeReviewsModal()">
   <div class="rp-modal" (click)="$event.stopPropagation()" role="dialog" [attr.aria-label]="reviewsModal.prof.fullName + ' — Recensioni'">
     <div class="rp-modal__head">

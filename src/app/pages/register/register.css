@@ -1,6 +1,4 @@
-/* ══════════════════════════════════════════════════════
-   REGISTER — split-screen · step 1 (50/50) · step 2 (full)
-   ══════════════════════════════════════════════════════ */
+/* REGISTER — split-screen · step 1 (50/50) · step 2 (full) */
 
 /* Shared auth tokens (btn-primary, field-input etc.) come from login.css via global styles.
    Register has its own component CSS for the layout and register-specific UI. */
@@ -316,7 +314,7 @@
 .link:hover { opacity: 0.75; }
 .card-footer { font-size: 0.875rem; color: var(--text-secondary); text-align: center; }
 
-/* ── Step 2 sections ── */
+/* Step 2 sections */
 .rp-section { display: flex; flex-direction: column; gap: 0.875rem; }
 .rp-section__title {
   font-family: var(--font-display);
@@ -513,7 +511,7 @@
   .rp-btn-row .btn-secondary { width: 100%; min-height: 48px; }
 }
 
-/* ── Success step ── */
+/* Success step */
 .rp-success {
   display: flex;
   flex-direction: column;
@@ -541,7 +539,7 @@
 }
 .rp-success__sub { font-size: 0.9375rem; color: var(--text-secondary); line-height: 1.6; }
 
-/* ── Toast ── */
+/* Toast */
 .rp-toast {
   position: fixed;
   bottom: 1.5rem;
@@ -577,7 +575,7 @@
 .rp-toast__close { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.875rem; padding: 0.25rem; flex-shrink: 0; transition: color 0.15s; }
 .rp-toast__close:hover { color: var(--text-primary); }
 
-/* ── Modal recensioni ── */
+/* Modal recensioni */
 .rp-modal-overlay {
   position: fixed;
   inset: 0;

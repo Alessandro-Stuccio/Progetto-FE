@@ -4,8 +4,6 @@ import { Observable, of, BehaviorSubject, Subject, catchError } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { SocketService, WsIncomingMessage, WsStatusUpdate } from './socket.service';
 
-// ── Interfacce DTO ──────────────────────────────────────────
-
 export interface ChatMessage {
   id: number;
   chatId: number;
@@ -41,34 +39,36 @@ export class ChatService {
   private socketService = inject(SocketService);
   private apiUrl = environment.apiUrl;
 
-  // ── State ──────────────────────────────────────────────────
+  // Lo stato della chat vive qui, nel service, non nel componente: così resta
+  // in piedi anche quando la tab chat viene chiusa e riaperta.
   private conversationsSubject = new BehaviorSubject<Conversation[]>([]);
   private messagesSubject = new BehaviorSubject<ChatMessage[]>([]);
   private unreadCountSubject = new BehaviorSubject<number>(0);
 
-  /** Conversazione attiva — persiste anche quando il componente chat viene distrutto */
+  // La conversazione aperta la teniamo qui apposta, perché deve sopravvivere
+  // alla distruzione del componente.
   private _activeConversation: Conversation | null = null;
 
   conversations$ = this.conversationsSubject.asObservable();
   messages$ = this.messagesSubject.asObservable();
   unreadCount$ = this.unreadCountSubject.asObservable();
 
-  /** Emesso quando arriva un nuovo messaggio real-time */
+  // Scatta a ogni nuovo messaggio in tempo reale (serve per scroll e suoni).
   private newMessageSubject = new Subject<ChatMessage>();
   newMessage$ = this.newMessageSubject.asObservable();
 
-  // ── Polling fallback ───────────────────────────────────────
+  // Quando il WebSocket non è disponibile ricadiamo sul polling REST.
   private msgPollingActive = false;
   private msgPollInterval: any;
   private globalPollInterval: any;
   private globalPollingActive = false;
 
-  // ── WebSocket subscription tracking ────────────────────────
+  // Subscription al socket: le teniamo per poterle chiudere tutte al destroy.
   private wsSubscriptions: any[] = [];
 
-  // ══════════════════════════════════════════════════════════════
-  //  API REST (caricamento iniziale e fallback)
-  // ══════════════════════════════════════════════════════════════
+  // Chiamate REST: servono per il caricamento iniziale e come rete di sicurezza
+  // quando il real-time non c'è. Se una richiesta fallisce torniamo un valore
+  // vuoto invece di rompere la UI.
 
   getConversations(): Observable<Conversation[]> {
     return this.http.get<Conversation[]>(
@@ -107,22 +107,19 @@ export class ChatService {
     ).pipe(catchError(() => of(0)));
   }
 
-  //  INIZIALIZZAZIONE REAL-TIME
-  // ══════════════════════════════════════════════════════════════
-
-  /** Bootstrap real-time chat: WebSocket + event subscriptions + global polling fallback. */
+  // Avvia tutto il real-time. Prima ripuliamo con destroy(), altrimenti a ogni
+  // re-init resterebbero listener doppi e perdite di memoria. Poi apriamo il
+  // WebSocket e ci agganciamo ai suoi stream: messaggi in arrivo, conteggio non
+  // letti e cambi di stato. Infine accendiamo il polling globale come fallback.
   init(userId: number, email: string): void {
-    this.destroy(); // CLEANUP prevent duplicate listeners and memory leaks
-
+    this.destroy();
 
     this.socketService.connect(userId, email);
-
 
     const msgSub = this.socketService.incomingMessage$.subscribe(wsMsg => {
       this.handleIncomingWsMessage(wsMsg, userId);
     });
     this.wsSubscriptions.push(msgSub);
-
 
     const unreadSub = this.socketService.unreadUpdate$.subscribe(update => {
       this.unreadCountSubject.next(update.unreadCount);
@@ -134,30 +131,24 @@ export class ChatService {
     });
     this.wsSubscriptions.push(statusSub);
 
-
     this.startGlobalPolling();
   }
 
-  /**
-   * Cleanup completo — chiamare al logout/destroy
-   */
+  // Da chiamare al logout o quando si esce: chiude socket, polling e listener.
   destroy(): void {
     this.wsSubscriptions.forEach(s => s.unsubscribe());
     this.wsSubscriptions = [];
     this.socketService.disconnect();
     this.stopGlobalPolling();
     this.stopMessagePolling();
-    
-    // Pulisce lo stato in memoria altrimenti rimane per l'utente successivo (Bug "Chat mischiate")
+
+    // Svuotiamo anche lo stato in memoria: senza questo, l'utente successivo che
+    // fa login si ritroverebbe le conversazioni del precedente (bug "chat mischiate").
     this.conversationsSubject.next([]);
     this.messagesSubject.next([]);
     this.unreadCountSubject.next(0);
     this._activeConversation = null;
   }
-
-  // ══════════════════════════════════════════════════════════════
-  //  GESTIONE STANZE
-  // ══════════════════════════════════════════════════════════════
 
   joinRoom(chatId: number): void {
     this.socketService.joinRoom(chatId);
@@ -167,10 +158,9 @@ export class ChatService {
     this.socketService.leaveRoom();
   }
 
-  /**
-   * Invia messaggio via WebSocket (real-time).
-   * Ritorna il messaggio locale per UI ottimistica.
-   */
+  // Manda il messaggio sul WebSocket e, senza aspettare la risposta, restituisce
+  // una copia locale da mostrare subito in chat (UI ottimistica). Le diamo un id
+  // negativo così la riconosciamo come "non ancora confermata dal server".
   sendMessageRealTime(chatId: number, senderId: number, content: string, senderName: string, receiverName: string, receiverId: number): ChatMessage {
     const localMsg: ChatMessage = {
       id: -Date.now(),
@@ -211,10 +201,8 @@ export class ChatService {
     }
   }
 
-  // ══════════════════════════════════════════════════════════════
-  //  HANDLER MESSAGGI IN ARRIVO
-  // ══════════════════════════════════════════════════════════════
-
+  // Gestisce un messaggio arrivato dal socket. Se riguarda la stanza aperta lo
+  // inseriamo nella lista; altrimenti aggiorniamo solo l'anteprima e i non letti.
   private handleIncomingWsMessage(wsMsg: WsIncomingMessage, currentUserId: number): void {
     const msg: ChatMessage = {
       id: wsMsg.id,
@@ -234,23 +222,22 @@ export class ChatService {
     if (currentRoom === msgRoom) {
       const currentMsgs = this.messagesSubject.value;
 
-      // Cerca se esiste un messaggio locale ottimistico (id < 0) con stessa content e sender
+      // Se è la conferma di un messaggio che avevamo già mostrato in ottimistico
+      // (stesso mittente e stesso testo, id ancora negativo), lo sostituiamo con
+      // la versione del server invece di aggiungerne uno doppio.
       const localOptimisticIdx = currentMsgs.findIndex(m =>
         m.id < 0 && m.senderId === msg.senderId && m.content === msg.content
       );
 
-      // Cerca se esiste già con lo stesso id positivo dal server
       const serverDuplicateIdx = currentMsgs.findIndex(m => m.id > 0 && m.id === msg.id);
 
       if (localOptimisticIdx >= 0) {
-
         const updated = [...currentMsgs];
         updated[localOptimisticIdx] = msg;
         this.messagesSubject.next(updated);
       } else if (serverDuplicateIdx >= 0) {
-        // Messaggio duplicato dal server — ignora
+        // Già in lista, è un doppione del server: lo lasciamo stare.
       } else {
-        // Messaggio nuovo
         this.messagesSubject.next([...currentMsgs, msg]);
       }
     }
@@ -265,8 +252,10 @@ export class ChatService {
     const otherUserName = wsMsg.senderId === currentUserId ? wsMsg.receiverName : wsMsg.senderName;
     const idx = convs.findIndex(c => c.otherUserId === otherUserId);
 
+    // Se la conversazione esiste già aggiorniamo anteprima e contatore; il non
+    // letto sale solo se il messaggio è dell'altro e non stiamo guardando quella
+    // stanza. Se invece è una chat nuova, la mettiamo in cima alla lista.
     if (idx >= 0) {
-
       const updated = [...convs];
       updated[idx] = {
         ...updated[idx],
@@ -293,6 +282,9 @@ export class ChatService {
     }
   }
 
+  // Aggiorna lo stato dei messaggi (inviato → consegnato → letto). Lo facciamo
+  // solo in avanti: un READ non deve mai tornare indietro a DELIVERED, quindi
+  // confrontiamo l'ordine prima di sovrascrivere.
   private updateMessagesStatus(chatId: number, status: 'SENT' | 'DELIVERED' | 'READ'): void {
     const msgs = this.messagesSubject.value;
     if (!msgs.some(m => m.chatId === chatId)) return;
@@ -302,17 +294,15 @@ export class ChatService {
     ));
   }
 
-  // ══════════════════════════════════════════════════════════════
-  //  POLLING GLOBALE (fallback + sync periodico)
-  // ══════════════════════════════════════════════════════════════
-
+  // Polling globale: tiene allineati conversazioni e non letti anche se il
+  // real-time perde qualche colpo. Quando il socket è connesso possiamo andare
+  // piano (15s); se è giù ci appoggiamo solo a questo, quindi acceleriamo (5s).
   startGlobalPolling(): void {
     if (this.globalPollingActive) return;
     this.globalPollingActive = true;
 
     this.refreshUnreadCount();
     this.refreshConversations();
-
 
     const getInterval = () => this.socketService.isConnected ? 15000 : 5000;
     this.globalPollInterval = setInterval(() => {
@@ -342,18 +332,18 @@ export class ChatService {
     this.getConversations().subscribe(convs => {
       let currentConvs = convs ?? [];
 
-      // Preserve active conversation not yet persisted on backend
+      // Una chat appena aperta potrebbe non essere ancora salvata sul backend:
+      // qui ce ne assicuriamo che non sparisca dalla lista a ogni refresh, e per
+      // quella aperta azzeriamo i non letti senza aspettare il server.
       if (this._activeConversation) {
         const activeId = this._activeConversation.otherUserId;
 
-        // Optimistic unread reset for the active conversation
         const activeConv = currentConvs.find(c => c.otherUserId === activeId);
         if (activeConv) {
           activeConv.unreadCount = 0;
         }
 
         if (!currentConvs.some(c => c.otherUserId === activeId)) {
-
           const existingLocal = this.conversationsSubject.value.find(c => c.otherUserId === activeId);
           if (existingLocal) {
             currentConvs = [existingLocal, ...currentConvs];
@@ -367,8 +357,9 @@ export class ChatService {
     });
   }
 
-  // ── Polling messaggi (fallback per quando WS non è connesso) ──
-
+  // Polling dei messaggi della chat aperta, solo quando il WebSocket è giù.
+  // Ricarichiamo dal server, ma teniamo in coda i messaggi ottimistici che il
+  // server non ha ancora restituito, così non spariscono sotto gli occhi.
   startMessagePolling(chatId: number): void {
     if (this.socketService.isConnected) return;
     this.stopMessagePolling();
@@ -377,11 +368,8 @@ export class ChatService {
       if (!this.msgPollingActive) return;
       this.getMessages(chatId).subscribe(msgs => {
         if (msgs.length > 0) {
-
           const currentMsgs = this.messagesSubject.value;
           const localOptimistic = currentMsgs.filter(m => m.id < 0);
-          const serverIds = new Set(msgs.map(m => m.id));
-
 
           const unresolvedLocal = localOptimistic.filter(local =>
             !msgs.some(server => server.senderId === local.senderId && server.content === local.content)
@@ -400,8 +388,6 @@ export class ChatService {
       this.msgPollInterval = null;
     }
   }
-
-  // ── Helpers ────────────────────────────────────────────────
 
   clearMessages(): void {
     this.messagesSubject.next([]);

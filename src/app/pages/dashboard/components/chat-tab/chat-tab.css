@@ -1,8 +1,6 @@
-/* ══════════════════════════════════════════════════════════════════════════
-   CHAT — stili specifici del chat-tab
-   ══════════════════════════════════════════════════════════════════════════ */
+/* stili specifici del chat-tab */
 
-/* Nasconde il pannello solo su mobile — su desktop (sm+) rimane sempre visibile */
+/* nasconde il pannello solo su mobile; su desktop (sm+) resta sempre visibile */
 .chat-panel-hidden-mobile {
   display: none;
 }

@@ -1,7 +1,7 @@
 <ng-container *ngIf="!isLoading && (dashboardData || isProfessional); else skeletonHome">
   <div class="ht-page fade-in">
 
-    <!-- ── Hero profilo ── -->
+    <!-- Hero profilo -->
     <div class="ht-hero">
       <div class="ht-hero-avatar-wrap">
         <img *ngIf="currentUser?.profilePicture" [src]="currentUser.profilePicture" alt="Avatar" class="ht-hero-avatar">
@@ -14,7 +14,7 @@
       </div>
     </div>
 
-    <!-- ── Crediti (solo clienti con abbonamento attivo) ── -->
+    <!-- Crediti (solo clienti con abbonamento attivo) -->
     <div class="ht-credits-grid" *ngIf="isClient && subscription?.active">
       <div class="ht-credit-card">
         <div class="ht-credit-icon">
@@ -38,7 +38,7 @@
       </div>
     </div>
 
-    <!-- ── Prossimo appuntamento ── -->
+    <!-- Prossimo appuntamento -->
     <div class="ht-card ht-card--appointment" *ngIf="bookings.length > 0">
       <div class="ht-card-header">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
@@ -57,7 +57,7 @@
       </div>
     </div>
 
-    <!-- ── Azioni rapide (solo clienti) ── -->
+    <!-- Azioni rapide (solo clienti) -->
     <div class="ht-actions" *ngIf="isClient">
       <button class="ht-action-btn ht-action-btn--primary" (click)="setTabEvent.emit('book-call')">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
@@ -73,7 +73,7 @@
       </button>
     </div>
 
-    <!-- ── Abbonamento (solo clienti) ── -->
+    <!-- Abbonamento (solo clienti) -->
     <div class="ht-card" *ngIf="isClient && subscription">
       <div class="ht-card-header">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
@@ -96,7 +96,7 @@
       </div>
     </div>
 
-    <!-- ── Attiva abbonamento ── -->
+    <!-- Attiva abbonamento -->
     <div class="ht-card ht-card--activate" *ngIf="isClient && (!subscription || !subscription.active) && !activationSuccess && plans.length > 0">
       <div class="ht-card-header">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
@@ -128,7 +128,7 @@
       </div>
     </div>
 
-    <!-- ── KPI professionista ── -->
+    <!-- KPI professionista -->
     <div class="ht-kpi-grid" *ngIf="isProfessional">
       <div class="ht-kpi-card ht-kpi-card--primary">
         <div class="ht-kpi-num">{{ proStats?.todayBookingsCount ?? 0 }}</div>
@@ -144,7 +144,7 @@
       </div>
     </div>
 
-    <!-- ── Activity feed ── -->
+    <!-- Activity feed -->
     <div class="ht-card ht-card--feed" *ngIf="activityFeed.length > 0">
       <div class="ht-card-header">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>

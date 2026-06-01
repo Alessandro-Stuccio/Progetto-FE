@@ -1,6 +1,8 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthUser, UserProfile, Plan, Subscription } from '../../../../shared/models/dashboard.model';
+import { RoleService } from '../../../../core/services/role.service';
+import { getInitials } from '../../../../shared/utils/user.util';
 
 @Component({
   selector: 'app-admin-home-tab',
@@ -10,6 +12,8 @@ import { AuthUser, UserProfile, Plan, Subscription } from '../../../../shared/mo
   styleUrls: ['./admin-home-tab.css']
 })
 export class AdminHomeTabComponent {
+  private roleService = inject(RoleService);
+
   @Input() currentUser: AuthUser | null = null;
   @Input() allUsers: UserProfile[] = [];
   @Input() allPlans: Plan[] = [];
@@ -26,29 +30,15 @@ export class AdminHomeTabComponent {
   }
 
   getRoleLabel(role: string): string {
-    switch (role) {
-      case 'CLIENT': return 'Cliente';
-      case 'PERSONAL_TRAINER': return 'Personal Trainer';
-      case 'NUTRITIONIST': return 'Nutrizionista';
-      case 'ADMIN': return 'Admin';
-      case 'INSURANCE_MANAGER': return 'Assicurazione';
-      default: return role;
-    }
+    return this.roleService.getRoleLabel(role);
   }
 
   getRoleBadgeClass(role: string): string {
-    switch (role) {
-      case 'CLIENT': return 'bg-blue-50 text-blue-600';
-      case 'PERSONAL_TRAINER': return 'bg-emerald-50 text-emerald-600';
-      case 'NUTRITIONIST': return 'bg-amber-50 text-amber-700';
-      case 'ADMIN': return 'bg-purple-50 text-purple-600';
-      case 'INSURANCE_MANAGER': return 'bg-indigo-50 text-indigo-600';
-      default: return 'bg-gray-50 text-gray-600';
-    }
+    return this.roleService.getRoleBadgeClass(role);
   }
 
   getInitials(): string {
-    return ((this.currentUser?.firstName ?? '').charAt(0) + (this.currentUser?.lastName ?? '').charAt(0)).toUpperCase();
+    return getInitials(this.currentUser);
   }
 }
 

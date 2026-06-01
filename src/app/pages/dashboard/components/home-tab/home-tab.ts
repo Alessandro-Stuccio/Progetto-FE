@@ -7,6 +7,7 @@ import {
   Plan, Subscription, DashboardData, AuthUser, UserProfile,
   Booking, ClientBasicInfo, ProfessionalSummary, ProStats, ActivityFeedItem
 } from '../../../../shared/models/dashboard.model';
+import { getInitials } from '../../../../shared/utils/user.util';
 
 @Component({
   selector: 'app-home-tab',
@@ -34,13 +35,13 @@ export class HomeTabComponent implements OnInit {
   @Input() isClient: boolean = false;
   @Input() weekBookingsCount: number = 0;
 
-  // ── Statistiche professionista ──
+  // Statistiche professionista
   @Input() proStats: ProStats | null = null;
 
-  // ── Cronologia attività ──
+  // Cronologia attività
   @Input() activityFeed: ActivityFeedItem[] = [];
 
-  // ── Subscription activation ──
+  // Subscription activation
   plans: Plan[] = [];
   selectedPlanId: number | null = null;
   selectedFrequency: PaymentFrequency = 'UNICA_SOLUZIONE';
@@ -88,9 +89,7 @@ export class HomeTabComponent implements OnInit {
   }
 
   getInitials(): string {
-    const f = (this.currentUser?.firstName ?? '').charAt(0);
-    const l = (this.currentUser?.lastName ?? '').charAt(0);
-    return (f + l).toUpperCase();
+    return getInitials(this.currentUser);
   }
 
   getSubscriptionDaysLeft(): number {

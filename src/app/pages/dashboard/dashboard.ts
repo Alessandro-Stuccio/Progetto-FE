@@ -19,6 +19,7 @@ import { DashboardFacadeService } from '../../core/services/dashboard-facade.ser
 import { ToastService } from '../../core/services/toast.service';
 import { RoleService } from '../../core/services/role.service';
 import { StorageService } from '../../core/services/storage.service';
+import { getInitials } from '../../shared/utils/user.util';
 
 import { HomeTabComponent } from './components/home-tab/home-tab';
 import { CalendarTabComponent } from './components/calendar-tab/calendar-tab';
@@ -160,7 +161,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private _popupMessage = signal('');
   get popupMessage(): string { return this._popupMessage(); }
 
-  // Internal flags — not in template, stay plain boolean
+  // Flag interni per non ricaricare i dati admin già scaricati: non servono nel
+  // template, quindi restano boolean normali e non signal.
   private usersLoaded = false;
   private plansLoaded = false;
   private subsLoaded = false;
@@ -382,7 +384,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   private loadAdminPlans(): void {
     if (this.plansLoaded || this.isInsuranceManager()) return;
-    this.planService.getPlans()
+    this.planService.getAdminPlans()
       .pipe(catchError(() => of([])), takeUntilDestroyed(this.destroyRef))
       .subscribe(plans => {
         this._allPlans.set(plans || []);
@@ -515,9 +517,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   closeProfile(): void { this._isProfileOpen.set(false); }
 
   getInitials(): string {
-    const f = (this.currentUser?.firstName ?? '').charAt(0);
-    const l = (this.currentUser?.lastName ?? '').charAt(0);
-    return (f + l).toUpperCase();
+    return getInitials(this.currentUser);
   }
 
   getSubscriptionDaysLeft(): number {

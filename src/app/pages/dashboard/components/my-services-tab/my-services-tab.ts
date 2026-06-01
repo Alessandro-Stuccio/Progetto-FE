@@ -1,38 +1,28 @@
-import { Component, Input, inject, ChangeDetectorRef, OnInit } from '@angular/core';
+import { Component, Input, inject, ChangeDetectorRef, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { DocumentService } from '../../../../core/services/document.service';
 import { AuthUser } from '../../../../shared/models/dashboard.model';
+import { PdfViewerComponent } from '../../../../shared/components/ui/pdf-viewer/pdf-viewer';
+import { formatLongDate } from '../../../../shared/utils/date.util';
 
 @Component({
   selector: 'app-my-services-tab',
   standalone: true,
-  imports: [CommonModule],
-  templateUrl: './my-services-tab.html',
-  styleUrls: ['./my-services-tab.css']
+  imports: [CommonModule, PdfViewerComponent],
+  templateUrl: './my-services-tab.html'
 })
 export class MyServicesTabComponent implements OnInit {
   private documentService = inject(DocumentService);
   private cdr = inject(ChangeDetectorRef);
-  private sanitizer = inject(DomSanitizer);
 
   @Input() currentUser: AuthUser | null = null;
+
+  @ViewChild('pdfViewer') pdfViewer!: PdfViewerComponent;
 
   activeTab: string = 'scheda';
   docs: any[] = [];
   loading: boolean = false;
   private loadedType: string = '';
-
-  get isMobile(): boolean {
-    return window.innerWidth < 640;
-  }
-
-  // PDF viewer
-  pdfOpen: boolean = false;
-  pdfUrl: SafeResourceUrl | null = null;
-  pdfName: string = '';
-  pdfLoading: boolean = false;
-  private blobUrl: string | null = null;
 
   ngOnInit(): void {
     this.loadDocs('scheda');
@@ -58,33 +48,11 @@ export class MyServicesTabComponent implements OnInit {
   }
 
   viewPdf(doc: any): void {
-    this.pdfLoading = true; this.pdfName = doc.fileName; this.pdfOpen = true; this.cdr.detectChanges();
-    this.documentService.downloadDocument(doc.id).subscribe({
-      next: (blob) => {
-        if (this.blobUrl) URL.revokeObjectURL(this.blobUrl);
-        this.blobUrl = URL.createObjectURL(blob);
-        // Su mobile, apri direttamente in un nuovo tab
-        if (this.isMobile) {
-          window.open(this.blobUrl, '_blank');
-          this.pdfOpen = false; this.pdfLoading = false; this.cdr.detectChanges();
-        } else {
-          this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.blobUrl + '#view=FitH&zoom=page-width');
-          this.pdfLoading = false; this.cdr.detectChanges();
-        }
-      },
-      error: () => { this.pdfOpen = false; this.pdfLoading = false; this.cdr.detectChanges(); }
-    });
+    this.pdfViewer.view(doc.fileName, this.documentService.downloadDocument(doc.id));
   }
-
-  closePdf(): void {
-    this.pdfOpen = false; this.pdfUrl = null; this.pdfName = '';
-    if (this.blobUrl) { URL.revokeObjectURL(this.blobUrl); this.blobUrl = null; }
-  }
-
-  openPdfNewTab(): void { if (this.blobUrl) window.open(this.blobUrl, '_blank'); }
 
   formatDate(d: string): string {
-    return new Date(d).toLocaleDateString('it-IT', { day: 'numeric', month: 'short', year: 'numeric' });
+    return formatLongDate(d);
   }
 
   getTabIcon(tab: string): string {

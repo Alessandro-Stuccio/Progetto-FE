@@ -1,25 +1,28 @@
-import { Component, Input, Output, EventEmitter, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { DocumentService } from '../../../../core/services/document.service';
 import { ClientBasicInfo, AuthUser } from '../../../../shared/models/dashboard.model';
+import { PdfViewerComponent } from '../../../../shared/components/ui/pdf-viewer/pdf-viewer';
+import { formatLongDate } from '../../../../shared/utils/date.util';
+import { validatePdfFile } from '../../../../shared/utils/file.util';
 
 @Component({
   selector: 'app-clients-tab',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, PdfViewerComponent],
   templateUrl: './clients-tab.html',
   styleUrls: ['./clients-tab.css']
 })
 export class ClientsTabComponent {
   private authService = inject(DocumentService);
   private cdr = inject(ChangeDetectorRef);
-  private sanitizer = inject(DomSanitizer);
 
   @Input() myClients: ClientBasicInfo[] = [];
   @Input() currentUser: AuthUser | null = null;
   @Output() showPopup = new EventEmitter<{title: string, message: string, type: 'success' | 'error' | 'warning'}>();
+
+  @ViewChild('pdfViewer') pdfViewer!: PdfViewerComponent;
 
   selectedClient: any = null;
   clientDocuments: any[] = [];
@@ -35,17 +38,6 @@ export class ClientsTabComponent {
   editingNotesDocId: number | null = null;
   editingNotesText: string = '';
   savingNotes: boolean = false;
-
-  // PDF Viewer inline
-  pdfViewerOpen: boolean = false;
-  pdfViewerUrl: SafeResourceUrl | null = null;
-  pdfViewerFileName: string = '';
-  pdfViewerLoading: boolean = false;
-  private currentBlobUrl: string | null = null;
-
-  get isMobile(): boolean {
-    return window.innerWidth < 640;
-  }
 
   openClientDetail(client: any): void {
     this.selectedClient = client;
@@ -81,8 +73,8 @@ export class ClientsTabComponent {
     const input = event.target as HTMLInputElement;
     if (!input.files || input.files.length === 0 || !this.selectedClient) return;
     const file = input.files[0];
-    if (file.type !== 'application/pdf') { this.showPopup.emit({title: 'Errore', message: 'Puoi caricare solo file PDF.', type: 'error'}); input.value = ''; return; }
-    if (file.size > 10 * 1024 * 1024) { this.showPopup.emit({title: 'Errore', message: 'Il file non può superare i 10MB.', type: 'error'}); input.value = ''; return; }
+    const check = validatePdfFile(file);
+    if (!check.valid) { this.showPopup.emit({title: 'Errore', message: check.error!, type: 'error'}); input.value = ''; return; }
     this.isUploading = true;
     this.authService.uploadDocument(file, this.selectedClient.id, type).subscribe({
       next: () => { this.isUploading = false; this.showPopup.emit({title: 'Caricato!', message: `${type === 'WORKOUT_PLAN' ? 'Scheda' : 'Dieta'} caricata con successo.`, type: 'success'}); this.loadClientDocuments(); input.value = ''; },
@@ -90,7 +82,7 @@ export class ClientsTabComponent {
     });
   }
 
-  // ── Drag & Drop ──────────────────────────────────────────
+  // Drag & Drop
 
   onDragEnter(event: DragEvent): void {
     event.preventDefault();
@@ -130,12 +122,9 @@ export class ClientsTabComponent {
     if (!files || files.length === 0) return;
     const file = files[0];
 
-    if (file.type !== 'application/pdf') {
-      this.showPopup.emit({ title: 'Errore', message: 'Puoi caricare solo file PDF.', type: 'error' });
-      return;
-    }
-    if (file.size > 10 * 1024 * 1024) {
-      this.showPopup.emit({ title: 'Errore', message: 'Il file non può superare i 10MB.', type: 'error' });
+    const check = validatePdfFile(file);
+    if (!check.valid) {
+      this.showPopup.emit({ title: 'Errore', message: check.error!, type: 'error' });
       return;
     }
 
@@ -173,47 +162,11 @@ export class ClientsTabComponent {
   }
 
   viewDocument(doc: any): void {
-    this.pdfViewerLoading = true;
-    this.pdfViewerFileName = doc.fileName;
-    this.pdfViewerOpen = true;
-    this.cdr.detectChanges();
-
-    this.authService.downloadDocument(doc.id).subscribe({
-      next: (blob) => {
-        // Revoca URL precedente se esiste
-        if (this.currentBlobUrl) URL.revokeObjectURL(this.currentBlobUrl);
-        this.currentBlobUrl = URL.createObjectURL(blob);
-        // Su mobile, apri direttamente in un nuovo tab
-        if (this.isMobile) {
-          window.open(this.currentBlobUrl, '_blank');
-          this.pdfViewerOpen = false; this.pdfViewerLoading = false; this.cdr.detectChanges();
-        } else {
-          this.pdfViewerUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.currentBlobUrl + '#view=FitH&zoom=page-width');
-          this.pdfViewerLoading = false;
-          this.cdr.detectChanges();
-        }
-      },
-      error: () => {
-        this.pdfViewerOpen = false;
-        this.pdfViewerLoading = false;
-        this.showPopup.emit({title: 'Errore', message: 'Impossibile aprire il documento.', type: 'error'});
-        this.cdr.detectChanges();
-      }
-    });
-  }
-
-  closePdfViewer(): void {
-    this.pdfViewerOpen = false;
-    this.pdfViewerUrl = null;
-    this.pdfViewerFileName = '';
-    if (this.currentBlobUrl) {
-      URL.revokeObjectURL(this.currentBlobUrl);
-      this.currentBlobUrl = null;
-    }
-  }
-
-  openPdfInNewTab(): void {
-    if (this.currentBlobUrl) window.open(this.currentBlobUrl, '_blank');
+    this.pdfViewer.view(
+      doc.fileName,
+      this.authService.downloadDocument(doc.id),
+      () => this.showPopup.emit({ title: 'Errore', message: 'Impossibile aprire il documento.', type: 'error' })
+    );
   }
 
 deleteDocument(doc: any): void {
@@ -233,28 +186,27 @@ deleteDocument(doc: any): void {
   }
 
   formatDocDate(dateStr: string): string {
-    const d = new Date(dateStr);
-    return d.toLocaleDateString('it-IT', { day: 'numeric', month: 'short', year: 'numeric' });
+    return formatLongDate(dateStr);
   }
 
-  /** PT può caricare solo schede */
+  // Il personal trainer carica solo schede di allenamento.
   canUploadWorkout(): boolean {
     return this.currentUser?.role === 'PERSONAL_TRAINER';
   }
 
-  /** Nutrizionista può caricare solo diete */
+  // Il nutrizionista carica solo diete.
   canUploadDiet(): boolean {
     return this.currentUser?.role === 'NUTRITIONIST';
   }
 
-  /** Si può eliminare solo il tipo di documento che il proprio ruolo può caricare */
+  // Ognuno può cancellare solo il tipo di documento che gli compete caricare.
   canDeleteDoc(doc: any): boolean {
     if (this.currentUser?.role === 'PERSONAL_TRAINER') return doc.type === 'WORKOUT_PLAN';
     if (this.currentUser?.role === 'NUTRITIONIST') return doc.type === 'DIET_PLAN';
     return false;
   }
 
-  /** Il professionista può modificare le note solo per il tipo di doc che gli compete */
+  // Stessa regola per le note: si toccano solo sui documenti del proprio ruolo.
   canEditNotes(doc: any): boolean {
     if (this.currentUser?.role === 'PERSONAL_TRAINER') return doc.type === 'WORKOUT_PLAN';
     if (this.currentUser?.role === 'NUTRITIONIST') return doc.type === 'DIET_PLAN';

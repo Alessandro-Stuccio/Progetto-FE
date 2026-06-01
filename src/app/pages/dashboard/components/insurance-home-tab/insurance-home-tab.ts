@@ -1,25 +1,28 @@
-import { Component, Input, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, inject, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { DocumentService } from '../../../../core/services/document.service';
 import { AuthUser, Subscription, UserProfile } from '../../../../shared/models/dashboard.model';
+import { PdfViewerComponent } from '../../../../shared/components/ui/pdf-viewer/pdf-viewer';
+import { formatLongDate } from '../../../../shared/utils/date.util';
+import { getInitials } from '../../../../shared/utils/user.util';
+import { validatePdfFile } from '../../../../shared/utils/file.util';
 
 @Component({
   selector: 'app-insurance-home-tab',
   standalone: true,
-  imports: [CommonModule, FormsModule],
-  templateUrl: './insurance-home-tab.html',
-  styleUrls: ['./insurance-home-tab.css']
+  imports: [CommonModule, FormsModule, PdfViewerComponent],
+  templateUrl: './insurance-home-tab.html'
 })
 export class InsuranceHomeTabComponent {
   private authService = inject(DocumentService);
   private cdr = inject(ChangeDetectorRef);
-  private sanitizer = inject(DomSanitizer);
 
   @Input() currentUser: AuthUser | null = null;
   @Input() allSubscriptions: Subscription[] = [];
   @Input() allUsers: UserProfile[] = [];
+
+  @ViewChild('pdfViewer') pdfViewer!: PdfViewerComponent;
 
   searchQuery: string = '';
   selectedClient: any = null;
@@ -31,17 +34,6 @@ export class InsuranceHomeTabComponent {
   editingNotesDocId: number | null = null;
   editingNotes: string = '';
   savingNotes: boolean = false;
-
-  get isMobile(): boolean {
-    return window.innerWidth < 640;
-  }
-
-  // PDF viewer
-  pdfOpen: boolean = false;
-  pdfUrl: SafeResourceUrl | null = null;
-  pdfName: string = '';
-  pdfLoading: boolean = false;
-  private blobUrl: string | null = null;
 
   get activePolicies(): number { return this.allSubscriptions.filter(s => s.active).length; }
   get expiredPolicies(): number { return this.allSubscriptions.filter(s => !s.active).length; }
@@ -61,7 +53,7 @@ export class InsuranceHomeTabComponent {
   }
 
   getInitials(): string {
-    return ((this.currentUser?.firstName ?? '').charAt(0) + (this.currentUser?.lastName ?? '').charAt(0)).toUpperCase();
+    return getInitials(this.currentUser);
   }
 
   openClientDocs(sub: any): void {
@@ -77,30 +69,8 @@ export class InsuranceHomeTabComponent {
   closeClientDocs(): void { this.selectedClient = null; this.clientDocs = []; }
 
   viewPdf(doc: any): void {
-    this.pdfLoading = true; this.pdfName = doc.fileName; this.pdfOpen = true; this.cdr.detectChanges();
-    this.authService.downloadPolicy(doc.id).subscribe({
-      next: (blob) => {
-        if (this.blobUrl) URL.revokeObjectURL(this.blobUrl);
-        this.blobUrl = URL.createObjectURL(blob);
-        // Su mobile, apri direttamente in un nuovo tab
-        if (this.isMobile) {
-          window.open(this.blobUrl, '_blank');
-          this.pdfOpen = false; this.pdfLoading = false; this.cdr.detectChanges();
-        } else {
-          this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.blobUrl + '#view=FitH&zoom=page-width');
-          this.pdfLoading = false; this.cdr.detectChanges();
-        }
-      },
-      error: () => { this.pdfOpen = false; this.pdfLoading = false; this.cdr.detectChanges(); }
-    });
+    this.pdfViewer.view(doc.fileName, this.authService.downloadPolicy(doc.id));
   }
-
-  closePdf(): void {
-    this.pdfOpen = false; this.pdfUrl = null; this.pdfName = '';
-    if (this.blobUrl) { URL.revokeObjectURL(this.blobUrl); this.blobUrl = null; }
-  }
-
-  openPdfNewTab(): void { if (this.blobUrl) window.open(this.blobUrl, '_blank'); }
 
   onDragOver(event: DragEvent): void {
     event.preventDefault();
@@ -121,10 +91,11 @@ export class InsuranceHomeTabComponent {
 
     const files = event.dataTransfer?.files;
     if (files && files.length > 0) {
-      if (files[0].type === 'application/pdf') {
+      const check = validatePdfFile(files[0]);
+      if (check.valid) {
         this.uploadFile(files[0]);
       } else {
-        alert("Per favore, carica solo file in formato PDF.");
+        alert(check.error);
       }
     }
   }
@@ -133,10 +104,11 @@ export class InsuranceHomeTabComponent {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
     if (file) {
-      if (file.type === 'application/pdf') {
+      const check = validatePdfFile(file);
+      if (check.valid) {
         this.uploadFile(file);
       } else {
-        alert("Per favore, carica solo file in formato PDF.");
+        alert(check.error);
       }
     }
     input.value = ''; // Reset input per permmettere il ricaricamento dello stesso file se necessario
@@ -187,5 +159,5 @@ export class InsuranceHomeTabComponent {
     });
   }
 
-  formatDate(d: string): string { return new Date(d).toLocaleDateString('it-IT', { day: 'numeric', month: 'short', year: 'numeric' }); }
+  formatDate(d: string): string { return formatLongDate(d); }
 }

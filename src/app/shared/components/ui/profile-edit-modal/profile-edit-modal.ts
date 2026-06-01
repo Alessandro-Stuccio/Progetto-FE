@@ -13,8 +13,7 @@ import { AuthUser, ProfileEditData, ApiErrorResponse } from '../../../models/das
   selector: 'app-profile-edit-modal',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './profile-edit-modal.html',
-  styleUrls: ['./profile-edit-modal.css']
+  templateUrl: './profile-edit-modal.html'
 })
 export class ProfileEditModalComponent {
   @Input() currentUser: AuthUser | null = null;

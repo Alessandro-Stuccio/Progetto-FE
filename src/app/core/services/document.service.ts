@@ -42,7 +42,8 @@ export class DocumentService {
     return this.http.put(`${this.apiUrl}/api/documents/${documentId}/notes`, { notes });
   }
 
-  // ── Insurance-specific endpoints (/api/insurance/**) ──────────
+  // Polizze assicurative: vivono su endpoint a parte (/api/insurance) ma la
+  // logica di upload/download è la stessa dei documenti normali.
 
   uploadInsurancePolicy(file: File, clientId: number): Observable<any> {
     const formData = new FormData();

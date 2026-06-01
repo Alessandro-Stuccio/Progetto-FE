@@ -1,8 +1,6 @@
 <div class="flex h-full overflow-hidden">
 
-  <!-- ════════════════════════════════════════════
-       COLONNA SINISTRA — lista professionisti
-       ════════════════════════════════════════════ -->
+  <!-- colonna sinistra: lista professionisti -->
   <div class="flex flex-col border-r border-[var(--color-border-subtle)]"
     [class.hidden]="isMobile && selectedProfessional"
     [class.w-full]="isMobile && !selectedProfessional"
@@ -53,9 +51,7 @@
     </div>
   </div>
 
-  <!-- ════════════════════════════════════════════
-       COLONNA DESTRA — clienti + documenti
-       ════════════════════════════════════════════ -->
+  <!-- colonna destra: clienti e relativi documenti -->
   <div class="flex flex-col flex-1 min-w-0 overflow-hidden"
     [class.hidden]="isMobile && !selectedProfessional">
 
@@ -209,27 +205,5 @@
 
 </div>
 
-<!-- PDF Viewer -->
-<div class="fixed inset-0 bg-[var(--color-text-main)]/50 backdrop-blur-[4px] z-[200] flex items-center justify-center p-3 sm:p-6"
-  *ngIf="pdfOpen" (click)="closePdf()">
-  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl h-[80vh] flex flex-col overflow-hidden"
-    (click)="$event.stopPropagation()">
-    <div class="flex items-center justify-between px-5 py-3 bg-[var(--color-primary-navy)] flex-shrink-0">
-      <span class="font-['Clash_Display'] text-white font-bold text-[0.95rem] truncate max-w-[60%]">{{ pdfName }}</span>
-      <div class="flex items-center gap-2">
-        <button (click)="openPdfNewTab()" class="text-white/70 hover:text-white text-[0.78rem] font-medium transition-colors px-2 py-1 rounded border border-white/20 hover:border-white/50">
-          Nuova scheda
-        </button>
-        <button (click)="closePdf()" class="w-7 h-7 bg-white/10 border border-white/20 rounded-lg text-white/70 hover:text-white flex items-center justify-center transition-all">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
-          </svg>
-        </button>
-      </div>
-    </div>
-    <div *ngIf="pdfLoading" class="flex-1 flex items-center justify-center">
-      <div class="w-8 h-8 border-4 border-[var(--color-primary-navy)] border-t-transparent rounded-full animate-spin"></div>
-    </div>
-    <iframe *ngIf="!pdfLoading && pdfUrl" [src]="pdfUrl" class="flex-1 w-full border-0"></iframe>
-  </div>
-</div>
+<!-- PDF Viewer condiviso -->
+<app-pdf-viewer #pdfViewer />

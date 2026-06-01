@@ -1,6 +1,4 @@
-/* ══════════════════════════════════════════════════════
-   AUTH SHARED — usato da login + reset-password
-   ══════════════════════════════════════════════════════ */
+/* AUTH SHARED — usato da login + reset-password */
 
 /* Layout */
 .login-page {
@@ -263,9 +261,7 @@
   text-align: center;
 }
 
-/* ════════════════════════════════
-   RIGHT PANEL — navy-deep hero
-   ════════════════════════════════ */
+/* RIGHT PANEL — navy-deep hero */
 .lp-lines {
   position: absolute;
   inset: 0;

@@ -31,7 +31,7 @@ export class RegisterComponent implements OnInit {
   personalTrainers: any[] = [];
   nutritionists: any[] = [];
 
-  // ── Ricerca Professionisti
+  // Ricerca Professionisti
   ptSearch: string = '';
   nutSearch: string = '';
 
@@ -60,7 +60,7 @@ export class RegisterComponent implements OnInit {
   private slotService = inject(SlotService);
   private reviewService = inject(ReviewService);
 
-  // ── Modal Vedi Recensioni ────────────────
+  // Modal Vedi Recensioni
   reviewsModal: { prof: any; reviews: ReviewResponse[] } | null = null;
   reviewsLoading = false;
 

@@ -1,8 +1,6 @@
-/* ══════════════════════════════════════════════════════════════════════════
-   CALENDARIO — stili specifici del calendar-tab
-   ══════════════════════════════════════════════════════════════════════════ */
+/* stili specifici del calendar-tab */
 
-/* ── Nav buttons ────────────────────────────────────────────────────────── */
+/* bottoni di navigazione */
 .nav-btn:hover {
   background: var(--bg-elevated);
   color: var(--navy-primary);
@@ -14,7 +12,7 @@
   box-shadow: 0 4px 12px rgba(26, 52, 98, 0.25);
 }
 
-/* ── Toggle vista Agenda (solo mobile) ─────────────────────────────────── */
+/* Toggle vista Agenda (solo mobile) */
 .agenda-toggle-btn {
   background: var(--bg-subtle);
   color: var(--text-secondary);
@@ -33,7 +31,7 @@
   border-color: var(--border-medium);
 }
 
-/* ── Agenda view: booking row hover ────────────────────────────────────── */
+/* Agenda view: booking row hover */
 .agenda-booking-row {
   transition: box-shadow 0.15s, transform 0.1s;
   cursor: default;
@@ -50,7 +48,7 @@
   background: rgba(var(--color-accent-gold-rgb), 0.08);
 }
 
-/* ── Scrollbar nascosta ─────────────────────────────────────────────────── */
+/* Scrollbar nascosta */
 .calendar-grid-scroll {
   scrollbar-width: none;
 }
@@ -59,7 +57,7 @@
   display: none;
 }
 
-/* ── Slot labels e celle ────────────────────────────────────────────────── */
+/* Slot labels e celle */
 .time-slot-label {
   height: 50px;
   display: flex;
@@ -99,7 +97,7 @@
   border-top: 1px dashed rgba(204, 216, 237, 0.45);
 }
 
-/* ── nth-child: nascondi colonne eccedenti per breakpoint ──────────────── */
+/* nth-child: nascondi colonne eccedenti per breakpoint */
 @media (max-width: 1023px) and (min-width: 640px) {
   .day-header:nth-child(n+5),
   .day-col:nth-child(n+5) {
@@ -143,7 +141,7 @@
   }
 }
 
-/* ── Today highlight ────────────────────────────────────────────────────── */
+/* Today highlight */
 .day-name {
   color: var(--text-muted);
   letter-spacing: 0.16em;
@@ -168,7 +166,7 @@
   background: rgba(201, 169, 110, 0.04);
 }
 
-/* ── Booking cards ──────────────────────────────────────────────────────── */
+/* Booking cards */
 .booking-card {
   border-radius: 5px;
   padding: 3px 7px;
@@ -224,7 +222,7 @@
   opacity: 0.78;
 }
 
-/* ── Small phones (<360px) ─────────────────────────────────────────────── */
+/* Small phones (<360px) */
 @media (max-width: 360px) {
   .time-slot-label {
     font-size: 0.50rem;
@@ -241,7 +239,7 @@
   }
 }
 
-/* ── Loading spinner ───────────────────────────────────────────────────── */
+/* Loading spinner */
 .loading-spinner {
   animation: spin 0.8s linear infinite;
 }

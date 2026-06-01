@@ -1,24 +1,30 @@
-import { Component, Input, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, inject, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { DocumentService } from '../../../../core/services/document.service';
+import { RoleService } from '../../../../core/services/role.service';
 import { AuthUser, UserProfile } from '../../../../shared/models/dashboard.model';
+import { PdfViewerComponent } from '../../../../shared/components/ui/pdf-viewer/pdf-viewer';
+import { formatLongDate } from '../../../../shared/utils/date.util';
+import { getInitials } from '../../../../shared/utils/user.util';
+import { validatePdfFile } from '../../../../shared/utils/file.util';
 
 @Component({
   selector: 'app-admin-documents-tab',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, PdfViewerComponent],
   templateUrl: './admin-documents-tab.html',
   styleUrls: ['./admin-documents-tab.css']
 })
 export class AdminDocumentsTabComponent {
   private docService = inject(DocumentService);
   private cdr = inject(ChangeDetectorRef);
-  private sanitizer = inject(DomSanitizer);
+  private roleService = inject(RoleService);
 
   @Input() allUsers: UserProfile[] = [];
   @Input() currentUser: AuthUser | null = null;
+
+  @ViewChild('pdfViewer') pdfViewer!: PdfViewerComponent;
 
   profSearch: string = '';
   selectedProfessional: UserProfile | null = null;
@@ -31,12 +37,7 @@ export class AdminDocumentsTabComponent {
   editingNotes: string = '';
   savingNotes: boolean = false;
 
-  pdfOpen = false;
-  pdfUrl: SafeResourceUrl | null = null;
-  pdfName = '';
-  pdfLoading = false;
-  private blobUrl: string | null = null;
-
+  // Usato dal template per il layout responsive (lista vs dettaglio), non più dal PDF viewer.
   get isMobile(): boolean { return window.innerWidth < 640; }
 
   get professionals(): UserProfile[] {
@@ -67,7 +68,7 @@ export class AdminDocumentsTabComponent {
     this.clientDocs.clear();
     this.loadingClients.clear();
     this.editingNotesDocId = null;
-    this.closePdf();
+    this.pdfViewer?.close();
   }
 
   backToProfessionals(): void {
@@ -132,7 +133,8 @@ export class AdminDocumentsTabComponent {
     const file = input.files?.[0];
     input.value = '';
     if (!file || !this.selectedProfessional) return;
-    if (file.type !== 'application/pdf') { alert('Carica solo file PDF.'); return; }
+    const check = validatePdfFile(file);
+    if (!check.valid) { alert(check.error); return; }
     this.docService.uploadDocument(file, clientId, this.getUploadType()).subscribe({
       next: () => {
         this.clientDocs.delete(clientId);
@@ -143,29 +145,8 @@ export class AdminDocumentsTabComponent {
   }
 
   viewDoc(doc: any): void {
-    this.pdfLoading = true; this.pdfName = doc.fileName; this.pdfOpen = true; this.cdr.detectChanges();
-    this.docService.downloadDocument(doc.id).subscribe({
-      next: (blob) => {
-        if (this.blobUrl) URL.revokeObjectURL(this.blobUrl);
-        this.blobUrl = URL.createObjectURL(blob);
-        if (this.isMobile) {
-          window.open(this.blobUrl, '_blank');
-          this.pdfOpen = false; this.pdfLoading = false; this.cdr.detectChanges();
-        } else {
-          this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.blobUrl + '#view=FitH&zoom=page-width');
-          this.pdfLoading = false; this.cdr.detectChanges();
-        }
-      },
-      error: () => { this.pdfOpen = false; this.pdfLoading = false; this.cdr.detectChanges(); }
-    });
+    this.pdfViewer.view(doc.fileName, this.docService.downloadDocument(doc.id));
   }
-
-  closePdf(): void {
-    this.pdfOpen = false; this.pdfUrl = null; this.pdfName = '';
-    if (this.blobUrl) { URL.revokeObjectURL(this.blobUrl); this.blobUrl = null; }
-  }
-
-  openPdfNewTab(): void { if (this.blobUrl) window.open(this.blobUrl, '_blank'); }
 
   deleteDoc(doc: any, clientId: number): void {
     if (!confirm(`Eliminare "${doc.fileName}"?`)) return;
@@ -196,12 +177,7 @@ export class AdminDocumentsTabComponent {
   }
 
   getRoleLabel(role: string): string {
-    switch (role) {
-      case 'PERSONAL_TRAINER': return 'Personal Trainer';
-      case 'NUTRITIONIST': return 'Nutrizionista';
-      case 'INSURANCE_MANAGER': return 'Assicurazione';
-      default: return role;
-    }
+    return this.roleService.getRoleLabel(role);
   }
 
   getRoleIcon(role: string): string {
@@ -232,10 +208,10 @@ export class AdminDocumentsTabComponent {
   }
 
   getInitials(u: UserProfile): string {
-    return ((u.firstName || '').charAt(0) + (u.lastName || '').charAt(0)).toUpperCase();
+    return getInitials(u);
   }
 
   formatDate(d: string): string {
-    return new Date(d).toLocaleDateString('it-IT', { day: 'numeric', month: 'short', year: 'numeric' });
+    return formatLongDate(d);
   }
 }

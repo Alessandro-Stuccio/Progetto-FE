@@ -3,9 +3,7 @@
  * Mappati 1:1 ai DTO Java del backend Spring Boot.
  */
 
-// ─────────────────────────────────────────────────────────────
 // Enums
-// ─────────────────────────────────────────────────────────────
 
 export enum UserRole {
   CLIENT = 'CLIENT',
@@ -36,9 +34,7 @@ export type TabId =
   | 'admin-documents'
   | 'insurance';
 
-// ─────────────────────────────────────────────────────────────
 // User & Auth
-// ─────────────────────────────────────────────────────────────
 
 export type UserManagementMode = 'admin' | 'moderator';
 
@@ -108,9 +104,7 @@ export interface ClientAttentionItem {
   daysSinceLastDoc: number;
 }
 
-// ─────────────────────────────────────────────────────────────
 // Subscription & Plan
-// ─────────────────────────────────────────────────────────────
 
 /** Stato abbonamento (da SubscriptionResponse.java). */
 export interface Subscription {
@@ -137,11 +131,11 @@ export interface Plan {
   monthlyInstallmentPrice: number;
   monthlyCreditsPT: number;
   monthlyCreditsNutri: number;
+  /** Stato del piano: false = disabilitato (non sottoscrivibile, ma mantenuto in DB). */
+  active?: boolean;
 }
 
-// ─────────────────────────────────────────────────────────────
 // Professional
-// ─────────────────────────────────────────────────────────────
 
 /** Riepilogo professionista (da ProfessionalSummaryDTO.java + campi UI extra). */
 export interface ProfessionalSummary {
@@ -163,9 +157,7 @@ export interface ProfessionalSummary {
   email?: string;
 }
 
-// ─────────────────────────────────────────────────────────────
 // Booking
-// ─────────────────────────────────────────────────────────────
 
 /** Prenotazione (da BookingResponse.java). */
 export interface Booking {
@@ -189,9 +181,7 @@ export interface BookingRequest {
   slotId: number;
 }
 
-// ─────────────────────────────────────────────────────────────
 // Slot
-// ─────────────────────────────────────────────────────────────
 
 /** Slot di disponibilità (da SlotDTO.java). */
 export interface ProfessionalSlot {
@@ -216,9 +206,7 @@ export interface SlotPayload {
   isAvailable: boolean;
 }
 
-// ─────────────────────────────────────────────────────────────
 // Dashboard aggregata
-// ─────────────────────────────────────────────────────────────
 
 /** Risposta dashboard aggregata (da ClientDashboardResponse.java). */
 export interface DashboardData {
@@ -228,9 +216,7 @@ export interface DashboardData {
   upcomingBookings: Booking[];
 }
 
-// ─────────────────────────────────────────────────────────────
 // Statistiche & Activity
-// ─────────────────────────────────────────────────────────────
 
 /** Singolo appuntamento di oggi (da TodayBookingItem.java). */
 export interface TodayBookingItem {
@@ -262,9 +248,7 @@ export interface ActivityFeedItem {
   timeAgo: string;
 }
 
-// ─────────────────────────────────────────────────────────────
 // Profilo edit
-// ─────────────────────────────────────────────────────────────
 
 /** Dati form modifica profilo. */
 export interface ProfileEditData {
@@ -274,9 +258,7 @@ export interface ProfileEditData {
   profilePicture: string;
 }
 
-// ─────────────────────────────────────────────────────────────
 // Error handling
-// ─────────────────────────────────────────────────────────────
 
 /**
  * Struttura standard per errori API del backend.
@@ -291,9 +273,7 @@ export interface ApiErrorResponse {
   validationErrors?: Record<string, string>;
 }
 
-// ─────────────────────────────────────────────────────────────
 // Admin Statistics
-// ─────────────────────────────────────────────────────────────
 
 export interface AdminStatsCredits {
   ptAvailable: number;

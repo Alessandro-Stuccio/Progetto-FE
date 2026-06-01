@@ -302,7 +302,7 @@
             <div class="flex flex-col gap-1.5 sm:gap-2">
               <button
                 class="flex items-center gap-2.5 sm:gap-3 p-2.5 sm:p-3 rounded-xl border transition-all text-left w-full"
-                *ngFor="let plan of allPlans"
+                *ngFor="let plan of activePlans"
                 [ngClass]="newUser.planId === plan.id ? 'border-[var(--color-accent-gold)] bg-[var(--color-accent-gold)]/5' : 'border-[var(--color-border-subtle)] bg-white'"
                 (click)="newUser.planId = plan.id">
                 <div class="w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0"

@@ -93,8 +93,7 @@ export class DashboardFacadeService {
     return this.callState.value;
   }
 
-  // ── Chat State ─────────────────────────────────────────────────────────
-
+  // Utente con cui si sta per aprire una chat (passato tra le tab).
   get currentPendingChatUser(): UserProfile | null {
     return this.pendingChatUser.value;
   }
@@ -107,8 +106,8 @@ export class DashboardFacadeService {
     this.pendingChatUser.next(null);
   }
 
-  // ── Call State & Polling ───────────────────────────────────────────────
-
+  // Apre la modale della videochiamata. Se l'orario non è ancora arrivato, il
+  // pulsante "entra" parte disabilitato e lo sblocchiamo con un timer.
   openCallModal(booking: Booking): void {
     const canJoin = this.checkIfCanJoinNow(booking);
 
@@ -147,6 +146,8 @@ export class DashboardFacadeService {
     return bookingDate.getTime() <= Date.now();
   }
 
+  // Aspetta fino all'ora dell'appuntamento e poi abilita l'ingresso in call.
+  // Se si può già entrare o l'appuntamento è annullato non c'è nulla da attendere.
   private startCallTimer(booking: Booking, alreadyCanJoin: boolean): void {
     if (this.callTimerSub) {
       this.callTimerSub.unsubscribe();
@@ -166,8 +167,9 @@ export class DashboardFacadeService {
   }
 
 
-  // ── Availability ────────────────────────────────────────────────────────
-
+  // Apre la griglia "imposta disponibilità" del professionista. Carichiamo gli
+  // slot già esistenti e li dividiamo: quelli liberi restano modificabili, quelli
+  // già prenotati da un cliente li blocchiamo così non si possono cancellare.
   openAvailability(professionalId: number): void {
     const nextWeekDays = this.availabilityService.buildNextWeekDays();
     this.updateCalendarState({
@@ -312,8 +314,8 @@ export class DashboardFacadeService {
     this.updateCalendarState({ selectedSlots: newSelected, copiedDay: null });
   }
 
-  // ── Booking ────────────────────────────────────────────────────────────
-
+  // Apre la prenotazione lato cliente: carichiamo gli slot disponibili del
+  // professionista e preselezioniamo il primo giorno utile.
   openBooking(professional: ProfessionalSummary): void {
     this.updateBookingState({
       isBookingOpen: true,

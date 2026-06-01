@@ -15,37 +15,37 @@ import { JobApplicationService } from '../../core/services/job-application.servi
 })
 export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
-    // ── Plans (from backend) ──
+    // Plans (from backend)
     semestralePlans: any[] = [];
     annualePlans: any[] = [];
     isAnnual = false;
 
-    // ── Intro ──
+    // Intro
     showIntro = true;
     introExiting = false;
 
-    // ── Nav ──
+    // Nav
     isMobileMenuOpen = false;
     navScrolled = false;
     navAtDark = true;
 
-    // ── Hero parallax + scroll fade ──
+    // Hero parallax + scroll fade
     heroFade = 1;
     heroTranslateY = 0;
 
-    // ── Manifesto sticky ──
+    // Manifesto sticky
     manifestoProgress = 0;
 
-    // ── How It Works sticky ──
+    // How It Works sticky
     hiwActiveIdx = 0;
 
-    // ── App Showcase sticky ──
+    // App Showcase sticky
     appActiveIdx = 0;
 
-    // ── FAQ ──
+    // FAQ
     openFaqIndex = -1;
 
-    // ── Job application ──
+    // Job application
     applicationForm!: FormGroup;
     selectedFile: File | null = null;
     fileError = '';
@@ -107,7 +107,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild('bentoSection') bentoSectionRef!: ElementRef;
     @ViewChild('carouselVideo') carouselVideoRef?: ElementRef<HTMLVideoElement>;
 
-    // ── Video Carousel ──
+    // Video Carousel
     carouselVideos = [
         { key: 'dashboard',   title: 'Dashboard',    src: 'https://res.cloudinary.com/dpgixeqq0/video/upload/v1774348830/dashboard_d9kgl5.mp4',    mobileSrc: 'https://res.cloudinary.com/dpgixeqq0/video/upload/v1774348533/dashboard_rbs4pz.mp4' },
         { key: 'calendario',  title: 'Calendario',   src: 'https://res.cloudinary.com/dpgixeqq0/video/upload/v1774348830/calendario_axbrqh.mp4',   mobileSrc: 'https://res.cloudinary.com/dpgixeqq0/video/upload/v1774348532/chat_rfr9oh.mp4' },
@@ -496,7 +496,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
         this.selectedFile = file;
     }
 
-    // ── Video Carousel methods ──────────────────────────────────────────
+    // Video Carousel methods
 
     getVideoSrc(video: any): string {
         return window.innerWidth < 768 ? video.mobileSrc : video.src;

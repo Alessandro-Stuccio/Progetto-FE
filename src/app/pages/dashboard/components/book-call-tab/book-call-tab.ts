@@ -6,8 +6,7 @@ import { ProfessionalSummary } from '../../../../shared/models/dashboard.model';
   selector: 'app-book-call-tab',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './book-call-tab.html',
-  styleUrls: ['./book-call-tab.css']
+  templateUrl: './book-call-tab.html'
 })
 export class BookCallTabComponent {
   @Input() professionals: ProfessionalSummary[] = [];

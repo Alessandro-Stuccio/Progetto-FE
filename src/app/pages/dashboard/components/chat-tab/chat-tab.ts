@@ -5,6 +5,7 @@ import { ChatService, ChatMessage, Conversation } from '../../../../core/service
 import { SocketService } from '../../../../core/services/socket.service';
 import { AuthUser, UserProfile, ProfessionalSummary, ClientBasicInfo } from '../../../../shared/models/dashboard.model';
 import { StorageService } from '../../../../core/services/storage.service';
+import { RoleService } from '../../../../core/services/role.service';
 
 @Component({
   selector: 'app-chat-tab',
@@ -19,6 +20,7 @@ export class ChatTabComponent implements OnInit, OnDestroy {
   private socketService = inject(SocketService);
   private cdr = inject(ChangeDetectorRef);
   private storageService = inject(StorageService);
+  private roleService = inject(RoleService);
 
   @ViewChild('messagesContainer') messagesContainer!: ElementRef;
 
@@ -95,7 +97,7 @@ export class ChatTabComponent implements OnInit, OnDestroy {
     return users;
   }
 
-  /** @returns true se la conversazione esisteva già, false se è stata creata ex-novo */
+  // Ritorna true se la conversazione c'era già, false se l'abbiamo appena creata.
   startConversationWith(user: any): boolean {
     if (user.id === this.currentUser?.id) return false;
 
@@ -125,15 +127,7 @@ export class ChatTabComponent implements OnInit, OnDestroy {
   }
 
   getRoleLabel(role: string): string {
-    switch (role) {
-      case 'CLIENT': return 'Cliente';
-      case 'PERSONAL_TRAINER': return 'Personal Trainer';
-      case 'NUTRITIONIST': return 'Nutrizionista';
-      case 'ADMIN': return 'Admin';
-      case 'MODERATOR': return 'Moderatore';
-      case 'INSURANCE_MANAGER': return 'Assicurazione';
-      default: return role;
-    }
+    return this.roleService.getRoleLabel(role);
   }
 
   isConversationWithModerator(): boolean {
@@ -440,7 +434,7 @@ export class ChatTabComponent implements OnInit, OnDestroy {
     const receiverName = this.activeConversation.otherUserName;
 
     if (this.socketService.isConnected) {
-      // ── Real-time via WebSocket ──
+      // Real-time via WebSocket
       const localMsg = this.chatService.sendMessageRealTime(
         chatId, this.currentUser.id, text, senderName, receiverName, receiverId
       );
@@ -455,7 +449,7 @@ export class ChatTabComponent implements OnInit, OnDestroy {
         this.activeConversation.lastMessageTime = localMsg.createdAt;
       }
     } else {
-      // ── Fallback REST ──
+      // Fallback REST
       const localMsg: ChatMessage = {
         id: -Date.now(),
         chatId,

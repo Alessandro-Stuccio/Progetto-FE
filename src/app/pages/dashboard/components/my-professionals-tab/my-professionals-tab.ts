@@ -22,13 +22,14 @@ export class MyProfessionalsTabComponent implements OnChanges, OnInit {
     private reviewService = inject(ReviewService);
     private cdr = inject(ChangeDetectorRef);
 
-    /** Recensioni pubbliche per professionalId */
+    // Tutte queste mappe sono indicizzate per professionalId.
+    // Recensioni pubbliche del professionista.
     reviewsMap: Record<number, ReviewResponse[]> = {};
-    /** Il backend dice che l'utente ha già recensito (fonte di verità) */
+    // Se l'utente ha già recensito: è il backend a dircelo, qui ci fidiamo di lui.
     hasReviewedServerMap: Record<number, boolean> = {};
-    /** Contenuto della recensione dell'utente, estratto dalla lista pubblica */
+    // La recensione scritta dall'utente, ripescata dalla lista pubblica.
     hasReviewedMap: Record<number, ReviewResponse | null> = {};
-    /** Il backend dice che l'utente PUÒ ancora recensire */
+    // Se l'utente può ancora lasciare una recensione.
     canReviewMap: Record<number, boolean> = {};
 
     // Modal recensioni pubbliche

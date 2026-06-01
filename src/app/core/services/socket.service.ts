@@ -3,10 +3,7 @@ import { Client, IMessage, StompSubscription } from '@stomp/stompjs';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
-/**
- * Payload in arrivo dal backend via WebSocket.
- * Corrisponde a ChatMessageResponse del backend Spring Boot.
- */
+// Messaggio che arriva dal backend: è lo stesso ChatMessageResponse lato Spring.
 export interface WsIncomingMessage {
   id: number;
   chatId: number;
@@ -20,20 +17,20 @@ export interface WsIncomingMessage {
   roomId: string;
 }
 
-/** Evento typing indicator */
+// "Sta scrivendo..." dell'altro utente.
 export interface WsTypingEvent {
   userId: number;
   roomId: string;
   typing: boolean;
 }
 
-/** Evento notifica unread aggiornato */
+// Nuovo conteggio dei non letti spinto dal server.
 export interface WsUnreadUpdate {
   userId: number;
   unreadCount: number;
 }
 
-/** Aggiornamento status messaggi (DELIVERED o READ) */
+// Cambio di stato di un messaggio (consegnato o letto).
 export interface WsStatusUpdate {
   chatId: number;
   status: 'SENT' | 'DELIVERED' | 'READ';
@@ -47,41 +44,34 @@ export class SocketService {
   private currentUserId: number | null = null;
   private currentUserEmail: string | null = null;
 
-  // ── Stato connessione ──────────────────────────────────────
+  // Stato della connessione, così i componenti sanno se il WebSocket è su.
   private connectedSubject = new BehaviorSubject<boolean>(false);
   connected$ = this.connectedSubject.asObservable();
 
-  // ── Streams per i componenti ───────────────────────────────
-  /** Nuovo messaggio in arrivo nella stanza attiva */
+  // Da qui i componenti ascoltano quello che arriva dal server: i messaggi
+  // della stanza aperta, il conteggio dei non letti, il "sta scrivendo" e i
+  // cambi di stato dei messaggi.
   private incomingMessageSubject = new Subject<WsIncomingMessage>();
   incomingMessage$ = this.incomingMessageSubject.asObservable();
 
-  /** Aggiornamento conteggio non letti (push dal server) */
   private unreadUpdateSubject = new Subject<WsUnreadUpdate>();
   unreadUpdate$ = this.unreadUpdateSubject.asObservable();
 
-  /** Typing indicator dall'altro utente */
   private typingSubject = new Subject<WsTypingEvent>();
   typing$ = this.typingSubject.asObservable();
 
-  /** Aggiornamento status messaggi (DELIVERED/READ) */
   private statusUpdateSubject = new Subject<WsStatusUpdate>();
   statusUpdate$ = this.statusUpdateSubject.asObservable();
 
-  // ── Subscription attive per stanza ─────────────────────────
+  // Teniamo da parte le subscription aperte per poterle chiudere quando serve.
   private roomSubscription: StompSubscription | null = null;
   private activeRoomId: string | null = null;
   private notificationSubscription: StompSubscription | null = null;
 
-  // ══════════════════════════════════════════════════════════════
-  //  CONNESSIONE
-  // ══════════════════════════════════════════════════════════════
-
-  /**
-   * Connette al WebSocket backend.
-   * Chiama questo metodo al login / dashboard init.
-   * @param email email dell'utente autenticato — usata per la subscription al canale privato.
-   */
+  // Apre la connessione al WebSocket. Va chiamato dopo il login, quando la
+  // dashboard parte. L'email serve poi per agganciarsi al canale privato
+  // dell'utente. Prima di tutto recuperiamo il token JWT: senza, non ci
+  // colleghiamo nemmeno.
   connect(userId: number, email: string): void {
     if (this.client?.connected) return;
 
@@ -137,10 +127,8 @@ export class SocketService {
     this.client.activate();
   }
 
-  /**
-   * Disconnette e pulisce tutte le subscription.
-   * Chiama al logout / distruzione dashboard.
-   */
+  // Chiude tutto al logout o quando la dashboard viene distrutta: prima
+  // lasciamo la stanza e il canale notifiche, poi spegniamo il client.
   disconnect(): void {
     this.leaveRoom();
     this.unsubscribeNotifications();
@@ -153,23 +141,15 @@ export class SocketService {
     this.connectedSubject.next(false);
   }
 
-  // ══════════════════════════════════════════════════════════════
-  //  GESTIONE STANZE (ROOMS)
-  // ══════════════════════════════════════════════════════════════
-
-  /**
-   * Entra in una stanza chat specifica.
-   * - Invia al server un messaggio di JOIN
-   * - Sottoscrive al topic della stanza per ricevere messaggi
-   */
+  // Entra in una stanza di chat: ci iscriviamo al suo topic per ricevere i
+  // messaggi e avvisiamo il server con un JOIN. Se siamo già dentro a quella
+  // stanza non rifacciamo nulla, altrimenti usciamo prima da quella vecchia.
   joinRoom(chatId: number): void {
     if (!this.client?.connected || !this.currentUserId) return;
 
     const roomId = String(chatId);
 
-    // Prevent duplicate room joins
     if (this.activeRoomId === roomId && this.roomSubscription) return;
-
 
     this.leaveRoom();
 
@@ -193,11 +173,8 @@ export class SocketService {
     console.log('[WS] Joined chat room:', roomId);
   }
 
-  /**
-   * Lascia la stanza attiva.
-   * - Cancella la subscription STOMP
-   * - Notifica il server per pulire la memoria
-   */
+  // Esce dalla stanza attiva: cancella la subscription e avvisa il server, che
+  // così libera la memoria legata a quella stanza.
   leaveRoom(): void {
     if (this.roomSubscription) {
       this.roomSubscription.unsubscribe();
@@ -215,14 +192,8 @@ export class SocketService {
     this.activeRoomId = null;
   }
 
-  // ══════════════════════════════════════════════════════════════
-  //  INVIO MESSAGGI
-  // ══════════════════════════════════════════════════════════════
-
-  /**
-   * Invia un messaggio via WebSocket.
-   * Il server lo inoltrer IMMEDIATAMENTE alla stanza e poi lo salver in DB in modo asincrono.
-   */
+  // Manda un messaggio. Il server lo gira subito alla stanza e poi lo salva su
+  // DB in modo asincrono, quindi l'altro utente lo vede senza aspettare il save.
   sendMessage(chatId: number, _senderId: number, content: string): void {
     if (!this.client?.connected) return;
 
@@ -232,9 +203,6 @@ export class SocketService {
     });
   }
 
-  /**
-   * Invia typing indicator.
-   */
   sendTyping(chatId: number, typing: boolean): void {
     if (!this.client?.connected || !this.currentUserId) return;
 
@@ -249,9 +217,7 @@ export class SocketService {
     });
   }
 
-  /**
-   * Notifica il server che i messaggi sono stati letti.
-   */
+  // Dice al server che abbiamo letto i messaggi della chat.
   markAsRead(chatId: number): void {
     if (!this.client?.connected) return;
 
@@ -261,10 +227,9 @@ export class SocketService {
     });
   }
 
-  // ══════════════════════════════════════════════════════════════
-  //  NOTIFICHE PERSONALI (canale privato)
-  // ══════════════════════════════════════════════════════════════
-
+  // Canale privato dell'utente: qui arrivano gli eventi che non dipendono dalla
+  // stanza aperta (nuovo messaggio altrove, non letti, consegne e letture).
+  // A seconda del tipo, smistiamo l'evento sullo stream giusto.
   private subscribeNotifications(_email: string): void {
     if (!this.client?.connected) return;
 
@@ -298,10 +263,6 @@ export class SocketService {
       this.notificationSubscription = null;
     }
   }
-
-  // ══════════════════════════════════════════════════════════════
-  //  HELPERS
-  // ══════════════════════════════════════════════════════════════
 
   get isConnected(): boolean {
     return this.client?.connected ?? false;

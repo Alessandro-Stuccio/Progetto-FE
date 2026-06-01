@@ -5,8 +5,7 @@ import { CommonModule } from '@angular/common';
   selector: 'app-professionals-tab',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './professionals-tab.html',
-  styleUrls: ['./professionals-tab.css']
+  templateUrl: './professionals-tab.html'
 })
 export class ProfessionalsTabComponent {
   @Input() professionals: any[] = [];

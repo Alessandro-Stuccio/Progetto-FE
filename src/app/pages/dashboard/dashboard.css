@@ -1,27 +1,18 @@
 /* Font caricati in index.html */
 
+/* Quasi tutto lo stile della dashboard è in Tailwind. Qui resta solo quello che
+   Tailwind non sa fare: keyframes, scrollbar nascoste, nth-child per nascondere
+   colonne del calendario, gradient text in webkit e gli stati più particolari
+   degli slot di disponibilità. */
 
-
-/* ═══════════════════════════════════════════════════════════════════════
-   DASHBOARD — CSS residuo dopo migrazione Tailwind
-   ─────────────────────────────────────────────────────────────────────
-   Qui restano SOLO le regole che Tailwind non riesce a coprire:
-   · @keyframes animations
-   · scrollbar-width: none / ::-webkit-scrollbar (non standard)
-   · nth-child selectors (nascondere colonne del calendario)
-   · gradient-text clip (webkit-background-clip + webkit-text-fill-color)
-   · transizioni/ombre molto specifiche sui componenti interattivi
-   · stati complessi degli slot disponibilità
-   ═══════════════════════════════════════════════════════════════════════ */
-
-/* ── Box sizing globale ───────────────────────────────────────────────── */
+/* box sizing globale */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
 }
 
-/* ── Google Fonts (font-family usate via CSS class) ───────────────────── */
+/* font-family richiamate tramite classe */
 .font-dm-sans {
   font-family: var(--font-sans);
 }
@@ -31,9 +22,7 @@
 }
 
 
-/* ══════════════════════════════════════════════════════════════════════════
-   NAV BUTTON hover (colori non eseguibili con sole utility Tailwind)
-   ══════════════════════════════════════════════════════════════════════════ */
+/* hover dei bottoni di navigazione: i colori non si fanno con le sole utility Tailwind */
 .nav-btn:hover {
   background: rgba(255, 255, 255, 0.18);
   border-color: rgba(var(--color-accent-gold-rgb), 0.50);
@@ -45,7 +34,7 @@
   box-shadow: 0 0 12px rgba(var(--color-accent-gold-rgb), 0.20);
 }
 
-/* ── Toggle vista Agenda (solo mobile) ─────────────────────────────────────── */
+/* toggle vista agenda (solo mobile) */
 .view-toggle-btn {
   background: rgba(255, 255, 255, 0.08);
   color: rgba(255, 255, 255, 0.60);
@@ -64,7 +53,7 @@
   box-shadow: 0 0 10px rgba(var(--color-accent-gold-rgb), 0.18);
 }
 
-/* ── Agenda toggle button (solo mobile) — stile identico al view-toggle-btn — */
+/* bottone toggle agenda (mobile), stesso stile di view-toggle-btn */
 .agenda-toggle-btn {
   background: rgba(255, 255, 255, 0.08);
   color: rgba(255, 255, 255, 0.60);
@@ -84,7 +73,7 @@
   box-shadow: 0 0 10px rgba(var(--color-accent-gold-rgb), 0.18);
 }
 
-/* ── Agenda view: booking row hover ────────────────────────────────────── */
+/* hover delle righe prenotazione nella vista agenda */
 .agenda-booking-row {
   transition: box-shadow 0.15s, transform 0.1s;
   cursor: default;
@@ -101,13 +90,13 @@
   background: rgba(var(--color-accent-gold-rgb), 0.08);
 }
 
-/* ── Topbar credit badge hover ──────────────────────────────────────────── */
+/* hover del badge crediti in topbar */
 .topbar-credit-badge:hover {
   background: rgba(var(--color-accent-gold-rgb), 0.25);
   transform: translateY(-1px);
 }
 
-/* ── Book button topbar ─────────────────────────────────────────────────── */
+/* bottone "prenota" in topbar */
 .btn-book-topbar {
   background: linear-gradient(135deg, var(--color-accent-gold) 0%, #a88a53 100%);
   box-shadow: 0 4px 12px rgba(var(--color-accent-gold-rgb), 0.25);
@@ -125,7 +114,7 @@
   transform: translateY(0);
 }
 
-/* ── Brand logo hover ───────────────────────────────────────────────────── */
+/* hover del logo */
 .topbar-brand:hover .brand-logo-img {
   transform: scale(1.05);
 }
@@ -135,7 +124,7 @@
   transition: transform 0.3s ease;
 }
 
-/* ── Profile button active/hover ────────────────────────────────────────── */
+/* stato attivo/hover del bottone profilo */
 .profile-btn:hover,
 .profile-btn.active {
   border-color: var(--color-accent-gold);
@@ -143,9 +132,7 @@
 }
 
 
-/* ══════════════════════════════════════════════════════════════════════════
-   CALENDARIO — scrollbar nascosta
-   ══════════════════════════════════════════════════════════════════════════ */
+/* calendario: scrollbar nascosta */
 .calendar-grid-scroll {
   scrollbar-width: none;
 }
@@ -154,7 +141,7 @@
   display: none;
 }
 
-/* ── Slot labels e celle ────────────────────────────────────────────────── */
+/* etichette e celle degli slot */
 .time-slot-label {
   height: 50px;
   display: flex;
@@ -194,7 +181,7 @@
   border-top: 1px dashed rgba(204, 216, 237, 0.45);
 }
 
-/* ── nth-child: nascondi colonne eccedenti per breakpoint ──────────────── */
+/* nth-child: nasconde le colonne in più a seconda del breakpoint */
 /* Tablet (sm < 1024px): mostra solo le prime 3 colonne giorno */
 @media (max-width: 1023px) and (min-width: 640px) {
 
@@ -242,7 +229,7 @@
   }
 }
 
-/* ── Today highlight ────────────────────────────────────────────────────── */
+/* evidenziazione del giorno corrente */
 /* day-name and day-number: explicit colors needed because the root div's
    inherited color (var(--color-text-main)) overrides Tailwind's text-white/xx utilities */
 .day-name {
@@ -268,7 +255,7 @@
   background: rgba(var(--color-accent-gold-rgb), 0.04);
 }
 
-/* ── Booking cards ──────────────────────────────────────────────────────── */
+/* card delle prenotazioni */
 .booking-card {
   border-radius: 5px;
   padding: 3px 7px;
@@ -325,9 +312,7 @@
 }
 
 
-/* ══════════════════════════════════════════════════════════════════════════
-   PANNELLO PROFILO — animazione e stili complessi
-   ══════════════════════════════════════════════════════════════════════════ */
+/* pannello profilo: animazione e stili più articolati */
 .profile-panel {
   transform: translateX(100%);
   transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1);
@@ -441,9 +426,7 @@
 }
 
 
-/* ══════════════════════════════════════════════════════════════════════════
-   MODALE DISPONIBILITÀ — scrollbar, slot states, copy/paste
-   ══════════════════════════════════════════════════════════════════════════ */
+/* modale disponibilità: scrollbar, stati degli slot, copia/incolla */
 
 /* Gradient text header modale */
 .avail-title {
@@ -745,7 +728,7 @@
   box-shadow: none;
 }
 
-/* ── Topbar avail button ─────────────────────────────────────────────────── */
+/* bottone disponibilità in topbar */
 .btn-avail-topbar {
   display: flex;
   align-items: center;
@@ -770,7 +753,7 @@
   box-shadow: var(--shadow-sm);
 }
 
-/* ── Booking modal buttons ──────────────────────────────────────────────── */
+/* bottoni della modale di prenotazione */
 .btn-book-sm {
   padding: 0.35rem 0.8rem;
   background: var(--navy-primary);
@@ -878,9 +861,7 @@
 }
 
 
-/* ══════════════════════════════════════════════════════════════════════════
-   KEYFRAMES ANIMATIONS
-   ══════════════════════════════════════════════════════════════════════════ */
+/* animazioni (keyframes) */
 @keyframes rotate {
   to {
     transform: rotate(360deg);
@@ -993,9 +974,7 @@
   }
 }
 
-/* ══════════════════════════════════════════════════════════════════════════
-   RESPONSIVE — DASHBOARD ADDIZIONALE
-   ══════════════════════════════════════════════════════════════════════════ */
+/* aggiustamenti responsive della dashboard */
 
 /* Tablet (640-1023px) */
 @media (max-width: 1023px) and (min-width: 640px) {
@@ -1088,9 +1067,7 @@
   }
 }
 
-/* ══════════════════════════════════════════════════════════════════════════
-   BOTTOM NAVIGATION BAR
-   ══════════════════════════════════════════════════════════════════════════ */
+/* barra di navigazione in basso (mobile) */
 
 .bottom-nav {
   min-height: 56px;
@@ -1143,16 +1120,14 @@
   background: rgba(var(--color-primary-navy-rgb), 0.04);
 }
 
-/* ── Tab Home scroll area ─────────────────────────────────────────────── */
+/* area scrollabile della tab home */
 .tab-home {
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
   padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 0.5rem);
 }
 
-/* ══════════════════════════════════════════════════════════════════════════
-   DESKTOP NAVIGATION TABS (topbar)
-   ══════════════════════════════════════════════════════════════════════════ */
+/* tab di navigazione desktop (topbar) */
 
 .desktop-nav-item {
   color: var(--text-secondary);
@@ -1197,11 +1172,9 @@
   transition: color 0.2s;
 }
 
-/* ══════════════════════════════════════════════════════════════════════════
-   CHAT — Stile WhatsApp
-   ══════════════════════════════════════════════════════════════════════════ */
+/* chat in stile WhatsApp */
 
-/* Area messaggi — sfondo con pattern leggero */
+/* area messaggi: sfondo con pattern leggero */
 .chat-messages-area {
   background-color: #e8edf5;
   background-image:

@@ -5,6 +5,7 @@ import { UserService } from '../../../../core/services/user.service';
 import { SubscriptionService } from '../../../../core/services/subscription.service';
 import { ManagedUserPayload, UserProfile, Plan, Subscription, AuthUser } from '../../../../shared/models/dashboard.model';
 import { ToastService } from '../../../../core/services/toast.service';
+import { RoleService } from '../../../../core/services/role.service';
 
 @Component({
   selector: 'app-admin-users-tab',
@@ -19,6 +20,7 @@ export class AdminUsersTabComponent {
   private cdr = inject(ChangeDetectorRef);
   private toast = inject(ToastService);
   private fb = inject(FormBuilder);
+  private roleService = inject(RoleService);
 
   @Input() allUsers: UserProfile[] = [];
   @Input() allPlans: Plan[] = [];
@@ -26,6 +28,9 @@ export class AdminUsersTabComponent {
   @Input() mode: 'admin' | 'moderator' = 'admin';
   @Input() currentUser: AuthUser | null = null;
   @Output() usersChanged = new EventEmitter<void>();
+
+  // Mostriamo solo i piani attivi: quelli disabilitati non si assegnano a nuovi clienti.
+  get activePlans(): Plan[] { return (this.allPlans || []).filter(p => p.active !== false); }
 
   searchQuery: string = '';
   roleFilter: string = 'ALL';
@@ -209,7 +214,7 @@ export class AdminUsersTabComponent {
     });
   }
 
-  // ── Delete user ──
+  // Delete user
   openDeleteModal(user: any): void {
     if (this.currentUser && user.id === this.currentUser.id) {
       this.toast.warning('Operazione non consentita', 'Non puoi eliminare il tuo stesso account.');
@@ -244,7 +249,7 @@ export class AdminUsersTabComponent {
     });
   }
 
-  // ── Info e Crediti Abbonamento ──
+  // Info e Crediti Abbonamento
   openInfoModal(user: any): void {
     this.selectedUserInfo = user;
     // Utilizziamo == invece di === per gestire eventuali mismatch tra stringa e numero (Long di Java)
@@ -302,7 +307,7 @@ export class AdminUsersTabComponent {
     });
   }
 
-  // ── Edit user ──
+  // Edit user
   openEditModal(user: any): void {
     this.editUser = { ...user };
     this.editPassword = '';
@@ -352,27 +357,11 @@ export class AdminUsersTabComponent {
   }
 
   getRoleLabel(role: string): string {
-    switch (role) {
-      case 'CLIENT': return 'Cliente';
-      case 'PERSONAL_TRAINER': return 'Personal Trainer';
-      case 'NUTRITIONIST': return 'Nutrizionista';
-      case 'ADMIN': return 'Admin';
-      case 'MODERATOR': return 'Moderatore';
-      case 'INSURANCE_MANAGER': return 'Assicurazione';
-      default: return role;
-    }
+    return this.roleService.getRoleLabel(role);
   }
 
   getRoleBadgeClass(role: string): string {
-    switch (role) {
-      case 'CLIENT': return 'bg-blue-50 text-blue-600';
-      case 'PERSONAL_TRAINER': return 'bg-emerald-50 text-emerald-600';
-      case 'NUTRITIONIST': return 'bg-amber-50 text-amber-700';
-      case 'ADMIN': return 'bg-purple-50 text-purple-600';
-      case 'MODERATOR': return 'bg-fuchsia-50 text-fuchsia-700';
-      case 'INSURANCE_MANAGER': return 'bg-indigo-50 text-indigo-600';
-      default: return 'bg-gray-50 text-gray-600';
-    }
+    return this.roleService.getRoleBadgeClass(role);
   }
 
   getRoleEmoji(role: string): string {
