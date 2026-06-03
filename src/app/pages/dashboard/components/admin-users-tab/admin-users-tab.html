@@ -134,8 +134,8 @@
               <div class="flex items-center gap-3 flex-1 min-w-0">
                 <div
                   class="w-11 h-11 rounded-full bg-[var(--color-primary-navy)] flex items-center justify-center overflow-hidden border-2 border-[var(--color-accent-gold)]/40 flex-shrink-0">
-                  <span class="text-[var(--color-accent-gold-light)] text-[0.7rem] font-bold">{{ user.firstName?.charAt(0) }}{{
-                    user.lastName?.charAt(0)
+                  <span class="text-[var(--color-accent-gold-light)] text-[0.7rem] font-bold">{{ user.firstName.charAt(0) }}{{
+                    user.lastName.charAt(0)
                   }}</span>
                 </div>
                 <div class="flex-1 min-w-0 py-0.5">
@@ -392,7 +392,7 @@
                                               </div>
                                               <div
                                                 class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[var(--color-primary-navy)] flex items-center justify-center text-[var(--color-accent-gold-light)] text-[0.5rem] sm:text-[0.55rem] font-bold flex-shrink-0">
-                                              {{ pt.firstName?.charAt(0) }}{{ pt.lastName?.charAt(0) }}</div>
+                                              {{ pt.firstName.charAt(0) }}{{ pt.lastName.charAt(0) }}</div>
                                               <span class="text-[0.78rem] sm:text-[0.82rem] font-medium text-[var(--color-text-main)] truncate">{{
                                                 pt.firstName }} {{
                                               pt.lastName }}</span>
@@ -420,7 +420,7 @@
                                                 </div>
                                                 <div
                                                   class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[var(--color-accent-gold)] flex items-center justify-center text-[var(--color-text-main)] text-[0.5rem] sm:text-[0.55rem] font-bold flex-shrink-0">
-                                                {{ nutri.firstName?.charAt(0) }}{{ nutri.lastName?.charAt(0) }}</div>
+                                                {{ nutri.firstName.charAt(0) }}{{ nutri.lastName.charAt(0) }}</div>
                                                 <span class="text-[0.78rem] sm:text-[0.82rem] font-medium text-[var(--color-text-main)] truncate">{{
                                                   nutri.firstName }}
                                                 {{ nutri.lastName }}</span>
@@ -626,27 +626,27 @@
                                         <h4 class="text-[0.8rem] font-black text-[var(--color-primary-navy)] uppercase tracking-wide">Dettagli Contratto</h4>
                                         <div class="flex justify-between items-center py-2 border-b border-gray-100">
                                           <span class="text-[0.85rem] font-bold text-gray-500">Piano Sottoscritto</span>
-                                          <span class="text-[0.9rem] font-black text-blue-700 bg-blue-50 px-2 py-0.5 rounded-lg border border-blue-100">{{ selectedSubscription?.planName }}</span>
+                                          <span class="text-[0.9rem] font-black text-blue-700 bg-blue-50 px-2 py-0.5 rounded-lg border border-blue-100">{{ selectedSubscription.planName }}</span>
                                         </div>
                                         <div class="flex justify-between items-center py-2 border-b border-gray-100">
                                           <span class="text-[0.85rem] font-bold text-gray-500">Crediti PT Inclusi</span>
-                                          <span class="text-[0.9rem] font-black text-gray-700">{{ selectedSubscription?.currentCreditsPT }}</span>
+                                          <span class="text-[0.9rem] font-black text-gray-700">{{ selectedSubscription.currentCreditsPT }}</span>
                                         </div>
                                         <div class="flex justify-between items-center py-2 border-b border-gray-100">
                                           <span class="text-[0.85rem] font-bold text-gray-500">Crediti Nutrizionista Inclusi</span>
-                                          <span class="text-[0.9rem] font-black text-gray-700">{{ selectedSubscription?.currentCreditsNutri }}</span>
+                                          <span class="text-[0.9rem] font-black text-gray-700">{{ selectedSubscription.currentCreditsNutri }}</span>
                                         </div>
                                         <div class="flex justify-between items-center py-2 border-b border-gray-100">
                                           <span class="text-[0.85rem] font-bold text-gray-500">Costo Mensile</span>
-                                          <span class="text-[0.9rem] font-black text-emerald-600">€{{ selectedSubscription?.monthlyPrice }} / mese</span>
+                                          <span class="text-[0.9rem] font-black text-emerald-600">€{{ selectedSubscription.monthlyPrice }} / mese</span>
                                         </div>
                                         <div class="flex justify-between items-center py-2 border-b border-gray-100">
                                           <span class="text-[0.85rem] font-bold text-gray-500">Data Sottoscrizione</span>
-                                          <span class="text-[0.9rem] font-bold text-gray-700">{{ selectedSubscription?.startDate | date:'dd/MM/yyyy' }}</span>
+                                          <span class="text-[0.9rem] font-bold text-gray-700">{{ selectedSubscription.startDate | date:'dd/MM/yyyy' }}</span>
                                         </div>
                                         <div class="flex justify-between items-center py-2">
                                           <span class="text-[0.85rem] font-bold text-gray-500">Data Scadenza</span>
-                                          <span class="text-[0.9rem] font-bold text-gray-700">{{ selectedSubscription?.endDate | date:'dd/MM/yyyy' }}</span>
+                                          <span class="text-[0.9rem] font-bold text-gray-700">{{ selectedSubscription.endDate | date:'dd/MM/yyyy' }}</span>
                                         </div>
                                       } @else {
                                         <!-- Se non è un cliente, mostriamo info sul professionista -->

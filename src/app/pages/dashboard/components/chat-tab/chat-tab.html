@@ -137,7 +137,7 @@
             <div class="text-[0.92rem] font-bold text-[var(--color-text-main)] truncate">{{ activeConversation.otherUserName }}</div>
             <div class="text-[0.65rem] text-[var(--color-text-muted)]">{{ getRoleLabel(activeConversation.otherUserRole) }}</div>
           </div>
-          @if (isModerator && activeConversation?.chatId && !activeConversation?.terminated) {
+          @if (isModerator && activeConversation.chatId && !activeConversation.terminated) {
             <button
               (click)="closeActiveChat()"
               [disabled]="closingChat"
@@ -228,7 +228,7 @@
               }
             }
           </div>
-          @if (!activeConversation?.terminated) {
+          @if (!activeConversation.terminated) {
             <div
               class="flex-shrink-0 flex items-end gap-2 px-3 sm:px-6 py-3 bg-white border-t border-[var(--color-border-subtle)] pb-[calc(0.75rem+env(safe-area-inset-bottom))] sm:pb-3"
               >
@@ -236,7 +236,7 @@
                 <div class="flex-1">
                   <textarea
                     class="chat-input w-full resize-none rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-bg-subtle)] px-4 py-2.5 text-[0.88rem] text-[var(--color-text-main)] placeholder-[var(--color-text-muted)] focus:outline-none focus:border-[var(--color-accent-gold)]/60 focus:bg-white transition-all leading-[1.4] max-h-[120px]"
-                    style="font-size: 16px;" rows="1" placeholder="Scrivi un messaggio..." [(ngModel)]="chatInput"
+                    style="font-size: 16px;" rows="1" aria-label="Messaggio di chat" placeholder="Scrivi un messaggio..." [(ngModel)]="chatInput"
                   (keydown)="onChatKeydown($event)" (input)="autoGrow($event)"></textarea>
                 </div>
                 <button
@@ -251,7 +251,7 @@
             </div>
           }
           <!-- Banner terminata: moderatore vede solo info statica -->
-          @if (activeConversation?.terminated && isModerator) {
+          @if (activeConversation.terminated && isModerator) {
             <div
               class="flex-shrink-0 flex items-center justify-center gap-2 px-4 py-3 bg-gray-50 border-t border-[var(--color-border-subtle)]">
               <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
@@ -261,7 +261,7 @@
             </div>
           }
           <!-- Banner terminata: altri utenti possono riaprire con nuova richiesta -->
-          @if (activeConversation?.terminated && !isModerator) {
+          @if (activeConversation.terminated && !isModerator) {
             <div
               class="flex-shrink-0 flex items-center justify-between gap-2 px-4 py-3 bg-gray-50 border-t border-[var(--color-border-subtle)]">
               <div class="flex items-center gap-2">

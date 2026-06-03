@@ -36,7 +36,7 @@
               }
               @if (!client.profilePictureUrl) {
                 <span class="text-[var(--color-accent-gold-light)] text-[0.75rem] font-bold uppercase">{{
-                client.firstName?.charAt(0) }}{{ client.lastName?.charAt(0) }}</span>
+                client.firstName.charAt(0) }}{{ client.lastName.charAt(0) }}</span>
               }
             </div>
             <div class="flex flex-col min-w-0 flex-1">
@@ -72,7 +72,7 @@
           }
           @if (!selectedClient.profilePictureUrl) {
             <span class="text-[var(--color-accent-gold-light)] text-[1rem] font-bold uppercase">{{
-            selectedClient.firstName?.charAt(0) }}{{ selectedClient.lastName?.charAt(0) }}</span>
+            selectedClient.firstName.charAt(0) }}{{ selectedClient.lastName.charAt(0) }}</span>
           }
         </div>
         <div class="flex-1 min-w-0">

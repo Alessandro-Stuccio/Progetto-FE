@@ -90,7 +90,7 @@
             <span class="text-[0.65rem] text-[var(--color-text-muted)] font-semibold flex-shrink-0 w-10 text-right">{{ plan.percentage }}%</span>
           </div>
         }
-        @if (stats.planPopularity?.length === 0) {
+        @if (stats.planPopularity.length === 0) {
           <div class="text-center text-[0.72rem] text-[var(--color-text-muted)] py-2">
             Nessun piano creato
           </div>
@@ -186,7 +186,7 @@
           </div>
         </div>
         <!-- CARICO PROFESSIONISTI -->
-        @if ((stats.professionalWorkload?.length ?? 0) > 0) {
+        @if (stats.professionalWorkload.length > 0) {
           <div class="bg-white rounded-2xl border border-[var(--color-border-subtle)] p-5 shadow-sm">
             <div class="flex items-center gap-2 mb-4">
               <span class="text-[1.1rem]">🏋️</span>

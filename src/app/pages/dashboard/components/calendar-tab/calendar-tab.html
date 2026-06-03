@@ -45,7 +45,7 @@
                 <div class="booking-card cursor-pointer" [class]="'booking-card ' + getBookingClass(b)" (click)="openCallModalEvent.emit(b)">
                   <div class="booking-time">{{ b.startTime }} – {{ b.endTime }}</div>
                   <div class="booking-name">{{ getBookingLabel(b) }}</div>
-                  <div class="booking-status" [class]="'status-' + b.status?.toLowerCase()">{{ b.status === 'CONFIRMED' ? '● Confermata' : '✕ Annullata' }}</div>
+                  <div class="booking-status" [class]="'status-' + b.status.toLowerCase()">{{ b.status === 'CONFIRMED' ? '● Confermata' : '✕ Annullata' }}</div>
                 </div>
               }
             </div>

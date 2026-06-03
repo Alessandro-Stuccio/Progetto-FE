@@ -3,10 +3,10 @@
     <!-- Hero profilo -->
     <div class="ht-hero">
       <div class="ht-hero-avatar-wrap">
-        @if (currentUser?.profilePicture) {
+        @if (currentUser.profilePicture) {
           <img [src]="currentUser.profilePicture" alt="Avatar" class="ht-hero-avatar">
         }
-        @if (!currentUser?.profilePicture) {
+        @if (!currentUser.profilePicture) {
           <div class="ht-hero-avatar ht-hero-avatar--fallback">{{ getInitials() }}</div>
         }
         <div class="ht-avatar-ring"></div>
