@@ -244,6 +244,3 @@ export class RegisterComponent implements OnInit {
     }
   }
 }
-
-export class Register {
-}

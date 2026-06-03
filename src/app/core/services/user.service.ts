@@ -66,16 +66,16 @@ export class UserService {
     return this.http.get<UserProfile[]>(`${this.apiUrl}/api/moderator/chat-contacts`);
   }
 
-  createUserByMode(mode: UserManagementMode, data: ManagedUserPayload): Observable<any> {
-    return this.http.post(this.usersBaseByMode(mode), data);
+  createUserByMode(mode: UserManagementMode, data: ManagedUserPayload): Observable<void> {
+    return this.http.post<void>(this.usersBaseByMode(mode), data);
   }
 
-  updateUserByMode(mode: UserManagementMode, userId: number, data: Partial<ManagedUserPayload>): Observable<any> {
-    return this.http.put(`${this.usersBaseByMode(mode)}/${userId}`, data);
+  updateUserByMode(mode: UserManagementMode, userId: number, data: Partial<ManagedUserPayload>): Observable<void> {
+    return this.http.put<void>(`${this.usersBaseByMode(mode)}/${userId}`, data);
   }
 
-  deleteUserByMode(mode: UserManagementMode, userId: number): Observable<any> {
-    return this.http.delete(`${this.usersBaseByMode(mode)}/${userId}`);
+  deleteUserByMode(mode: UserManagementMode, userId: number): Observable<void> {
+    return this.http.delete<void>(`${this.usersBaseByMode(mode)}/${userId}`);
   }
 
   getProfessionalStats(): Observable<ProStats> {

@@ -64,11 +64,11 @@ export class AuthService {
     this.storage.remove('user');
   }
 
-  forgotPassword(email: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}/forgot-password`, { email });
+  forgotPassword(email: string): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/forgot-password`, { email });
   }
 
-  resetPassword(token: string, newPassword: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}/reset-password`, { token, newPassword });
+  resetPassword(token: string, newPassword: string): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/reset-password`, { token, newPassword });
   }
 }

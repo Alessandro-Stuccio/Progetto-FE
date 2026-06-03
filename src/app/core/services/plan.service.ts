@@ -4,6 +4,19 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Plan } from '../../shared/models/dashboard.model';
 
+/**
+ * Dati inviati dai form admin per creare/aggiornare un piano. `duration` qui è
+ * una stringa grezza (valore della select) e viene validata lato backend.
+ */
+export interface PlanPayload {
+  name: string;
+  duration: string;
+  fullPrice: number;
+  monthlyInstallmentPrice: number;
+  monthlyCreditsPT: number;
+  monthlyCreditsNutri: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -21,21 +34,21 @@ export class PlanService {
     return this.http.get<Plan[]>(`${this.apiUrl}/api/admin/plans`);
   }
 
-  createPlan(data: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/api/admin/plans`, data);
+  createPlan(data: PlanPayload): Observable<Plan> {
+    return this.http.post<Plan>(`${this.apiUrl}/api/admin/plans`, data);
   }
 
   // Disabilita un piano senza cancellarlo: resta in DB, sparisce solo dal pubblico.
-  disablePlan(planId: number): Observable<any> {
-    return this.http.patch(`${this.apiUrl}/api/admin/plans/${planId}/disable`, {});
+  disablePlan(planId: number): Observable<void> {
+    return this.http.patch<void>(`${this.apiUrl}/api/admin/plans/${planId}/disable`, {});
   }
 
-  enablePlan(planId: number): Observable<any> {
-    return this.http.patch(`${this.apiUrl}/api/admin/plans/${planId}/enable`, {});
+  enablePlan(planId: number): Observable<void> {
+    return this.http.patch<void>(`${this.apiUrl}/api/admin/plans/${planId}/enable`, {});
   }
 
-  updatePlan(planId: number, data: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/api/admin/plans/${planId}`, data);
+  updatePlan(planId: number, data: PlanPayload): Observable<Plan> {
+    return this.http.put<Plan>(`${this.apiUrl}/api/admin/plans/${planId}`, data);
   }
 }
 

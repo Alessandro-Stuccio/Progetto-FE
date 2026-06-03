@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of, BehaviorSubject, Subject, catchError } from 'rxjs';
+import { Observable, of, BehaviorSubject, Subject, Subscription, catchError } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { SocketService, WsIncomingMessage, WsStatusUpdate } from './socket.service';
 
@@ -59,12 +59,12 @@ export class ChatService {
 
   // Quando il WebSocket non è disponibile ricadiamo sul polling REST.
   private msgPollingActive = false;
-  private msgPollInterval: any;
-  private globalPollInterval: any;
+  private msgPollInterval: ReturnType<typeof setInterval> | null = null;
+  private globalPollInterval: ReturnType<typeof setInterval> | null = null;
   private globalPollingActive = false;
 
   // Subscription al socket: le teniamo per poterle chiudere tutte al destroy.
-  private wsSubscriptions: any[] = [];
+  private wsSubscriptions: Subscription[] = [];
 
   // Chiamate REST: servono per il caricamento iniziale e come rete di sicurezza
   // quando il real-time non c'è. Se una richiesta fallisce torniamo un valore
@@ -94,11 +94,11 @@ export class ChatService {
     return this.http.post<void>(`${this.apiUrl}/api/chat/${chatId}/close`, {});
   }
 
-  markAsRead(chatId: number, otherUserId: number): Observable<any> {
+  markAsRead(chatId: number, otherUserId: number): Observable<void> {
     this.optimisticMarkAsRead(otherUserId);
-    return this.http.put(
+    return this.http.put<void>(
       `${this.apiUrl}/api/chat/read/${chatId}`, {}
-    ).pipe(catchError(() => of(null)));
+    ).pipe(catchError(() => of(void 0)));
   }
 
   getUnreadCount(): Observable<number> {
