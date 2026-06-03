@@ -21,20 +21,20 @@ export class AdminPlansTabComponent {
 
   // Modale modifica piano
   showEditModal: boolean = false;
-  editPlan: any = {};
+  editPlan: Plan = {} as Plan;
   editError: string = '';
   editing: boolean = false;
 
   // Modale conferma disabilitazione
   showDisableModal: boolean = false;
-  planToDisable: any = null;
+  planToDisable: Plan | null = null;
   disabling: boolean = false;
 
   getActiveSubsForPlan(planName: string): number { return this.allSubscriptions.filter(s => s.active && s.planName === planName).length; }
   getTotalSubsForPlan(planName: string): number { return this.allSubscriptions.filter(s => s.planName === planName).length; }
   getDurationLabel(duration: string): string { switch (duration) { case 'SEMESTRALE': return '6 mesi'; case 'ANNUALE': return '12 mesi'; default: return duration; } }
-  isPlanActive(plan: any): boolean { return plan?.active !== false; }
-  canDisablePlan(plan: any): boolean { return this.getTotalSubsForPlan(plan.name) === 0; }
+  isPlanActive(plan: Plan): boolean { return plan?.active !== false; }
+  canDisablePlan(plan: Plan): boolean { return this.getTotalSubsForPlan(plan.name) === 0; }
 
   // Create
   openCreateModal(): void {
@@ -91,7 +91,7 @@ export class AdminPlansTabComponent {
   }
 
   // Edit
-  openEditModal(plan: any): void {
+  openEditModal(plan: Plan): void {
     this.editPlan = { ...plan };
     this.editError = '';
     this.showEditModal = true;
@@ -145,7 +145,7 @@ export class AdminPlansTabComponent {
   }
 
   // Disabilita (modale di conferma)
-  openDisableModal(plan: any): void {
+  openDisableModal(plan: Plan): void {
     this.planToDisable = plan;
     this.showDisableModal = true;
   }
@@ -172,7 +172,7 @@ export class AdminPlansTabComponent {
   }
 
   // Riabilita
-  enablePlan(plan: any): void {
+  enablePlan(plan: Plan): void {
     this.authService.enablePlan(plan.id).subscribe({
       next: () => {
         this.toast.success('Riabilitato', `Il piano "${plan.name}" è stato riabilitato.`);

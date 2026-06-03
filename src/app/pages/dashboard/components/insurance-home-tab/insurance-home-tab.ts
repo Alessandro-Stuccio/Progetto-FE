@@ -1,12 +1,18 @@
 import { Component, Input, inject, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { DocumentService } from '../../../../core/services/document.service';
+import { DocumentService, ClientDocument } from '../../../../core/services/document.service';
 import { AuthUser, Subscription, UserProfile } from '../../../../shared/models/dashboard.model';
 import { PdfViewerComponent } from '../../../../shared/components/ui/pdf-viewer/pdf-viewer';
 import { formatLongDate } from '../../../../shared/utils/date.util';
 import { getInitials } from '../../../../shared/utils/user.util';
 import { validatePdfFile } from '../../../../shared/utils/file.util';
+
+/** Abbonamento assicurativo arricchito col cliente coperto (risolto da userId). */
+interface InsuranceCoveredClient extends Subscription {
+  user: UserProfile;
+  userId: number;
+}
 
 @Component({
   selector: 'app-insurance-home-tab',
@@ -25,8 +31,8 @@ export class InsuranceHomeTabComponent {
   @ViewChild('pdfViewer') pdfViewer!: PdfViewerComponent;
 
   searchQuery: string = '';
-  selectedClient: any = null;
-  clientDocs: any[] = [];
+  selectedClient: InsuranceCoveredClient | null = null;
+  clientDocs: ClientDocument[] = [];
   docsLoading: boolean = false;
   isUploading: boolean = false;
   isDragOver: boolean = false;
@@ -37,13 +43,13 @@ export class InsuranceHomeTabComponent {
 
   get activePolicies(): number { return this.allSubscriptions.filter(s => s.active).length; }
   get expiredPolicies(): number { return this.allSubscriptions.filter(s => !s.active).length; }
-  get coveredClients(): any[] {
+  get coveredClients(): InsuranceCoveredClient[] {
     return this.allSubscriptions.map(s => ({
       ...s,
       user: this.allUsers.find(u => u.id === s.userId)
-    })).filter(s => s.user);
+    })).filter((s): s is InsuranceCoveredClient => !!s.user);
   }
-  get filteredClients(): any[] {
+  get filteredClients(): InsuranceCoveredClient[] {
     if (!this.searchQuery.trim()) return this.coveredClients;
     const q = this.searchQuery.toLowerCase();
     return this.coveredClients.filter(c =>
@@ -56,7 +62,7 @@ export class InsuranceHomeTabComponent {
     return getInitials(this.currentUser);
   }
 
-  openClientDocs(sub: any): void {
+  openClientDocs(sub: InsuranceCoveredClient): void {
     this.selectedClient = sub;
     this.docsLoading = true;
     this.editingNotesDocId = null;
@@ -68,7 +74,7 @@ export class InsuranceHomeTabComponent {
 
   closeClientDocs(): void { this.selectedClient = null; this.clientDocs = []; }
 
-  viewPdf(doc: any): void {
+  viewPdf(doc: ClientDocument): void {
     this.pdfViewer.view(doc.fileName, this.authService.downloadPolicy(doc.id));
   }
 
@@ -115,18 +121,19 @@ export class InsuranceHomeTabComponent {
   }
 
   private uploadFile(file: File): void {
-    if (!this.selectedClient || !this.currentUser) return;
+    const client = this.selectedClient;
+    if (!client || !this.currentUser) return;
     this.isUploading = true;
-    this.authService.uploadInsurancePolicy(file, this.selectedClient.userId).subscribe({
+    this.authService.uploadInsurancePolicy(file, client.userId).subscribe({
       next: () => {
         this.isUploading = false;
-        this.openClientDocs(this.selectedClient);
+        this.openClientDocs(client);
       },
       error: () => { this.isUploading = false; }
     });
   }
 
-  deleteDoc(doc: any): void {
+  deleteDoc(doc: ClientDocument): void {
     if (!confirm('Eliminare questo documento?')) return;
     this.authService.deletePolicy(doc.id).subscribe({
       next: () => { this.clientDocs = this.clientDocs.filter(d => d.id !== doc.id); this.cdr.detectChanges(); },
@@ -134,7 +141,7 @@ export class InsuranceHomeTabComponent {
     });
   }
 
-  startEditNotes(doc: any): void {
+  startEditNotes(doc: ClientDocument): void {
     this.editingNotesDocId = doc.id;
     this.editingNotes = doc.notes || '';
   }
@@ -144,11 +151,11 @@ export class InsuranceHomeTabComponent {
     this.editingNotes = '';
   }
 
-  saveNotes(doc: any): void {
+  saveNotes(doc: ClientDocument): void {
     if (this.savingNotes) return;
     this.savingNotes = true;
     this.authService.updatePolicyNotes(doc.id, this.editingNotes).subscribe({
-      next: (res) => {
+      next: () => {
         doc.notes = this.editingNotes;
         this.editingNotesDocId = null;
         this.editingNotes = '';

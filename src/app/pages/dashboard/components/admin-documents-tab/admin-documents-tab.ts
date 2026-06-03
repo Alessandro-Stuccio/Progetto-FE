@@ -1,7 +1,7 @@
 import { Component, Input, inject, ChangeDetectorRef, ViewChild } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
-import { DocumentService } from '../../../../core/services/document.service';
+import { DocumentService, ClientDocument } from '../../../../core/services/document.service';
 import { RoleService } from '../../../../core/services/role.service';
 import { AuthUser, UserProfile } from '../../../../shared/models/dashboard.model';
 import { PdfViewerComponent } from '../../../../shared/components/ui/pdf-viewer/pdf-viewer';
@@ -30,7 +30,7 @@ export class AdminDocumentsTabComponent {
   selectedProfessional: UserProfile | null = null;
 
   expandedClients = new Set<number>();
-  clientDocs = new Map<number, any[]>();
+  clientDocs = new Map<number, ClientDocument[]>();
   loadingClients = new Set<number>();
 
   editingNotesDocId: number | null = null;
@@ -95,7 +95,7 @@ export class AdminDocumentsTabComponent {
     const profName = `${this.selectedProfessional.firstName} ${this.selectedProfessional.lastName}`;
     this.docService.getClientDocuments(clientId).subscribe({
       next: (docs) => {
-        const filtered = (docs || []).filter((d: any) => d.uploadedByName === profName);
+        const filtered = (docs || []).filter((d) => d.uploadedByName === profName);
         this.clientDocs.set(clientId, filtered);
         this.loadingClients.delete(clientId);
         this.cdr.detectChanges();
@@ -108,7 +108,7 @@ export class AdminDocumentsTabComponent {
     });
   }
 
-  getDocsForClient(clientId: number): any[] {
+  getDocsForClient(clientId: number): ClientDocument[] {
     return this.clientDocs.get(clientId) ?? [];
   }
 
@@ -143,11 +143,11 @@ export class AdminDocumentsTabComponent {
     });
   }
 
-  viewDoc(doc: any): void {
+  viewDoc(doc: ClientDocument): void {
     this.pdfViewer.view(doc.fileName, this.docService.downloadDocument(doc.id));
   }
 
-  deleteDoc(doc: any, clientId: number): void {
+  deleteDoc(doc: ClientDocument, clientId: number): void {
     if (!confirm(`Eliminare "${doc.fileName}"?`)) return;
     this.docService.deleteDocument(doc.id).subscribe({
       next: () => {
@@ -159,10 +159,10 @@ export class AdminDocumentsTabComponent {
     });
   }
 
-  startEditNotes(doc: any): void { this.editingNotesDocId = doc.id; this.editingNotes = doc.notes || ''; }
+  startEditNotes(doc: ClientDocument): void { this.editingNotesDocId = doc.id; this.editingNotes = doc.notes || ''; }
   cancelEditNotes(): void { this.editingNotesDocId = null; this.editingNotes = ''; }
 
-  saveNotes(doc: any, clientId: number): void {
+  saveNotes(doc: ClientDocument, clientId: number): void {
     if (this.savingNotes) return;
     this.savingNotes = true;
     this.docService.updateDocumentNotes(doc.id, this.editingNotes).subscribe({

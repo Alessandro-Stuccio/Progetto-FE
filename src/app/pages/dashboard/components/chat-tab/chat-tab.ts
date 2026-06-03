@@ -8,6 +8,16 @@ import { StorageService } from '../../../../core/services/storage.service';
 import { RoleService } from '../../../../core/services/role.service';
 import { LoggerService } from '../../../../core/services/logger.service';
 import { matchesUserSearch } from '../../../../shared/utils/user.util';
+import { Subscription } from 'rxjs';
+
+/** Forma minima comune degli utenti mostrati nel picker "nuova chat" (clienti, professionisti o utenti admin). */
+interface ChatPickerUser {
+  id: number;
+  firstName?: string;
+  lastName?: string;
+  role?: string;
+  email?: string;
+}
 
 @Component({
   selector: 'app-chat-tab',
@@ -46,7 +56,7 @@ export class ChatTabComponent implements OnInit, OnDestroy {
   chatLoading: boolean = false;
   chatView: 'list' | 'conversation' = 'list';
   closingChat: boolean = false;
-  private subscriptions: any[] = [];
+  private subscriptions: Subscription[] = [];
   private conversationsLoaded = false;  // Flag: true dopo il primo load
 
   // User picker (admin)
@@ -65,8 +75,8 @@ export class ChatTabComponent implements OnInit, OnDestroy {
     this.storageService.set(this.emptyConvsCacheKey, convs);
   }
 
-  get filteredPickerUsers(): any[] {
-    let users: any[] = [];
+  get filteredPickerUsers(): ChatPickerUser[] {
+    let users: ChatPickerUser[] = [];
 
     if (this.isClient && this.professionals?.length > 0) {
       users = this.professionals.map(p => ({
@@ -100,7 +110,7 @@ export class ChatTabComponent implements OnInit, OnDestroy {
   }
 
   // Ritorna true se la conversazione c'era già, false se l'abbiamo appena creata.
-  startConversationWith(user: any): boolean {
+  startConversationWith(user: ChatPickerUser): boolean {
     if (user.id === this.currentUser?.id) return false;
 
     const existing = this.chatConversations.find(c => c.otherUserId === user.id);
@@ -128,8 +138,8 @@ export class ChatTabComponent implements OnInit, OnDestroy {
     return false;
   }
 
-  getRoleLabel(role: string): string {
-    return this.roleService.getRoleLabel(role);
+  getRoleLabel(role: string | undefined): string {
+    return this.roleService.getRoleLabel(role ?? '');
   }
 
   isConversationWithModerator(): boolean {
@@ -346,18 +356,18 @@ export class ChatTabComponent implements OnInit, OnDestroy {
   buildLocalConversations(): Conversation[] {
     const convs: Conversation[] = [];
     if (this.isClient && this.professionals?.length > 0) {
-      this.professionals.forEach((p: any) => {
+      this.professionals.forEach((p) => {
         convs.push({ otherUserId: p.id, otherUserName: p.fullName, otherUserRole: p.role === 'PERSONAL_TRAINER' ? 'Personal Trainer' : 'Nutrizionista', lastMessage: undefined, lastMessageTime: undefined, unreadCount: 0 });
       });
     }
     if (this.isProfessional && this.myClients?.length > 0) {
-      this.myClients.forEach((c: any) => {
+      this.myClients.forEach((c) => {
         convs.push({ otherUserId: c.id, otherUserName: `${c.firstName} ${c.lastName}`, otherUserRole: 'Cliente', lastMessage: undefined, lastMessageTime: undefined, unreadCount: 0 });
       });
     }
     // Insurance Manager: può chattare solo con Admin
     if (this.isInsurance && this.allUsers?.length > 0) {
-      this.allUsers.filter(u => u.role === 'ADMIN').forEach((a: any) => {
+      this.allUsers.filter(u => u.role === 'ADMIN').forEach((a) => {
         convs.push({ otherUserId: a.id, otherUserName: `${a.firstName} ${a.lastName}`, otherUserRole: 'Admin', lastMessage: undefined, lastMessageTime: undefined, unreadCount: 0 });
       });
     }

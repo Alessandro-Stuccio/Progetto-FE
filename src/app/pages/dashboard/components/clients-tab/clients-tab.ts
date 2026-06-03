@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, inject, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { DocumentService } from '../../../../core/services/document.service';
+import { DocumentService, ClientDocument } from '../../../../core/services/document.service';
 import { ClientBasicInfo, AuthUser } from '../../../../shared/models/dashboard.model';
 import { PdfViewerComponent } from '../../../../shared/components/ui/pdf-viewer/pdf-viewer';
 import { formatLongDate } from '../../../../shared/utils/date.util';
@@ -24,8 +24,8 @@ export class ClientsTabComponent {
 
   @ViewChild('pdfViewer') pdfViewer!: PdfViewerComponent;
 
-  selectedClient: any = null;
-  clientDocuments: any[] = [];
+  selectedClient: ClientBasicInfo | null = null;
+  clientDocuments: ClientDocument[] = [];
   clientDocsLoading: boolean = false;
   docFilterType: string = 'ALL';
   isUploading: boolean = false;
@@ -39,7 +39,7 @@ export class ClientsTabComponent {
   editingNotesText: string = '';
   savingNotes: boolean = false;
 
-  openClientDetail(client: any): void {
+  openClientDetail(client: ClientBasicInfo): void {
     this.selectedClient = client;
     this.clientDocuments = [];
     this.docFilterType = 'ALL';
@@ -161,7 +161,7 @@ export class ClientsTabComponent {
     return 'Trascina qui un PDF';
   }
 
-  viewDocument(doc: any): void {
+  viewDocument(doc: ClientDocument): void {
     this.pdfViewer.view(
       doc.fileName,
       this.authService.downloadDocument(doc.id),
@@ -169,7 +169,7 @@ export class ClientsTabComponent {
     );
   }
 
-deleteDocument(doc: any): void {
+deleteDocument(doc: ClientDocument): void {
     if (!confirm(`Eliminare "${doc.fileName}"?`)) return;
     this.authService.deleteDocument(doc.id).subscribe({
       next: () => { this.loadClientDocuments(); },
@@ -200,20 +200,20 @@ deleteDocument(doc: any): void {
   }
 
   // Ognuno può cancellare solo il tipo di documento che gli compete caricare.
-  canDeleteDoc(doc: any): boolean {
+  canDeleteDoc(doc: ClientDocument): boolean {
     if (this.currentUser?.role === 'PERSONAL_TRAINER') return doc.type === 'WORKOUT_PLAN';
     if (this.currentUser?.role === 'NUTRITIONIST') return doc.type === 'DIET_PLAN';
     return false;
   }
 
   // Stessa regola per le note: si toccano solo sui documenti del proprio ruolo.
-  canEditNotes(doc: any): boolean {
+  canEditNotes(doc: ClientDocument): boolean {
     if (this.currentUser?.role === 'PERSONAL_TRAINER') return doc.type === 'WORKOUT_PLAN';
     if (this.currentUser?.role === 'NUTRITIONIST') return doc.type === 'DIET_PLAN';
     return false;
   }
 
-  toggleNotesEdit(doc: any): void {
+  toggleNotesEdit(doc: ClientDocument): void {
     if (this.editingNotesDocId === doc.id) {
       this.editingNotesDocId = null;
       this.editingNotesText = '';
@@ -223,10 +223,11 @@ deleteDocument(doc: any): void {
     }
   }
 
-  saveNotes(doc: any): void {
+  saveNotes(doc: ClientDocument): void {
 this.authService.updateDocumentNotes(this.editingNotesDocId!, this.editingNotesText).subscribe({
       next: () => {
-        const doc = this.clientDocuments.find(d => d.id === this.editingNotesDocId);
+        const found = this.clientDocuments.find(d => d.id === this.editingNotesDocId);
+        if (found) found.notes = this.editingNotesText;
         if (doc) doc.notes = this.editingNotesText;
         this.editingNotesDocId = null;
         this.editingNotesText = '';
