@@ -56,7 +56,7 @@ export class ResetPasswordComponent {
     this.successMessage = '';
 
     this.authService.forgotPassword(this.email).subscribe({
-      next: (res: any) => {
+      next: () => {
         this.loading = false;
         this.successMessage = 'Link di reset inviato con successo alla tua email! Verrai reindirizzato al login...';
         this.cdr.detectChanges();

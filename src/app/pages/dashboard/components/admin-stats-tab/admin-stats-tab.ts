@@ -1,6 +1,7 @@
 import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../../../core/services/user.service';
+import { AdminStatsResponse } from '../../../../shared/models/dashboard.model';
 
 @Component({
   selector: 'app-admin-stats-tab',
@@ -13,7 +14,7 @@ export class AdminStatsTabComponent implements OnInit {
   private authService = inject(UserService);
   private cdr = inject(ChangeDetectorRef);
 
-  stats: any = null;
+  stats: AdminStatsResponse | null = null;
   loading = true;
 
   ngOnInit(): void {
@@ -59,7 +60,7 @@ export class AdminStatsTabComponent implements OnInit {
 
   getMaxMonthCount(): number {
     if (!this.stats?.usersPerMonth) return 1;
-    return Math.max(1, ...this.stats.usersPerMonth.map((m: any) => m.count));
+    return Math.max(1, ...this.stats.usersPerMonth.map((m) => m.count));
   }
 
   getBarHeight(count: number): number {

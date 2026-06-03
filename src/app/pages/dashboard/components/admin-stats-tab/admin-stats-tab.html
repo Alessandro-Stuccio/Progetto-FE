@@ -186,7 +186,7 @@
           </div>
         </div>
         <!-- CARICO PROFESSIONISTI -->
-        @if (stats.professionalWorkload?.length > 0) {
+        @if ((stats.professionalWorkload?.length ?? 0) > 0) {
           <div class="bg-white rounded-2xl border border-[var(--color-border-subtle)] p-5 shadow-sm">
             <div class="flex items-center gap-2 mb-4">
               <span class="text-[1.1rem]">🏋️</span>

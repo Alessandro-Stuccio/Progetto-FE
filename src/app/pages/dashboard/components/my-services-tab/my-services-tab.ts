@@ -1,6 +1,6 @@
 import { Component, Input, inject, ChangeDetectorRef, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DocumentService } from '../../../../core/services/document.service';
+import { DocumentService, ClientDocument } from '../../../../core/services/document.service';
 import { AuthUser } from '../../../../shared/models/dashboard.model';
 import { PdfViewerComponent } from '../../../../shared/components/ui/pdf-viewer/pdf-viewer';
 import { formatLongDate } from '../../../../shared/utils/date.util';
@@ -20,7 +20,7 @@ export class MyServicesTabComponent implements OnInit {
   @ViewChild('pdfViewer') pdfViewer!: PdfViewerComponent;
 
   activeTab: string = 'scheda';
-  docs: any[] = [];
+  docs: ClientDocument[] = [];
   loading: boolean = false;
   private loadedType: string = '';
 
@@ -36,7 +36,7 @@ export class MyServicesTabComponent implements OnInit {
 
   loadDocs(tab: string): void {
     if (!this.currentUser) return;
-    const typeMap: any = { scheda: 'WORKOUT_PLAN', dieta: 'DIET_PLAN', polizza: 'INSURANCE_POLICE' };
+    const typeMap: Record<string, string> = { scheda: 'WORKOUT_PLAN', dieta: 'DIET_PLAN', polizza: 'INSURANCE_POLICE' };
     const type = typeMap[tab];
     if (!type || this.loadedType === type) return;
     this.loading = true;
@@ -47,7 +47,7 @@ export class MyServicesTabComponent implements OnInit {
     });
   }
 
-  viewPdf(doc: any): void {
+  viewPdf(doc: ClientDocument): void {
     this.pdfViewer.view(doc.fileName, this.documentService.downloadDocument(doc.id));
   }
 

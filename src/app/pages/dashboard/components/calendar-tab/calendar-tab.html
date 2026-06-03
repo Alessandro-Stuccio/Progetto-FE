@@ -45,7 +45,7 @@
                 <div class="booking-card cursor-pointer" [class]="'booking-card ' + getBookingClass(b)" (click)="openCallModalEvent.emit(b)">
                   <div class="booking-time">{{ b.startTime }} – {{ b.endTime }}</div>
                   <div class="booking-name">{{ getBookingLabel(b) }}</div>
-                  <div class="booking-status" [class]="'status-' + b.status?.toLowerCase()">{{ b.status === 'CONFIRMED' ? '● Confermata' : b.status === 'PENDING' ? '○ In attesa' : '✕ Annullata' }}</div>
+                  <div class="booking-status" [class]="'status-' + b.status?.toLowerCase()">{{ b.status === 'CONFIRMED' ? '● Confermata' : '✕ Annullata' }}</div>
                 </div>
               }
             </div>
@@ -93,7 +93,7 @@
                     <div class="text-[0.875rem] font-semibold text-[var(--color-text-main)] truncate">{{ getBookingLabel(b) }}</div>
                     <div class="text-[0.74rem] text-[var(--color-text-muted)] font-medium">{{ b.startTime }} – {{ b.endTime }}</div>
                   </div>
-                  <span class="text-[0.7rem] font-bold flex-shrink-0" [style.color]="b.status === 'CONFIRMED' ? '#10b981' : b.status === 'PENDING' ? '#f59e0b' : 'var(--color-text-muted)'">{{ b.status === 'CONFIRMED' ? '●' : b.status === 'PENDING' ? '○' : '✕' }}</span>
+                  <span class="text-[0.7rem] font-bold flex-shrink-0" [style.color]="b.status === 'CONFIRMED' ? '#10b981' : 'var(--color-text-muted)'">{{ b.status === 'CONFIRMED' ? '●' : '✕' }}</span>
                 </div>
               }
               @if (getBookingsForAgendaDay(day).length === 0) {

@@ -17,7 +17,7 @@ export class MyProfessionalsTabComponent implements OnChanges, OnInit {
     private _currentUser: AuthUser | null = null;
     @Input() set currentUser(value: AuthUser | null) { this._currentUser = value; }
     get currentUser(): AuthUser { return this._currentUser!; }
-    @Output() bookProfessional = new EventEmitter<any>();
+    @Output() bookProfessional = new EventEmitter<ProfessionalSummary>();
 
     private reviewService = inject(ReviewService);
     private cdr = inject(ChangeDetectorRef);
@@ -33,7 +33,7 @@ export class MyProfessionalsTabComponent implements OnChanges, OnInit {
     canReviewMap: Record<number, boolean> = {};
 
     // Modal recensioni pubbliche
-    publicReviewsModal: { prof: any; reviews: ReviewResponse[] } | null = null;
+    publicReviewsModal: { prof: ProfessionalSummary; reviews: ReviewResponse[] } | null = null;
 
     // Form recensione
     reviewFormOpen: Record<number, boolean> = {};
@@ -80,7 +80,7 @@ export class MyProfessionalsTabComponent implements OnChanges, OnInit {
         });
     }
 
-    openPublicReviews(prof: any): void {
+    openPublicReviews(prof: ProfessionalSummary): void {
         this.publicReviewsModal = { prof, reviews: this.reviewsMap[prof.id] ?? [] };
     }
 
@@ -97,7 +97,7 @@ export class MyProfessionalsTabComponent implements OnChanges, OnInit {
         this.reviewRating[profId] = val;
     }
 
-    submitReview(prof: any): void {
+    submitReview(prof: ProfessionalSummary): void {
         const rating = this.reviewRating[prof.id] ?? 5;
         const comment = (this.reviewComment[prof.id] ?? '').trim();
         if (!comment) { this.reviewError[prof.id] = 'Scrivi un commento prima di inviare.'; return; }

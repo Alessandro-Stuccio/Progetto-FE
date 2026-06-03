@@ -102,7 +102,7 @@ export class HomeTabComponent implements OnInit {
   getDayNumber(date: Date): number { return date.getDate(); }
   getMonthShort(date: Date): string { return date.toLocaleDateString('it-IT', { month: 'short' }).replace('.', ''); }
 
-  getBookingLabel(b: any): string {
+  getBookingLabel(b: Booking): string {
     if (this.isClient) {
       const role = b.professionalRole === 'PERSONAL_TRAINER' ? 'PT' : 'Nutr.';
       return `${role} – ${b.professionalName ?? ''}`;

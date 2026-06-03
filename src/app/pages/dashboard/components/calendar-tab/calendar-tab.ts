@@ -17,7 +17,7 @@ export class CalendarTabComponent implements OnInit {
   @Input() isProfessional: boolean = false;
   @Input() isClient: boolean = false;
   @Input() isLoading: boolean = false;
-  @Output() openCallModalEvent = new EventEmitter<any>();
+  @Output() openCallModalEvent = new EventEmitter<Booking>();
   @Output() openAvailabilityEvent = new EventEmitter<void>();
 
   currentWeekStart: Date = new Date();
@@ -55,9 +55,9 @@ export class CalendarTabComponent implements OnInit {
     return days;
   }
 
-  getBookingsForAgendaDay(day: Date): any[] {
+  getBookingsForAgendaDay(day: Date): Booking[] {
     const dateStr = this.formatDate(day);
-    return (this.bookings || []).filter((b: any) => b.date === dateStr).sort((a: any, b: any) => (a.startTime || '').localeCompare(b.startTime || ''));
+    return (this.bookings || []).filter((b) => b.date === dateStr).sort((a, b) => (a.startTime || '').localeCompare(b.startTime || ''));
   }
 
   initWeek(): void {
@@ -117,17 +117,17 @@ export class CalendarTabComponent implements OnInit {
   getDayNumber(date: Date): number { return date.getDate(); }
   getMonthShort(date: Date): string { return date.toLocaleDateString('it-IT', { month: 'short' }).replace('.', ''); }
 
-  getBookingsForSlot(day: Date, timeSlot: string): any[] {
+  getBookingsForSlot(day: Date, timeSlot: string): Booking[] {
     const dateStr = this.formatDate(day); const [slotH, slotM] = timeSlot.split(':').map(Number);
     return this.bookings.filter(b => { if (b.date !== dateStr) return false; const [bH, bM] = (b.startTime ?? '00:00').split(':').map(Number); return bH === slotH && bM === slotM; });
   }
 
-  getBookingLabel(b: any): string {
+  getBookingLabel(b: Booking): string {
     if (this.isClient) { const role = b.professionalRole === 'PERSONAL_TRAINER' ? 'PT' : 'Nutr.'; return `${role} – ${b.professionalName ?? ''}`; }
     return b.clientName ?? '';
   }
 
-  getBookingClass(b: any): string {
+  getBookingClass(b: Booking): string {
     if (b.status === 'CANCELED') return 'booking-cancelled';
     if (b.professionalRole === 'NUTRITIONIST') return 'booking-nutrition';
     return 'booking-pt';
