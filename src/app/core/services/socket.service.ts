@@ -2,6 +2,7 @@ import { Injectable, inject, NgZone } from '@angular/core';
 import { Client, IMessage, StompSubscription } from '@stomp/stompjs';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { LoggerService } from './logger.service';
 
 // Messaggio che arriva dal backend: è lo stesso ChatMessageResponse lato Spring.
 export interface WsIncomingMessage {
@@ -15,13 +16,6 @@ export interface WsIncomingMessage {
   status: 'SENT' | 'DELIVERED' | 'READ';
   createdAt: string;
   roomId: string;
-}
-
-// "Sta scrivendo..." dell'altro utente.
-export interface WsTypingEvent {
-  userId: number;
-  roomId: string;
-  typing: boolean;
 }
 
 // Nuovo conteggio dei non letti spinto dal server.
@@ -39,6 +33,7 @@ export interface WsStatusUpdate {
 @Injectable({ providedIn: 'root' })
 export class SocketService {
   private zone = inject(NgZone);
+  private log = inject(LoggerService);
 
   private client: Client | null = null;
   private currentUserId: number | null = null;
@@ -49,16 +44,12 @@ export class SocketService {
   connected$ = this.connectedSubject.asObservable();
 
   // Da qui i componenti ascoltano quello che arriva dal server: i messaggi
-  // della stanza aperta, il conteggio dei non letti, il "sta scrivendo" e i
-  // cambi di stato dei messaggi.
+  // della stanza aperta, il conteggio dei non letti e i cambi di stato dei messaggi.
   private incomingMessageSubject = new Subject<WsIncomingMessage>();
   incomingMessage$ = this.incomingMessageSubject.asObservable();
 
   private unreadUpdateSubject = new Subject<WsUnreadUpdate>();
   unreadUpdate$ = this.unreadUpdateSubject.asObservable();
-
-  private typingSubject = new Subject<WsTypingEvent>();
-  typing$ = this.typingSubject.asObservable();
 
   private statusUpdateSubject = new Subject<WsStatusUpdate>();
   statusUpdate$ = this.statusUpdateSubject.asObservable();
@@ -77,7 +68,7 @@ export class SocketService {
 
     const token = localStorage.getItem('token');
     if (!token) {
-      console.warn('[WS] Nessun token JWT in localStorage — connessione annullata.');
+      this.log.warn('[WS] Nessun token JWT in localStorage — connessione annullata.');
       return;
     }
 
@@ -100,7 +91,7 @@ export class SocketService {
       onConnect: () => {
         this.zone.run(() => {
           this.connectedSubject.next(true);
-          console.log('[WS] Connesso come userId:', userId);
+          this.log.debug('[WS] Connesso come userId:', userId);
 
           this.subscribeNotifications(email);
         });
@@ -109,12 +100,12 @@ export class SocketService {
       onDisconnect: () => {
         this.zone.run(() => {
           this.connectedSubject.next(false);
-          console.log('[WS] Disconnesso');
+          this.log.debug('[WS] Disconnesso');
         });
       },
 
       onStompError: (frame) => {
-        console.error('[WS] Errore STOMP:', frame.headers['message'], frame.body);
+        this.log.error('[WS] Errore STOMP:', frame.headers['message'], frame.body);
       },
 
       onWebSocketClose: () => {
@@ -170,7 +161,7 @@ export class SocketService {
       body: JSON.stringify({ roomId })
     });
 
-    console.log('[WS] Joined chat room:', roomId);
+    this.log.debug('[WS] Joined chat room:', roomId);
   }
 
   // Esce dalla stanza attiva: cancella la subscription e avvisa il server, che
@@ -186,7 +177,7 @@ export class SocketService {
         destination: '/app/chat.leave',
         body: JSON.stringify({ roomId: this.activeRoomId })
       });
-      console.log('[WS] Left room:', this.activeRoomId);
+      this.log.debug('[WS] Left room:', this.activeRoomId);
     }
 
     this.activeRoomId = null;
@@ -200,20 +191,6 @@ export class SocketService {
     this.client.publish({
       destination: '/app/chat.send',
       body: JSON.stringify({ chatId, content })
-    });
-  }
-
-  sendTyping(chatId: number, typing: boolean): void {
-    if (!this.client?.connected || !this.currentUserId) return;
-
-    const roomId = String(chatId);
-    this.client.publish({
-      destination: '/app/chat.typing',
-      body: JSON.stringify({
-        userId: this.currentUserId,
-        roomId,
-        typing
-      })
     });
   }
 

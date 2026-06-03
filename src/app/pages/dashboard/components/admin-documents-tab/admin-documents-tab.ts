@@ -6,7 +6,7 @@ import { RoleService } from '../../../../core/services/role.service';
 import { AuthUser, UserProfile } from '../../../../shared/models/dashboard.model';
 import { PdfViewerComponent } from '../../../../shared/components/ui/pdf-viewer/pdf-viewer';
 import { formatLongDate } from '../../../../shared/utils/date.util';
-import { getInitials } from '../../../../shared/utils/user.util';
+import { getInitials, matchesUserSearch } from '../../../../shared/utils/user.util';
 import { validatePdfFile } from '../../../../shared/utils/file.util';
 
 @Component({
@@ -42,10 +42,9 @@ export class AdminDocumentsTabComponent {
 
   get professionals(): UserProfile[] {
     const roles = ['PERSONAL_TRAINER', 'NUTRITIONIST', 'INSURANCE_MANAGER'];
-    const q = this.profSearch.trim().toLowerCase();
     return this.allUsers
       .filter(u => roles.includes(u.role as string))
-      .filter(u => !q || (u.firstName + ' ' + u.lastName).toLowerCase().includes(q) || u.email?.toLowerCase().includes(q));
+      .filter(u => matchesUserSearch(u, this.profSearch));
   }
 
   get linkedClients(): UserProfile[] {

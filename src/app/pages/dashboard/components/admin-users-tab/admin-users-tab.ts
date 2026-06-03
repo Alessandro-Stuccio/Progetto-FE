@@ -6,6 +6,7 @@ import { SubscriptionService } from '../../../../core/services/subscription.serv
 import { ManagedUserPayload, UserProfile, Plan, Subscription, AuthUser } from '../../../../shared/models/dashboard.model';
 import { ToastService } from '../../../../core/services/toast.service';
 import { RoleService } from '../../../../core/services/role.service';
+import { matchesUserSearch } from '../../../../shared/utils/user.util';
 
 @Component({
   selector: 'app-admin-users-tab',
@@ -115,11 +116,7 @@ export class AdminUsersTabComponent {
       users = users.filter(u => u.role === this.roleFilter);
     }
     if (this.searchQuery.trim()) {
-      const q = this.searchQuery.toLowerCase();
-      users = users.filter(u =>
-        (u.firstName + ' ' + u.lastName).toLowerCase().includes(q) ||
-        u.email?.toLowerCase().includes(q)
-      );
+      users = users.filter(u => matchesUserSearch(u, this.searchQuery));
     }
     return users;
   }

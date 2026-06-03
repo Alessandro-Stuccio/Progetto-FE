@@ -26,10 +26,6 @@ export class DocumentService {
     return this.http.get<any[]>(`${this.apiUrl}/api/documents/user/${clientId}/type/${type}`);
   }
 
-  getDocumentDownloadUrl(documentId: number): string {
-    return `${this.apiUrl}/api/documents/download/${documentId}`;
-  }
-
   downloadDocument(documentId: number): Observable<Blob> {
     return this.http.get(`${this.apiUrl}/api/documents/download/${documentId}`, { responseType: 'blob' });
   }

@@ -227,19 +227,6 @@ img, video, svg {
   animation: slideUpLarge 0.6s var(--ease-out-soft) forwards;
 }
 
-/* Scroll reveal — usato con la direttiva [appScrollReveal] */
-.scroll-reveal {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.7s var(--ease-out-soft), transform 0.7s var(--ease-out-soft);
-  will-change: opacity, transform;
-}
-
-.scroll-reveal.is-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
 /* Surface presets — usabili direttamente con class */
 .surface-card {
   background: var(--bg-panel);
@@ -382,9 +369,5 @@ img, video, svg {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
-  }
-  .scroll-reveal {
-    opacity: 1;
-    transform: none;
   }
 }

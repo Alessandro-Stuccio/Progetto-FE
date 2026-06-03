@@ -72,34 +72,34 @@
       </div>
       <div class="p-6 flex flex-col gap-4">
         <div>
-          <label class="text-[0.65rem] text-[var(--color-text-muted)] uppercase tracking-[0.08em] font-semibold mb-1 block">Nome Piano</label>
-          <input type="text" [(ngModel)]="newPlan.name" class="w-full px-3 py-2.5 rounded-xl bg-[var(--color-bg-subtle)] border border-[var(--color-border-subtle)] text-[0.85rem] text-[var(--color-text-main)] focus:outline-none focus:border-[var(--color-accent-gold)]" placeholder="Es. Gold Annuale">
+          <label for="np-name" class="text-[0.65rem] text-[var(--color-text-muted)] uppercase tracking-[0.08em] font-semibold mb-1 block">Nome Piano</label>
+          <input id="np-name" type="text" [(ngModel)]="newPlan.name" class="w-full px-3 py-2.5 rounded-xl bg-[var(--color-bg-subtle)] border border-[var(--color-border-subtle)] text-[0.85rem] text-[var(--color-text-main)] focus:outline-none focus:border-[var(--color-accent-gold)]" placeholder="Es. Gold Annuale">
         </div>
         <div>
-          <label class="text-[0.65rem] text-[var(--color-text-muted)] uppercase tracking-[0.08em] font-semibold mb-1 block">Durata</label>
-          <select [(ngModel)]="newPlan.duration" (ngModelChange)="onDurationChange()" class="w-full px-3 py-2.5 rounded-xl bg-[var(--color-bg-subtle)] border border-[var(--color-border-subtle)] text-[0.85rem] text-[var(--color-text-main)] focus:outline-none focus:border-[var(--color-accent-gold)]">
+          <label for="np-duration" class="text-[0.65rem] text-[var(--color-text-muted)] uppercase tracking-[0.08em] font-semibold mb-1 block">Durata</label>
+          <select id="np-duration" [(ngModel)]="newPlan.duration" (ngModelChange)="onDurationChange()" class="w-full px-3 py-2.5 rounded-xl bg-[var(--color-bg-subtle)] border border-[var(--color-border-subtle)] text-[0.85rem] text-[var(--color-text-main)] focus:outline-none focus:border-[var(--color-accent-gold)]">
             <option value="SEMESTRALE">Semestrale (6 mesi)</option>
             <option value="ANNUALE">Annuale (12 mesi)</option>
           </select>
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="text-[0.65rem] text-[var(--color-text-muted)] uppercase tracking-[0.08em] font-semibold mb-1 block">Prezzo totale (€)</label>
-            <input type="number" [(ngModel)]="newPlan.fullPrice" (ngModelChange)="onFullPriceChange()" class="w-full px-3 py-2.5 rounded-xl bg-[var(--color-bg-subtle)] border border-[var(--color-border-subtle)] text-[0.85rem] text-[var(--color-text-main)] focus:outline-none focus:border-[var(--color-accent-gold)]" placeholder="0">
+            <label for="np-fullprice" class="text-[0.65rem] text-[var(--color-text-muted)] uppercase tracking-[0.08em] font-semibold mb-1 block">Prezzo totale (€)</label>
+            <input id="np-fullprice" type="number" [(ngModel)]="newPlan.fullPrice" (ngModelChange)="onFullPriceChange()" class="w-full px-3 py-2.5 rounded-xl bg-[var(--color-bg-subtle)] border border-[var(--color-border-subtle)] text-[0.85rem] text-[var(--color-text-main)] focus:outline-none focus:border-[var(--color-accent-gold)]" placeholder="0">
           </div>
           <div>
-            <label class="text-[0.65rem] text-[var(--color-text-muted)] uppercase tracking-[0.08em] font-semibold mb-1 block">Rata mensile (€)</label>
-            <input type="number" [(ngModel)]="newPlan.monthlyInstallmentPrice" (ngModelChange)="onMonthlyPriceChange()" class="w-full px-3 py-2.5 rounded-xl bg-[var(--color-bg-subtle)] border border-[var(--color-border-subtle)] text-[0.85rem] text-[var(--color-text-main)] focus:outline-none focus:border-[var(--color-accent-gold)]" placeholder="0">
+            <label for="np-rata" class="text-[0.65rem] text-[var(--color-text-muted)] uppercase tracking-[0.08em] font-semibold mb-1 block">Rata mensile (€)</label>
+            <input id="np-rata" type="number" [(ngModel)]="newPlan.monthlyInstallmentPrice" (ngModelChange)="onMonthlyPriceChange()" class="w-full px-3 py-2.5 rounded-xl bg-[var(--color-bg-subtle)] border border-[var(--color-border-subtle)] text-[0.85rem] text-[var(--color-text-main)] focus:outline-none focus:border-[var(--color-accent-gold)]" placeholder="0">
           </div>
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="text-[0.65rem] text-[var(--color-text-muted)] uppercase tracking-[0.08em] font-semibold mb-1 block">Crediti PT/mese</label>
-            <input type="number" [(ngModel)]="newPlan.monthlyCreditsPT" class="w-full px-3 py-2.5 rounded-xl bg-[var(--color-bg-subtle)] border border-[var(--color-border-subtle)] text-[0.85rem] text-[var(--color-text-main)] focus:outline-none focus:border-[var(--color-accent-gold)]" placeholder="0">
+            <label for="np-pt" class="text-[0.65rem] text-[var(--color-text-muted)] uppercase tracking-[0.08em] font-semibold mb-1 block">Crediti PT/mese</label>
+            <input id="np-pt" type="number" [(ngModel)]="newPlan.monthlyCreditsPT" class="w-full px-3 py-2.5 rounded-xl bg-[var(--color-bg-subtle)] border border-[var(--color-border-subtle)] text-[0.85rem] text-[var(--color-text-main)] focus:outline-none focus:border-[var(--color-accent-gold)]" placeholder="0">
           </div>
           <div>
-            <label class="text-[0.65rem] text-[var(--color-text-muted)] uppercase tracking-[0.08em] font-semibold mb-1 block">Crediti Nutri/mese</label>
-            <input type="number" [(ngModel)]="newPlan.monthlyCreditsNutri" class="w-full px-3 py-2.5 rounded-xl bg-[var(--color-bg-subtle)] border border-[var(--color-border-subtle)] text-[0.85rem] text-[var(--color-text-main)] focus:outline-none focus:border-[var(--color-accent-gold)]" placeholder="0">
+            <label for="np-nutri" class="text-[0.65rem] text-[var(--color-text-muted)] uppercase tracking-[0.08em] font-semibold mb-1 block">Crediti Nutri/mese</label>
+            <input id="np-nutri" type="number" [(ngModel)]="newPlan.monthlyCreditsNutri" class="w-full px-3 py-2.5 rounded-xl bg-[var(--color-bg-subtle)] border border-[var(--color-border-subtle)] text-[0.85rem] text-[var(--color-text-main)] focus:outline-none focus:border-[var(--color-accent-gold)]" placeholder="0">
           </div>
         </div>
         <div class="text-[0.78rem] text-red-500 font-medium" *ngIf="createError">{{ createError }}</div>
@@ -120,34 +120,34 @@
       </div>
       <div class="p-6 flex flex-col gap-4">
         <div>
-          <label class="text-[0.65rem] text-[var(--color-text-muted)] uppercase tracking-[0.08em] font-semibold mb-1 block">Nome Piano</label>
-          <input type="text" [(ngModel)]="editPlan.name" class="w-full px-3 py-2.5 rounded-xl bg-[var(--color-bg-subtle)] border border-[var(--color-border-subtle)] text-[0.85rem] text-[var(--color-text-main)] focus:outline-none focus:border-[var(--color-accent-gold)]" placeholder="Es. Gold Annuale">
+          <label for="ep-name" class="text-[0.65rem] text-[var(--color-text-muted)] uppercase tracking-[0.08em] font-semibold mb-1 block">Nome Piano</label>
+          <input id="ep-name" type="text" [(ngModel)]="editPlan.name" class="w-full px-3 py-2.5 rounded-xl bg-[var(--color-bg-subtle)] border border-[var(--color-border-subtle)] text-[0.85rem] text-[var(--color-text-main)] focus:outline-none focus:border-[var(--color-accent-gold)]" placeholder="Es. Gold Annuale">
         </div>
         <div>
-          <label class="text-[0.65rem] text-[var(--color-text-muted)] uppercase tracking-[0.08em] font-semibold mb-1 block">Durata</label>
-          <select [(ngModel)]="editPlan.duration" (ngModelChange)="onEditDurationChange()" class="w-full px-3 py-2.5 rounded-xl bg-[var(--color-bg-subtle)] border border-[var(--color-border-subtle)] text-[0.85rem] text-[var(--color-text-main)] focus:outline-none focus:border-[var(--color-accent-gold)]">
+          <label for="ep-duration" class="text-[0.65rem] text-[var(--color-text-muted)] uppercase tracking-[0.08em] font-semibold mb-1 block">Durata</label>
+          <select id="ep-duration" [(ngModel)]="editPlan.duration" (ngModelChange)="onEditDurationChange()" class="w-full px-3 py-2.5 rounded-xl bg-[var(--color-bg-subtle)] border border-[var(--color-border-subtle)] text-[0.85rem] text-[var(--color-text-main)] focus:outline-none focus:border-[var(--color-accent-gold)]">
             <option value="SEMESTRALE">Semestrale (6 mesi)</option>
             <option value="ANNUALE">Annuale (12 mesi)</option>
           </select>
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="text-[0.65rem] text-[var(--color-text-muted)] uppercase tracking-[0.08em] font-semibold mb-1 block">Prezzo totale (€)</label>
-            <input type="number" [(ngModel)]="editPlan.fullPrice" (ngModelChange)="onEditFullPriceChange()" class="w-full px-3 py-2.5 rounded-xl bg-[var(--color-bg-subtle)] border border-[var(--color-border-subtle)] text-[0.85rem] text-[var(--color-text-main)] focus:outline-none focus:border-[var(--color-accent-gold)]" placeholder="0">
+            <label for="ep-fullprice" class="text-[0.65rem] text-[var(--color-text-muted)] uppercase tracking-[0.08em] font-semibold mb-1 block">Prezzo totale (€)</label>
+            <input id="ep-fullprice" type="number" [(ngModel)]="editPlan.fullPrice" (ngModelChange)="onEditFullPriceChange()" class="w-full px-3 py-2.5 rounded-xl bg-[var(--color-bg-subtle)] border border-[var(--color-border-subtle)] text-[0.85rem] text-[var(--color-text-main)] focus:outline-none focus:border-[var(--color-accent-gold)]" placeholder="0">
           </div>
           <div>
-            <label class="text-[0.65rem] text-[var(--color-text-muted)] uppercase tracking-[0.08em] font-semibold mb-1 block">Rata mensile (€)</label>
-            <input type="number" [(ngModel)]="editPlan.monthlyInstallmentPrice" (ngModelChange)="onEditMonthlyPriceChange()" class="w-full px-3 py-2.5 rounded-xl bg-[var(--color-bg-subtle)] border border-[var(--color-border-subtle)] text-[0.85rem] text-[var(--color-text-main)] focus:outline-none focus:border-[var(--color-accent-gold)]" placeholder="0">
+            <label for="ep-rata" class="text-[0.65rem] text-[var(--color-text-muted)] uppercase tracking-[0.08em] font-semibold mb-1 block">Rata mensile (€)</label>
+            <input id="ep-rata" type="number" [(ngModel)]="editPlan.monthlyInstallmentPrice" (ngModelChange)="onEditMonthlyPriceChange()" class="w-full px-3 py-2.5 rounded-xl bg-[var(--color-bg-subtle)] border border-[var(--color-border-subtle)] text-[0.85rem] text-[var(--color-text-main)] focus:outline-none focus:border-[var(--color-accent-gold)]" placeholder="0">
           </div>
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="text-[0.65rem] text-[var(--color-text-muted)] uppercase tracking-[0.08em] font-semibold mb-1 block">Crediti PT/mese</label>
-            <input type="number" [(ngModel)]="editPlan.monthlyCreditsPT" class="w-full px-3 py-2.5 rounded-xl bg-[var(--color-bg-subtle)] border border-[var(--color-border-subtle)] text-[0.85rem] text-[var(--color-text-main)] focus:outline-none focus:border-[var(--color-accent-gold)]" placeholder="0">
+            <label for="ep-pt" class="text-[0.65rem] text-[var(--color-text-muted)] uppercase tracking-[0.08em] font-semibold mb-1 block">Crediti PT/mese</label>
+            <input id="ep-pt" type="number" [(ngModel)]="editPlan.monthlyCreditsPT" class="w-full px-3 py-2.5 rounded-xl bg-[var(--color-bg-subtle)] border border-[var(--color-border-subtle)] text-[0.85rem] text-[var(--color-text-main)] focus:outline-none focus:border-[var(--color-accent-gold)]" placeholder="0">
           </div>
           <div>
-            <label class="text-[0.65rem] text-[var(--color-text-muted)] uppercase tracking-[0.08em] font-semibold mb-1 block">Crediti Nutri/mese</label>
-            <input type="number" [(ngModel)]="editPlan.monthlyCreditsNutri" class="w-full px-3 py-2.5 rounded-xl bg-[var(--color-bg-subtle)] border border-[var(--color-border-subtle)] text-[0.85rem] text-[var(--color-text-main)] focus:outline-none focus:border-[var(--color-accent-gold)]" placeholder="0">
+            <label for="ep-nutri" class="text-[0.65rem] text-[var(--color-text-muted)] uppercase tracking-[0.08em] font-semibold mb-1 block">Crediti Nutri/mese</label>
+            <input id="ep-nutri" type="number" [(ngModel)]="editPlan.monthlyCreditsNutri" class="w-full px-3 py-2.5 rounded-xl bg-[var(--color-bg-subtle)] border border-[var(--color-border-subtle)] text-[0.85rem] text-[var(--color-text-main)] focus:outline-none focus:border-[var(--color-accent-gold)]" placeholder="0">
           </div>
         </div>
         <div class="text-[0.78rem] text-red-500 font-medium" *ngIf="editError">{{ editError }}</div>

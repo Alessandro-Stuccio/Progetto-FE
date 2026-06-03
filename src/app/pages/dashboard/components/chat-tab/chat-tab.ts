@@ -6,6 +6,8 @@ import { SocketService } from '../../../../core/services/socket.service';
 import { AuthUser, UserProfile, ProfessionalSummary, ClientBasicInfo } from '../../../../shared/models/dashboard.model';
 import { StorageService } from '../../../../core/services/storage.service';
 import { RoleService } from '../../../../core/services/role.service';
+import { LoggerService } from '../../../../core/services/logger.service';
+import { matchesUserSearch } from '../../../../shared/utils/user.util';
 
 @Component({
   selector: 'app-chat-tab',
@@ -21,6 +23,7 @@ export class ChatTabComponent implements OnInit, OnDestroy {
   private cdr = inject(ChangeDetectorRef);
   private storageService = inject(StorageService);
   private roleService = inject(RoleService);
+  private log = inject(LoggerService);
 
   @ViewChild('messagesContainer') messagesContainer!: ElementRef;
 
@@ -91,8 +94,7 @@ export class ChatTabComponent implements OnInit, OnDestroy {
     const existingIds = new Set(this.chatConversations.map(c => c.otherUserId));
     users = users.filter(u => !existingIds.has(u.id));
     if (this.userPickerSearch.trim()) {
-      const q = this.userPickerSearch.toLowerCase();
-      users = users.filter(u => (u.firstName + ' ' + u.lastName).toLowerCase().includes(q) || u.email?.toLowerCase().includes(q));
+      users = users.filter(u => matchesUserSearch(u, this.userPickerSearch));
     }
     return users;
   }
@@ -482,7 +484,7 @@ export class ChatTabComponent implements OnInit, OnDestroy {
           }
           this.cdr.detectChanges();
         },
-        error: (err) => { console.warn('Errore invio messaggio', err); }
+        error: (err) => { this.log.warn('Errore invio messaggio', err); }
       });
     }
   }

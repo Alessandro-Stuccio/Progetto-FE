@@ -3,6 +3,7 @@ import { BehaviorSubject, Observable, Subject, Subscription, timer } from 'rxjs'
 import { finalize } from 'rxjs/operators';
 import { AvailabilityService } from './availability.service';
 import { ToastService } from './toast.service';
+import { LoggerService } from './logger.service';
 import { ProfessionalSlot, BookingRequest, ProfessionalSummary, Booking, UserProfile, ApiErrorResponse } from '../../shared/models/dashboard.model';
 import { HttpErrorResponse } from '@angular/common/http';
 
@@ -41,6 +42,7 @@ export interface CallState {
 export class DashboardFacadeService {
   private availabilityService = inject(AvailabilityService);
   private toast = inject(ToastService);
+  private log = inject(LoggerService);
 
   public readonly actionSuccess$ = new Subject<void>();
 
@@ -210,7 +212,7 @@ export class DashboardFacadeService {
         });
       },
       error: (err) => {
-        console.error(err);
+        this.log.error(err);
         this.updateCalendarState({ isLoading: false });
       }
     });
@@ -249,7 +251,7 @@ export class DashboardFacadeService {
               this.actionSuccess$.next();
             },
             error: (err) => {
-              console.error(err);
+              this.log.error(err);
               this.updateCalendarState({ isLoading: false });
               this.toast.error('Errore', 'Impossibile rimuovere lo slot.');
             }
@@ -285,7 +287,7 @@ export class DashboardFacadeService {
         this.actionSuccess$.next();
       },
       error: (err) => {
-        console.error(err);
+        this.log.error(err);
         this.updateCalendarState({ isLoading: false });
         this.toast.error('Errore', 'Errore durante il salvataggio.');
       }
@@ -348,7 +350,7 @@ export class DashboardFacadeService {
         });
       },
       error: (err) => {
-        console.error(err);
+        this.log.error(err);
         this.updateBookingState({ isLoading: false });
       }
     });
@@ -400,7 +402,7 @@ export class DashboardFacadeService {
         this.actionSuccess$.next();
       },
       error: (err: HttpErrorResponse) => {
-        console.error(err);
+        this.log.error(err);
         this.updateBookingState({ isLoading: false });
         const apiError = err.error as ApiErrorResponse;
         this.toast.error('Errore', apiError?.message || 'Impossibile completare la prenotazione.');

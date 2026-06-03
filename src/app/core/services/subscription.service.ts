@@ -13,10 +13,6 @@ export class SubscriptionService {
   private http = inject(HttpClient);
   private apiUrl = environment.apiUrl;
 
-  getSubscriptionStatus(): Observable<Subscription> {
-    return this.http.get<Subscription>(`${this.apiUrl}/api/subscriptions/status`);
-  }
-
   activateSubscription(planId: number, paymentFrequency: PaymentFrequency): Observable<Subscription> {
     return this.http.post<Subscription>(`${this.apiUrl}/api/subscriptions/activate`, { planId, paymentFrequency });
   }

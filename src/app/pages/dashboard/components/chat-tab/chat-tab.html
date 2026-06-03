@@ -41,7 +41,7 @@
               [class.from-[var(--color-primary-navy)]]="!conv.otherUserProfilePicture"
               [class.to-[#2d5fa8]]="!conv.otherUserProfilePicture">
               <img *ngIf="conv.otherUserProfilePicture" [src]="conv.otherUserProfilePicture"
-                class="w-full h-full object-cover" alt="">
+                class="w-full h-full object-cover" alt="Foto profilo di {{ conv.otherUserName }}">
               <span *ngIf="!conv.otherUserProfilePicture" class="text-[var(--color-accent-gold-light)] text-[0.85rem] font-bold">{{
                 getConversationInitials(conv) }}</span>
             </div>
@@ -107,7 +107,7 @@
           [class.from-[var(--color-primary-navy)]]="!activeConversation.otherUserProfilePicture"
           [class.to-[#2d5fa8]]="!activeConversation.otherUserProfilePicture">
           <img *ngIf="activeConversation.otherUserProfilePicture" [src]="activeConversation.otherUserProfilePicture"
-            class="w-full h-full object-cover" alt="">
+            class="w-full h-full object-cover" alt="Foto profilo di {{ activeConversation.otherUserName }}">
           <span *ngIf="!activeConversation.otherUserProfilePicture" class="text-[var(--color-accent-gold-light)] text-[0.72rem] font-bold">{{
             getConversationInitials(activeConversation) }}</span>
         </div>

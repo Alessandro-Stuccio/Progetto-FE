@@ -1,4 +1,5 @@
-import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectorRef, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, Validators, ValidationErrors, FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -53,6 +54,7 @@ export class RegisterComponent implements OnInit {
   private toastTimer: any = null;
 
   private cdr = inject(ChangeDetectorRef);
+  private destroyRef = inject(DestroyRef);
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private authService = inject(AuthService);
@@ -67,7 +69,9 @@ export class RegisterComponent implements OnInit {
   openReviewsModal(prof: any): void {
     this.reviewsLoading = true;
     this.reviewsModal = { prof, reviews: [] };
-    this.reviewService.getReviewsForProfessional(prof.id).subscribe({
+    this.reviewService.getReviewsForProfessional(prof.id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
       next: (reviews) => {
         if (this.reviewsModal) this.reviewsModal.reviews = reviews;
         this.reviewsLoading = false;
@@ -98,18 +102,26 @@ export class RegisterComponent implements OnInit {
     });
 
     // Re-validate confirmPassword when password changes
-    this.registerForm.get('password')?.valueChanges.subscribe(() => {
-      this.registerForm.get('confirmPassword')?.updateValueAndValidity();
-    });
+    this.registerForm.get('password')?.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.registerForm.get('confirmPassword')?.updateValueAndValidity();
+      });
   }
 
   togglePasswordVisibility(): void { this.showPassword = !this.showPassword; }
   toggleConfirmPasswordVisibility(): void { this.showConfirmPassword = !this.showConfirmPassword; }
 
   ngOnInit(): void {
-    this.planService.getPlans().subscribe(res => this.plans = res);
-    this.slotService.getProfessionals('PERSONAL_TRAINER').subscribe(res => this.personalTrainers = res);
-    this.slotService.getProfessionals('NUTRITIONIST').subscribe(res => this.nutritionists = res);
+    this.planService.getPlans()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(res => this.plans = res);
+    this.slotService.getProfessionals('PERSONAL_TRAINER')
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(res => this.personalTrainers = res);
+    this.slotService.getProfessionals('NUTRITIONIST')
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(res => this.nutritionists = res);
 
     this.registerForm.get('role')?.valueChanges.subscribe(role => {
       const isTrainer = role === 'PERSONAL_TRAINER';
@@ -207,7 +219,9 @@ export class RegisterComponent implements OnInit {
         profilePicture: this.profilePictureBase64
       };
 
-      this.authService.register(userData).subscribe({
+      this.authService.register(userData)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
         next: (response: any) => {
           this.isLoading = false;
           this.showToast('Registrazione completata con successo! 🎉', 'success');

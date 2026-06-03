@@ -52,18 +52,6 @@ export class UserService {
     return this.http.get<UserProfile[]>(`${this.apiUrl}/api/insurance/clients`);
   }
 
-  createUser(data: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/api/admin/users`, data);
-  }
-
-  deleteUser(userId: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/api/admin/users/${userId}`);
-  }
-
-  updateUser(userId: number, data: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/api/admin/users/${userId}`, data);
-  }
-
   private usersBaseByMode(mode: UserManagementMode): string {
     return mode === 'moderator'
       ? `${this.apiUrl}/api/moderator/users`
