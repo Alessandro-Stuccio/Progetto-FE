@@ -15,6 +15,23 @@ export interface AuthResponse {
   profilePicture?: string;
 }
 
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface RegisterRequest {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  selectedPlanId: number;
+  paymentFrequency: string;
+  selectedPtId: number;
+  selectedNutritionistId: number;
+  profilePicture?: string | null;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -25,7 +42,7 @@ export class AuthService {
   private apiUrl = environment.apiUrl;
   private baseUrl = `${this.apiUrl}/api/auth`;
 
-  login(credentials: any): Observable<AuthResponse> {
+  login(credentials: LoginRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.baseUrl}/login`, credentials).pipe(
       tap(response => {
         this.storage.set('token', response.token);
@@ -34,8 +51,8 @@ export class AuthService {
     );
   }
 
-  register(userData: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/register`, userData);
+  register(userData: RegisterRequest): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.baseUrl}/register`, userData);
   }
 
   isLoggedIn(): boolean {
