@@ -1,5 +1,5 @@
 import { Component, inject, ChangeDetectorRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Observable } from 'rxjs';
 
@@ -15,7 +15,7 @@ import { Observable } from 'rxjs';
 @Component({
   selector: 'app-pdf-viewer',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './pdf-viewer.html'
 })
 export class PdfViewerComponent {

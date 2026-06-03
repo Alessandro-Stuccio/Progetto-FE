@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 
 export type IconButtonVariant = 'ghost' | 'subtle' | 'solid';
 export type IconButtonSize = 'sm' | 'md' | 'lg';
@@ -7,7 +7,7 @@ export type IconButtonSize = 'sm' | 'md' | 'lg';
 @Component({
   selector: 'app-icon-button',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './icon-button.html',
   styleUrl: './icon-button.css',
 })

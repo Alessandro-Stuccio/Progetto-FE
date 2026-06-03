@@ -1,4 +1,4 @@
-<ng-container *ngIf="shape === 'circle'">
+@if (shape === 'circle') {
   <span
     class="skeleton-loader"
     [style.width]="width"
@@ -6,9 +6,9 @@
     style="border-radius: 9999px; display: block;"
     aria-hidden="true">
   </span>
-</ng-container>
+}
 
-<ng-container *ngIf="shape === 'rect'">
+@if (shape === 'rect') {
   <span
     class="skeleton-loader"
     [style.width]="width"
@@ -16,15 +16,16 @@
     style="display: block;"
     aria-hidden="true">
   </span>
-</ng-container>
+}
 
-<ng-container *ngIf="shape === 'text'">
+@if (shape === 'text') {
   <div class="skeleton-text-block" aria-hidden="true">
-    <span
-      *ngFor="let i of lineArray; let last = last"
-      class="skeleton-loader"
-      [style.width]="last && lines > 1 ? '65%' : width"
-      style="display: block; height: 0.85em; margin-bottom: 0.5em;">
-    </span>
+    @for (i of lineArray; track i; let last = $last) {
+      <span
+        class="skeleton-loader"
+        [style.width]="last && lines > 1 ? '65%' : width"
+        style="display: block; height: 0.85em; margin-bottom: 0.5em;">
+      </span>
+    }
   </div>
-</ng-container>
+}

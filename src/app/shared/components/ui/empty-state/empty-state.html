@@ -1,7 +1,11 @@
 <div class="empty-state">
-  <div *ngIf="icon" class="empty-state__icon" aria-hidden="true" [innerHTML]="icon"></div>
+  @if (icon) {
+    <div class="empty-state__icon" aria-hidden="true" [innerHTML]="icon"></div>
+  }
   <h3 class="empty-state__title">{{ title }}</h3>
-  <p *ngIf="description" class="empty-state__description">{{ description }}</p>
+  @if (description) {
+    <p class="empty-state__description">{{ description }}</p>
+  }
   <div class="empty-state__cta">
     <ng-content></ng-content>
   </div>

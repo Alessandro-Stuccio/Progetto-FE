@@ -1,5 +1,5 @@
 import { Component, Input, inject, ChangeDetectorRef, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { DocumentService } from '../../../../core/services/document.service';
 import { RoleService } from '../../../../core/services/role.service';
@@ -12,7 +12,7 @@ import { validatePdfFile } from '../../../../shared/utils/file.util';
 @Component({
   selector: 'app-admin-documents-tab',
   standalone: true,
-  imports: [CommonModule, FormsModule, PdfViewerComponent],
+  imports: [FormsModule, PdfViewerComponent],
   templateUrl: './admin-documents-tab.html',
   styleUrls: ['./admin-documents-tab.css']
 })

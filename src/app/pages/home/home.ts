@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, AfterViewInit, OnDestroy, ChangeDetectorRef, ElementRef, NgZone, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { RouterModule, Router } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
@@ -9,7 +9,7 @@ import { JobApplicationService } from '../../core/services/job-application.servi
 @Component({
     selector: 'app-home',
     standalone: true,
-    imports: [CommonModule, RouterModule, ReactiveFormsModule],
+    imports: [RouterModule, ReactiveFormsModule],
     templateUrl: './home.html',
     styleUrls: ['./home.css']
 })

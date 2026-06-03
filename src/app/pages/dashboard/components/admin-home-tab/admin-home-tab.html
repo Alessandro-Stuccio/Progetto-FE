@@ -19,11 +19,13 @@
       <div class="ah-kpi-label">Clienti</div>
       <div class="ah-kpi-icon">🧑</div>
     </div>
-    <div class="ah-kpi-card" *ngIf="!isModerator">
-      <div class="ah-kpi-num ah-kpi-num--success">{{ activeSubscriptions }}</div>
-      <div class="ah-kpi-label">Abbonamenti attivi</div>
-      <div class="ah-kpi-icon">👑</div>
-    </div>
+    @if (!isModerator) {
+      <div class="ah-kpi-card">
+        <div class="ah-kpi-num ah-kpi-num--success">{{ activeSubscriptions }}</div>
+        <div class="ah-kpi-label">Abbonamenti attivi</div>
+        <div class="ah-kpi-icon">👑</div>
+      </div>
+    }
     <div class="ah-kpi-card">
       <div class="ah-kpi-num ah-kpi-num--gold">{{ totalProfessionals }}</div>
       <div class="ah-kpi-label">Professionisti</div>
@@ -45,13 +47,15 @@
           <div class="ah-action-sub">Crea, cerca, elimina</div>
         </div>
       </button>
-      <button *ngIf="!isModerator" class="ah-action-btn ah-action-btn--gold" (click)="setTabEvent.emit('admin-plans')">
-        <div class="ah-action-icon">📋</div>
-        <div>
-          <div class="ah-action-label">Gestisci Piani</div>
-          <div class="ah-action-sub">Crea, visualizza, elimina</div>
-        </div>
-      </button>
+      @if (!isModerator) {
+        <button class="ah-action-btn ah-action-btn--gold" (click)="setTabEvent.emit('admin-plans')">
+          <div class="ah-action-icon">📋</div>
+          <div>
+            <div class="ah-action-label">Gestisci Piani</div>
+            <div class="ah-action-sub">Crea, visualizza, elimina</div>
+          </div>
+        </button>
+      }
       <button class="ah-action-btn ah-action-btn--ghost" (click)="setTabEvent.emit('chat')">
         <div class="ah-action-icon">💬</div>
         <div>
@@ -59,32 +63,40 @@
           <div class="ah-action-sub">Messaggi e supporto</div>
         </div>
       </button>
-      <button *ngIf="!isModerator" class="ah-action-btn ah-action-btn--ghost" (click)="setTabEvent.emit('admin-users')">
-        <div class="ah-action-icon">➕</div>
-        <div>
-          <div class="ah-action-label">Nuovo Utente</div>
-          <div class="ah-action-sub">Qualunque ruolo</div>
-        </div>
-      </button>
+      @if (!isModerator) {
+        <button class="ah-action-btn ah-action-btn--ghost" (click)="setTabEvent.emit('admin-users')">
+          <div class="ah-action-icon">➕</div>
+          <div>
+            <div class="ah-action-label">Nuovo Utente</div>
+            <div class="ah-action-sub">Qualunque ruolo</div>
+          </div>
+        </button>
+      }
     </div>
   </div>
 
   <!-- Piani disponibili -->
-  <div class="ah-card" *ngIf="!isModerator">
-    <div class="ah-card-header">
-      <div class="ah-card-icon">📋</div>
-      <span class="ah-card-title">Piani attivi</span>
-    </div>
-    <div class="ah-plan-grid" *ngIf="allPlans.length > 0">
-      <div class="ah-plan-card" *ngFor="let plan of allPlans">
-        <div class="ah-plan-name">{{ plan.name }}</div>
-        <div class="ah-plan-price">€{{ plan.monthlyInstallmentPrice }}<span>/mese</span></div>
-        <div class="ah-plan-badges">
-          <span class="ah-badge ah-badge--navy">💪 {{ plan.monthlyCreditsPT }} PT</span>
-          <span class="ah-badge ah-badge--gold">🥗 {{ plan.monthlyCreditsNutri }} Nutri</span>
-        </div>
+  @if (!isModerator) {
+    <div class="ah-card">
+      <div class="ah-card-header">
+        <div class="ah-card-icon">📋</div>
+        <span class="ah-card-title">Piani attivi</span>
       </div>
+      @if (allPlans.length > 0) {
+        <div class="ah-plan-grid">
+          @for (plan of allPlans; track plan) {
+            <div class="ah-plan-card">
+              <div class="ah-plan-name">{{ plan.name }}</div>
+              <div class="ah-plan-price">€{{ plan.monthlyInstallmentPrice }}<span>/mese</span></div>
+              <div class="ah-plan-badges">
+                <span class="ah-badge ah-badge--navy">💪 {{ plan.monthlyCreditsPT }} PT</span>
+                <span class="ah-badge ah-badge--gold">🥗 {{ plan.monthlyCreditsNutri }} Nutri</span>
+              </div>
+            </div>
+          }
+        </div>
+      }
     </div>
-  </div>
+  }
 
 </div>

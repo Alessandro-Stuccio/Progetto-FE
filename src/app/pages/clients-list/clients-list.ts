@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { UserService } from '../../core/services/user.service';
 import { Router, RouterModule } from '@angular/router';
 import { UserRole, ClientBasicInfo } from '../../shared/models/dashboard.model';
@@ -7,7 +7,7 @@ import { UserRole, ClientBasicInfo } from '../../shared/models/dashboard.model';
 @Component({
   selector: 'app-clients-list',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [RouterModule],
   templateUrl: './clients-list.html',
   styleUrls: ['./clients-list.css']
 })

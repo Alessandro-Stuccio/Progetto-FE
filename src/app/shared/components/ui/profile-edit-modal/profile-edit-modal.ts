@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DestroyRef } from '@angular/core';
@@ -12,7 +12,7 @@ import { AuthUser, ProfileEditData, ApiErrorResponse } from '../../../models/das
 @Component({
   selector: 'app-profile-edit-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [FormsModule],
   templateUrl: './profile-edit-modal.html'
 })
 export class ProfileEditModalComponent {

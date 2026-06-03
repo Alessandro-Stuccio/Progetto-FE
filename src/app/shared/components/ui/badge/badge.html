@@ -7,6 +7,8 @@
   [class.badge--success]="tone === 'success'"
   [class.badge--warning]="tone === 'warning'"
   [class.badge--danger]="tone === 'danger'">
-  <span *ngIf="dot" class="badge__dot" aria-hidden="true"></span>
+  @if (dot) {
+    <span class="badge__dot" aria-hidden="true"></span>
+  }
   <ng-content></ng-content>
 </span>
