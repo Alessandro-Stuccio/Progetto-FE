@@ -3,10 +3,12 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, Validators, ValidationErrors, FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../core/services/auth.service';
 import { PlanService } from '../../core/services/plan.service';
 import { SlotService } from '../../core/services/slot.service';
 import { ReviewService, ReviewResponse } from '../../core/services/review.service';
+import { Plan, ProfessionalSummary } from '../../shared/models/dashboard.model';
 
 // Validator custom: verifica che password e conferma combacino
 function passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
@@ -28,21 +30,21 @@ export class RegisterComponent implements OnInit {
   isLoading: boolean = false;
   currentStep: number = 1;
 
-  plans: any[] = [];
-  personalTrainers: any[] = [];
-  nutritionists: any[] = [];
+  plans: Plan[] = [];
+  personalTrainers: ProfessionalSummary[] = [];
+  nutritionists: ProfessionalSummary[] = [];
 
   // Ricerca Professionisti
   ptSearch: string = '';
   nutSearch: string = '';
 
-  get filteredPts(): any[] {
+  get filteredPts(): ProfessionalSummary[] {
     const q = this.ptSearch.toLowerCase().trim();
     return this.personalTrainers.filter(pt =>
       !q || pt.fullName?.toLowerCase().includes(q));
   }
 
-  get filteredNuts(): any[] {
+  get filteredNuts(): ProfessionalSummary[] {
     const q = this.nutSearch.toLowerCase().trim();
     return this.nutritionists.filter(n =>
       !q || n.fullName?.toLowerCase().includes(q));
@@ -51,7 +53,7 @@ export class RegisterComponent implements OnInit {
   profilePictureBase64: string | null = null;
 
   toast: { message: string; type: 'success' | 'error' } | null = null;
-  private toastTimer: any = null;
+  private toastTimer: ReturnType<typeof setTimeout> | null = null;
 
   private cdr = inject(ChangeDetectorRef);
   private destroyRef = inject(DestroyRef);
@@ -63,10 +65,10 @@ export class RegisterComponent implements OnInit {
   private reviewService = inject(ReviewService);
 
   // Modal Vedi Recensioni
-  reviewsModal: { prof: any; reviews: ReviewResponse[] } | null = null;
+  reviewsModal: { prof: ProfessionalSummary; reviews: ReviewResponse[] } | null = null;
   reviewsLoading = false;
 
-  openReviewsModal(prof: any): void {
+  openReviewsModal(prof: ProfessionalSummary): void {
     this.reviewsLoading = true;
     this.reviewsModal = { prof, reviews: [] };
     this.reviewService.getReviewsForProfessional(prof.id)
@@ -156,12 +158,12 @@ export class RegisterComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
-  onFileSelected(event: any): void {
-    const file = event.target.files[0];
+  onFileSelected(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = (e: any) => {
-        this.profilePictureBase64 = e.target.result;
+      reader.onload = () => {
+        this.profilePictureBase64 = reader.result as string;
       };
       reader.readAsDataURL(file);
     }
@@ -222,7 +224,7 @@ export class RegisterComponent implements OnInit {
       this.authService.register(userData)
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
-        next: (response: any) => {
+        next: () => {
           this.isLoading = false;
           this.showToast('Registrazione completata con successo! 🎉', 'success');
           setTimeout(() => {
@@ -232,7 +234,7 @@ export class RegisterComponent implements OnInit {
             setTimeout(() => this.router.navigate(['/login']), 6000);
           }, 1500);
         },
-        error: (err: any) => {
+        error: (err: HttpErrorResponse) => {
           this.isLoading = false;
           const msg = err.error?.message || 'Errore durante la registrazione. Riprova.';
           this.showToast(msg, 'error');

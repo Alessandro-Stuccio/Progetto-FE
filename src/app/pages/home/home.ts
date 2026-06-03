@@ -1,10 +1,12 @@
 import { Component, inject, OnInit, AfterViewInit, OnDestroy, ChangeDetectorRef, ElementRef, NgZone, ViewChild } from '@angular/core';
 
+import { HttpErrorResponse } from '@angular/common/http';
 import { RouterModule, Router } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
 import { PlanService } from '../../core/services/plan.service';
 import { JobApplicationService } from '../../core/services/job-application.service';
+import { Plan } from '../../shared/models/dashboard.model';
 
 @Component({
     selector: 'app-home',
@@ -16,8 +18,8 @@ import { JobApplicationService } from '../../core/services/job-application.servi
 export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // Plans (from backend)
-    semestralePlans: any[] = [];
-    annualePlans: any[] = [];
+    semestralePlans: Plan[] = [];
+    annualePlans: Plan[] = [];
     isAnnual = false;
 
     // Intro
@@ -144,7 +146,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     private hiwObserver?: IntersectionObserver;
     private appObserver?: IntersectionObserver;
 
-    get displayedPlans(): any[] {
+    get displayedPlans(): Plan[] {
         return this.isAnnual ? this.annualePlans : this.semestralePlans;
     }
 
@@ -152,7 +154,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
         return [...this.testimonials, ...this.testimonials];
     }
 
-    isFeaturedPlan(plan: any): boolean {
+    isFeaturedPlan(plan: Plan): boolean {
         return plan.monthlyCreditsPT >= 2;
     }
 
@@ -245,8 +247,8 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
         this.planService.getPlans().subscribe({
             next: (res) => {
                 if (res && res.length > 0) {
-                    this.semestralePlans = res.filter((p: any) => p.duration === 'SEMESTRALE');
-                    this.annualePlans = res.filter((p: any) => p.duration === 'ANNUALE');
+                    this.semestralePlans = res.filter((p) => p.duration === 'SEMESTRALE');
+                    this.annualePlans = res.filter((p) => p.duration === 'ANNUALE');
                 }
                 this.cdr.detectChanges();
                 setTimeout(() => this.observeNewRevealElements(), 0);
@@ -498,7 +500,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // Video Carousel methods
 
-    getVideoSrc(video: any): string {
+    getVideoSrc(video: { src: string; mobileSrc: string }): string {
         return window.innerWidth < 768 ? video.mobileSrc : video.src;
     }
 
@@ -604,7 +606,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.submitSuccess = true;
                 this.cdr.detectChanges();
             },
-            error: (err: any) => {
+            error: (err: HttpErrorResponse) => {
                 this.isSubmitting = false;
                 this.submitError = err.error?.message || 'Si è verificato un errore. Riprova più tardi.';
                 this.cdr.detectChanges();

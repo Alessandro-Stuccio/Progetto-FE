@@ -8,6 +8,19 @@ import { ToastService } from '../../../../core/services/toast.service';
 import { RoleService } from '../../../../core/services/role.service';
 import { matchesUserSearch } from '../../../../shared/utils/user.util';
 
+/** Stato del form di creazione utente: i campi opzionali partono a null (non ancora scelti). */
+interface NewUserForm {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  role: string;
+  planId: number | null;
+  paymentFrequency: string;
+  assignedPTId: number | null;
+  assignedNutritionistId: number | null;
+}
+
 @Component({
   selector: 'app-admin-users-tab',
   standalone: true,
@@ -40,14 +53,14 @@ export class AdminUsersTabComponent {
   // Modale creazione utente
   showCreateModal: boolean = false;
   currentStep: number = 1;
-  newUser: any = { firstName: '', lastName: '', email: '', password: '', role: 'CLIENT', planId: null, paymentFrequency: 'UNICA_SOLUZIONE', assignedPTId: null, assignedNutritionistId: null };
+  newUser: NewUserForm = { firstName: '', lastName: '', email: '', password: '', role: 'CLIENT', planId: null, paymentFrequency: 'UNICA_SOLUZIONE', assignedPTId: null, assignedNutritionistId: null };
   createError: string = '';
   creating: boolean = false;
   showPassword: boolean = false;
 
   // Modale modifica utente
   showEditModal: boolean = false;
-  editUser: any = {};
+  editUser: UserProfile = {} as UserProfile;
   editPassword: string = '';
   editError: string = '';
   editingUser: boolean = false;
@@ -55,13 +68,13 @@ export class AdminUsersTabComponent {
 
   // Modale cancellazione utente
   showDeleteModal: boolean = false;
-  userToDelete: any = null;
+  userToDelete: UserProfile | null = null;
   deletingUser: boolean = false;
 
   // Info Modal
   showInfoModal: boolean = false;
-  selectedUserInfo: any = null;
-  selectedSubscription: any = null;
+  selectedUserInfo: UserProfile | null = null;
+  selectedSubscription: Subscription | null = null;
 
   // Credits Modal
   showCreditsModal: boolean = false;
@@ -107,7 +120,7 @@ export class AdminUsersTabComponent {
   }
 
   // Filtra gli utenti in base alla query di ricerca e al filtro di ruolo
-  get filteredUsers(): any[] {
+  get filteredUsers(): UserProfile[] {
     let users = this.allUsers;
     if (!this.canFilterRole(this.roleFilter)) {
       this.roleFilter = 'ALL';
@@ -121,11 +134,11 @@ export class AdminUsersTabComponent {
     return users;
   }
 
-  get availablePTs(): any[] {
+  get availablePTs(): UserProfile[] {
     return this.allUsers.filter(u => u.role === 'PERSONAL_TRAINER');
   }
 
-  get availableNutritionists(): any[] {
+  get availableNutritionists(): UserProfile[] {
     return this.allUsers.filter(u => u.role === 'NUTRITIONIST');
   }
 
@@ -212,7 +225,7 @@ export class AdminUsersTabComponent {
   }
 
   // Delete user
-  openDeleteModal(user: any): void {
+  openDeleteModal(user: UserProfile): void {
     if (this.currentUser && user.id === this.currentUser.id) {
       this.toast.warning('Operazione non consentita', 'Non puoi eliminare il tuo stesso account.');
       return;
@@ -247,10 +260,10 @@ export class AdminUsersTabComponent {
   }
 
   // Info e Crediti Abbonamento
-  openInfoModal(user: any): void {
+  openInfoModal(user: UserProfile): void {
     this.selectedUserInfo = user;
     // Utilizziamo == invece di === per gestire eventuali mismatch tra stringa e numero (Long di Java)
-    this.selectedSubscription = (this.allSubscriptions || []).find(s => s.userId == user.id && s.active);
+    this.selectedSubscription = (this.allSubscriptions || []).find(s => s.userId == user.id && s.active) ?? null;
     this.showInfoModal = true;
   }
 
@@ -260,7 +273,7 @@ export class AdminUsersTabComponent {
     this.selectedSubscription = null;
   }
 
-  openCreditsModal(user: any): void {
+  openCreditsModal(user: UserProfile): void {
     const sub = this.allSubscriptions.find(s => s.userId === user.id && s.active);
     if (sub) {
       this.selectedSubscription = sub;
@@ -281,20 +294,21 @@ export class AdminUsersTabComponent {
   }
 
   saveCredits(): void {
-    if (this.creditsForm.invalid || !this.selectedSubscription) return;
+    const sub = this.selectedSubscription;
+    if (this.creditsForm.invalid || !sub) return;
     this.updatingCredits = true;
 
     const pt = this.creditsForm.value.creditsPT || 0;
       const nutri = this.creditsForm.value.creditsNutri || 0;
 
-      this.subscriptionService.updateSubscriptionCredits(this.mode, this.selectedSubscription.id, pt, nutri).subscribe({
-        next: (res: any) => {
+      this.subscriptionService.updateSubscriptionCredits(this.mode, sub.id, pt, nutri).subscribe({
+        next: () => {
         this.updatingCredits = false;
         this.closeCreditsModal();
         this.toast.success('Fatto', 'Crediti aggiornati con successo.');
 
-        this.selectedSubscription.currentCreditsPT = pt;
-        this.selectedSubscription.currentCreditsNutri = nutri;
+        sub.currentCreditsPT = pt;
+        sub.currentCreditsNutri = nutri;
         this.usersChanged.emit();
       },
       error: (err: unknown) => {
@@ -305,7 +319,7 @@ export class AdminUsersTabComponent {
   }
 
   // Edit user
-  openEditModal(user: any): void {
+  openEditModal(user: UserProfile): void {
     this.editUser = { ...user };
     this.editPassword = '';
     this.editError = '';
@@ -322,7 +336,7 @@ export class AdminUsersTabComponent {
     }
     this.editingUser = true;
     this.editError = '';
-    const payload: any = {
+    const payload: Partial<ManagedUserPayload> = {
       firstName: this.editUser.firstName,
       lastName: this.editUser.lastName,
       email: this.editUser.email,
@@ -345,7 +359,7 @@ export class AdminUsersTabComponent {
     });
   }
 
-  canEditUser(user: any): boolean {
+  canEditUser(user: UserProfile): boolean {
     if (this.mode === 'moderator') {
       return this.moderatorAllowedRoles.includes(user.role);
     }
@@ -353,15 +367,15 @@ export class AdminUsersTabComponent {
     return user.role === 'MODERATOR' || user.role === 'INSURANCE_MANAGER';
   }
 
-  getRoleLabel(role: string): string {
-    return this.roleService.getRoleLabel(role);
+  getRoleLabel(role: string | undefined): string {
+    return this.roleService.getRoleLabel(role ?? '');
   }
 
-  getRoleBadgeClass(role: string): string {
-    return this.roleService.getRoleBadgeClass(role);
+  getRoleBadgeClass(role: string | undefined): string {
+    return this.roleService.getRoleBadgeClass(role ?? '');
   }
 
-  getRoleEmoji(role: string): string {
+  getRoleEmoji(role: string | undefined): string {
     switch (role) {
       case 'CLIENT': return '🧑';
       case 'PERSONAL_TRAINER': return '💪';
