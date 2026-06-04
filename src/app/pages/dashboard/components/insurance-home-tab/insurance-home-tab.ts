@@ -129,7 +129,11 @@ export class InsuranceHomeTabComponent {
         this.isUploading = false;
         this.openClientDocs(client);
       },
-      error: () => { this.isUploading = false; }
+      error: (err) => {
+        this.isUploading = false;
+        console.error('Upload polizza fallito', err);
+        alert('Impossibile caricare la polizza. Riprova.');
+      }
     });
   }
 
@@ -137,7 +141,10 @@ export class InsuranceHomeTabComponent {
     if (!confirm('Eliminare questo documento?')) return;
     this.authService.deletePolicy(doc.id).subscribe({
       next: () => { this.clientDocs = this.clientDocs.filter(d => d.id !== doc.id); this.cdr.detectChanges(); },
-      error: () => { }
+      error: (err) => {
+        console.error('Eliminazione polizza fallita', err);
+        alert('Impossibile eliminare la polizza. Riprova.');
+      }
     });
   }
 

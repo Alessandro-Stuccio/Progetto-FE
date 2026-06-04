@@ -28,11 +28,6 @@ export class PdfViewerComponent {
   loading = false;
   private blobUrl: string | null = null;
 
-  // Su schermo piccolo l'iframe è inutilizzabile: apriamo direttamente in una nuova scheda.
-  private get isMobile(): boolean {
-    return window.innerWidth < 640;
-  }
-
   /**
    * Apre il viewer per un documento. `download$` è l'observable che restituisce il blob
    * (es. `documentService.downloadDocument(id)`); l'eventuale `onError` serve a chi vuole
@@ -48,16 +43,11 @@ export class PdfViewerComponent {
       next: (blob) => {
         if (this.blobUrl) URL.revokeObjectURL(this.blobUrl);
         this.blobUrl = URL.createObjectURL(blob);
-        if (this.isMobile) {
-          window.open(this.blobUrl, '_blank');
-          this.open = false;
-          this.loading = false;
-          this.cdr.detectChanges();
-        } else {
-          this.url = this.sanitizer.bypassSecurityTrustResourceUrl(this.blobUrl + '#view=FitH&zoom=page-width');
-          this.loading = false;
-          this.cdr.detectChanges();
-        }
+        // Mostriamo sempre il documento nella cornice inline, anche su mobile: l'overlay è già
+        // responsive. Per chi preferisce la scheda intera resta il bottone "Apri in nuova tab".
+        this.url = this.sanitizer.bypassSecurityTrustResourceUrl(this.blobUrl + '#view=FitH&zoom=page-width');
+        this.loading = false;
+        this.cdr.detectChanges();
       },
       error: () => {
         this.open = false;

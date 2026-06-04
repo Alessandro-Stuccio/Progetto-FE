@@ -92,10 +92,13 @@ export class AdminDocumentsTabComponent {
   private loadClientDocs(clientId: number): void {
     if (!this.selectedProfessional) return;
     this.loadingClients.add(clientId);
-    const profName = `${this.selectedProfessional.firstName} ${this.selectedProfessional.lastName}`;
+    // Filtriamo per tipo di documento legato al dominio del professionista (un cliente ha un solo PT
+    // e un solo nutrizionista), non per nome di chi ha caricato: così vediamo sia i documenti del
+    // professionista sia quelli caricati da admin/moderatore, che altrimenti sparirebbero dalla lista.
+    const expectedType = this.getUploadType();
     this.docService.getClientDocuments(clientId).subscribe({
       next: (docs) => {
-        const filtered = (docs || []).filter((d) => d.uploadedByName === profName);
+        const filtered = (docs || []).filter((d) => d.type === expectedType);
         this.clientDocs.set(clientId, filtered);
         this.loadingClients.delete(clientId);
         this.cdr.detectChanges();
@@ -139,7 +142,10 @@ export class AdminDocumentsTabComponent {
         this.clientDocs.delete(clientId);
         this.loadClientDocs(clientId);
       },
-      error: () => {}
+      error: (err) => {
+        console.error('Upload documento fallito', err);
+        alert('Impossibile caricare il documento. Riprova.');
+      }
     });
   }
 
@@ -155,7 +161,10 @@ export class AdminDocumentsTabComponent {
         this.clientDocs.set(clientId, current.filter(d => d.id !== doc.id));
         this.cdr.detectChanges();
       },
-      error: () => {}
+      error: (err) => {
+        console.error('Eliminazione documento fallita', err);
+        alert('Impossibile eliminare il documento. Riprova.');
+      }
     });
   }
 
