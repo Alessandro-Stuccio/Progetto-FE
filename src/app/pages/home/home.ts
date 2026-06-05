@@ -111,11 +111,11 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // Video Carousel
     carouselVideos = [
-        { key: 'dashboard',   title: 'Dashboard',    src: 'https://res.cloudinary.com/dpgixeqq0/video/upload/v1774348830/dashboard_d9kgl5.mp4',    mobileSrc: 'https://res.cloudinary.com/dpgixeqq0/video/upload/v1774348533/dashboard_rbs4pz.mp4' },
-        { key: 'calendario',  title: 'Calendario',   src: 'https://res.cloudinary.com/dpgixeqq0/video/upload/v1774348830/calendario_axbrqh.mp4',   mobileSrc: 'https://res.cloudinary.com/dpgixeqq0/video/upload/v1774348532/chat_rfr9oh.mp4' },
-        { key: 'prenotazione',title: 'Prenotazione', src: 'https://res.cloudinary.com/dpgixeqq0/video/upload/v1774348830/prenotazione_hqiaw1.mp4', mobileSrc: 'https://res.cloudinary.com/dpgixeqq0/video/upload/v1774348534/prenotazione_eq54m3.mp4' },
-        { key: 'chat',        title: 'Chat',         src: 'https://res.cloudinary.com/dpgixeqq0/video/upload/v1774348830/chat_godpbw.mp4',         mobileSrc: 'https://res.cloudinary.com/dpgixeqq0/video/upload/v1774348532/chat_rfr9oh.mp4' },
-        { key: 'scheda',      title: 'Scheda',       src: 'https://res.cloudinary.com/dpgixeqq0/video/upload/v1774348836/scheda_mgbfxb.mp4',       mobileSrc: 'https://res.cloudinary.com/dpgixeqq0/video/upload/v1774348534/scheda_sr3hsi.mp4' }
+        { key: 'dashboard',   title: 'Dashboard',    src: 'https://res.cloudinary.com/drfqts2rl/video/upload/v1780647112/dashboard_pc_vskyub.mp4',    mobileSrc: 'https://res.cloudinary.com/drfqts2rl/video/upload/v1780647112/dashboard_tel_pqkbjo.mp4' },
+        { key: 'calendario',  title: 'Calendario',   src: 'https://res.cloudinary.com/drfqts2rl/video/upload/v1780647111/calendario_pc_doqize.mp4',   mobileSrc: 'https://res.cloudinary.com/drfqts2rl/video/upload/v1780647456/calendario_tel_uahpjk.mp4' },
+        { key: 'prenotazione',title: 'Prenotazione', src: 'https://res.cloudinary.com/drfqts2rl/video/upload/v1780647113/prenotazione_pc_tpmicq.mp4', mobileSrc: 'https://res.cloudinary.com/drfqts2rl/video/upload/v1780647113/prenotazione_tel_eaq5af.mp4' },
+        { key: 'chat',        title: 'Chat',         src: 'https://res.cloudinary.com/drfqts2rl/video/upload/v1780647112/chat_pc_q37s5x.mp4',         mobileSrc: 'https://res.cloudinary.com/drfqts2rl/video/upload/v1780647112/chat_tel_soiwrr.mp4' },
+        { key: 'scheda',      title: 'Scheda',       src: 'https://res.cloudinary.com/drfqts2rl/video/upload/v1780647291/servizi_pc_ofvr02.mp4',       mobileSrc: 'https://res.cloudinary.com/drfqts2rl/video/upload/v1780647114/servizi_tel_uj3eny.mp4' }
     ];
     currentCarouselVideoIndex = 0;
     videoProgress = 0;
