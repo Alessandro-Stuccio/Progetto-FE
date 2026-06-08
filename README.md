@@ -8,7 +8,6 @@
 ![RxJS](https://img.shields.io/badge/RxJS-7.8-B7178C?logo=reactivex&logoColor=white)
 ![STOMP](https://img.shields.io/badge/WebSocket-STOMP-010101?logo=socketdotio&logoColor=white)
 ![Vitest](https://img.shields.io/badge/tests-Vitest-6E9F18?logo=vitest&logoColor=white)
-![License](https://img.shields.io/badge/license-MIT-blue)
 
 Frontend di **Kore**, la piattaforma SaaS che riunisce in un unico abbonamento Personal Trainer,
 Nutrizionisti e copertura assicurativa. È una **Single Page Application** Angular 21 a *standalone
@@ -32,7 +31,6 @@ design system su misura in Tailwind CSS.
 11. [Script disponibili](#script-disponibili)
 12. [Build & Environments](#build--environments)
 13. [Testing](#testing)
-14. [Licenza](#licenza)
 
 ---
 
@@ -86,19 +84,19 @@ Progetto-FE/
         ├── app.routes.ts       # definizione delle route (lazy-loaded)
         ├── core/
         │   ├── guards/         # auth.guard
-        │   ├── interceptors/   # auth (JWT Bearer) + no-cache
+        │   ├── interceptors/   # auth (JWT Bearer), no-cache, error
         │   └── services/       # auth, user, role, chat, socket, plan, ...
         ├── pages/
         │   ├── home/           # landing pubblica
-        │   ├── login/  register/  reset-password/  oauth-callback/
+        │   ├── login/  register/  reset-password/
         │   ├── dashboard/      # dashboard + tab per ruolo
         │   └── clients-list/   # directory clienti (vista professionista)
         └── shared/
             ├── components/
             │   ├── layout/     # navbar, footer
             │   └── ui/         # button, card, badge, modal, skeleton, toast, ...
-            ├── directives/     # scroll-reveal, pull-to-refresh, count-up
-            ├── pipes/          # role-label, date-formatter
+            ├── directives/     # pull-to-refresh
+            ├── utils/          # helper condivisi (date, file, user)
             └── models/         # interfacce TypeScript (dashboard.model.ts)
 ```
 
@@ -169,6 +167,7 @@ In `src/app/core/services/`:
 | `socket.service` | Connessione STOMP/WebSocket |
 | `toast.service` | Notifiche toast |
 | `storage.service` | Wrapper su `localStorage` |
+| `logger.service` | Logging applicativo |
 | `dashboard-facade.service` | Aggregazione dei dati di dashboard |
 
 ---
@@ -259,9 +258,3 @@ npm test
 ```
 
 I test girano con **Vitest** + **jsdom** sui file `*.spec.ts`.
-
----
-
-## Licenza
-
-Distribuito con licenza **MIT**.
