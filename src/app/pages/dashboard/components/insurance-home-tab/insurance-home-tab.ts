@@ -2,8 +2,10 @@ import { Component, Input, inject, ChangeDetectorRef, ViewChild } from '@angular
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DocumentService, ClientDocument } from '../../../../core/services/document.service';
+import { ToastService } from '../../../../core/services/toast.service';
 import { AuthUser, Subscription, UserProfile } from '../../../../shared/models/dashboard.model';
 import { PdfViewerComponent } from '../../../../shared/components/ui/pdf-viewer/pdf-viewer';
+import { ConfirmDialogComponent } from '../../../../shared/components/ui/confirm-dialog/confirm-dialog';
 import { formatLongDate } from '../../../../shared/utils/date.util';
 import { getInitials } from '../../../../shared/utils/user.util';
 import { validatePdfFile } from '../../../../shared/utils/file.util';
@@ -17,12 +19,13 @@ interface InsuranceCoveredClient extends Subscription {
 @Component({
   selector: 'app-insurance-home-tab',
   standalone: true,
-  imports: [CommonModule, FormsModule, PdfViewerComponent],
+  imports: [CommonModule, FormsModule, PdfViewerComponent, ConfirmDialogComponent],
   templateUrl: './insurance-home-tab.html'
 })
 export class InsuranceHomeTabComponent {
   private authService = inject(DocumentService);
   private cdr = inject(ChangeDetectorRef);
+  private toast = inject(ToastService);
 
   @Input() currentUser: AuthUser | null = null;
   @Input() allSubscriptions: Subscription[] = [];
@@ -40,6 +43,11 @@ export class InsuranceHomeTabComponent {
   editingNotesDocId: number | null = null;
   editingNotes: string = '';
   savingNotes: boolean = false;
+
+  // Modale conferma eliminazione documento
+  showDeleteModal: boolean = false;
+  docToDelete: ClientDocument | null = null;
+  deletingDoc: boolean = false;
 
   get activePolicies(): number { return this.allSubscriptions.filter(s => s.active).length; }
   get expiredPolicies(): number { return this.allSubscriptions.filter(s => !s.active).length; }
@@ -137,13 +145,33 @@ export class InsuranceHomeTabComponent {
     });
   }
 
-  deleteDoc(doc: ClientDocument): void {
-    if (!confirm('Eliminare questo documento?')) return;
+  openDeleteModal(doc: ClientDocument): void {
+    this.docToDelete = doc;
+    this.showDeleteModal = true;
+  }
+
+  closeDeleteModal(): void {
+    this.showDeleteModal = false;
+    this.docToDelete = null;
+    this.deletingDoc = false;
+  }
+
+  confirmDeleteDoc(): void {
+    if (!this.docToDelete) return;
+    const doc = this.docToDelete;
+    this.deletingDoc = true;
     this.authService.deletePolicy(doc.id).subscribe({
-      next: () => { this.clientDocs = this.clientDocs.filter(d => d.id !== doc.id); this.cdr.detectChanges(); },
+      next: () => {
+        this.clientDocs = this.clientDocs.filter(d => d.id !== doc.id);
+        this.closeDeleteModal();
+        this.toast.success('Eliminato', 'Polizza eliminata con successo.');
+        this.cdr.detectChanges();
+      },
       error: (err) => {
         console.error('Eliminazione polizza fallita', err);
-        alert('Impossibile eliminare la polizza. Riprova.');
+        this.closeDeleteModal();
+        this.toast.error('Errore', 'Impossibile eliminare la polizza. Riprova.');
+        this.cdr.detectChanges();
       }
     });
   }

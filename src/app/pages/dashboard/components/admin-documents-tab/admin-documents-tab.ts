@@ -1,10 +1,12 @@
 import { Component, Input, inject, ChangeDetectorRef, ViewChild } from '@angular/core';
-
+import { NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DocumentService, ClientDocument } from '../../../../core/services/document.service';
 import { RoleService } from '../../../../core/services/role.service';
+import { ToastService } from '../../../../core/services/toast.service';
 import { AuthUser, UserProfile } from '../../../../shared/models/dashboard.model';
 import { PdfViewerComponent } from '../../../../shared/components/ui/pdf-viewer/pdf-viewer';
+import { ConfirmDialogComponent } from '../../../../shared/components/ui/confirm-dialog/confirm-dialog';
 import { formatLongDate } from '../../../../shared/utils/date.util';
 import { getInitials, matchesUserSearch } from '../../../../shared/utils/user.util';
 import { validatePdfFile } from '../../../../shared/utils/file.util';
@@ -12,7 +14,7 @@ import { validatePdfFile } from '../../../../shared/utils/file.util';
 @Component({
   selector: 'app-admin-documents-tab',
   standalone: true,
-  imports: [FormsModule, PdfViewerComponent],
+  imports: [FormsModule, NgClass, PdfViewerComponent, ConfirmDialogComponent],
   templateUrl: './admin-documents-tab.html',
   styleUrls: ['./admin-documents-tab.css']
 })
@@ -20,6 +22,7 @@ export class AdminDocumentsTabComponent {
   private docService = inject(DocumentService);
   private cdr = inject(ChangeDetectorRef);
   private roleService = inject(RoleService);
+  private toast = inject(ToastService);
 
   @Input() allUsers: UserProfile[] = [];
   @Input() currentUser: AuthUser | null = null;
@@ -36,6 +39,12 @@ export class AdminDocumentsTabComponent {
   editingNotesDocId: number | null = null;
   editingNotes: string = '';
   savingNotes: boolean = false;
+
+  // Modale conferma eliminazione documento
+  showDeleteModal: boolean = false;
+  docToDelete: ClientDocument | null = null;
+  deleteDocClientId: number | null = null;
+  deletingDoc: boolean = false;
 
   // Usato dal template per il layout responsive (lista vs dettaglio), non più dal PDF viewer.
   get isMobile(): boolean { return window.innerWidth < 640; }
@@ -153,17 +162,37 @@ export class AdminDocumentsTabComponent {
     this.pdfViewer.view(doc.fileName, this.docService.downloadDocument(doc.id));
   }
 
-  deleteDoc(doc: ClientDocument, clientId: number): void {
-    if (!confirm(`Eliminare "${doc.fileName}"?`)) return;
+  openDeleteModal(doc: ClientDocument, clientId: number): void {
+    this.docToDelete = doc;
+    this.deleteDocClientId = clientId;
+    this.showDeleteModal = true;
+  }
+
+  closeDeleteModal(): void {
+    this.showDeleteModal = false;
+    this.docToDelete = null;
+    this.deleteDocClientId = null;
+    this.deletingDoc = false;
+  }
+
+  confirmDeleteDoc(): void {
+    if (!this.docToDelete || this.deleteDocClientId === null) return;
+    const doc = this.docToDelete;
+    const clientId = this.deleteDocClientId;
+    this.deletingDoc = true;
     this.docService.deleteDocument(doc.id).subscribe({
       next: () => {
         const current = this.clientDocs.get(clientId) ?? [];
         this.clientDocs.set(clientId, current.filter(d => d.id !== doc.id));
+        this.closeDeleteModal();
+        this.toast.success('Eliminato', 'Documento eliminato con successo.');
         this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Eliminazione documento fallita', err);
-        alert('Impossibile eliminare il documento. Riprova.');
+        this.closeDeleteModal();
+        this.toast.error('Errore', 'Impossibile eliminare il documento. Riprova.');
+        this.cdr.detectChanges();
       }
     });
   }

@@ -363,8 +363,8 @@ export class AdminUsersTabComponent {
     if (this.mode === 'moderator') {
       return this.moderatorAllowedRoles.includes(user.role);
     }
-    // Admin mode: può editare solo MODERATOR e INSURANCE_MANAGER
-    return user.role === 'MODERATOR' || user.role === 'INSURANCE_MANAGER';
+    // Admin mode: può editare tutti gli utenti tranne gli altri amministratori
+    return user.role !== 'ADMIN';
   }
 
   getRoleLabel(role: string | undefined): string {

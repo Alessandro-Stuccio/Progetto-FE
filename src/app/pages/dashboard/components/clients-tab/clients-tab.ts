@@ -4,13 +4,14 @@ import { FormsModule } from '@angular/forms';
 import { DocumentService, ClientDocument } from '../../../../core/services/document.service';
 import { ClientBasicInfo, AuthUser } from '../../../../shared/models/dashboard.model';
 import { PdfViewerComponent } from '../../../../shared/components/ui/pdf-viewer/pdf-viewer';
+import { ConfirmDialogComponent } from '../../../../shared/components/ui/confirm-dialog/confirm-dialog';
 import { formatLongDate } from '../../../../shared/utils/date.util';
 import { validatePdfFile } from '../../../../shared/utils/file.util';
 
 @Component({
   selector: 'app-clients-tab',
   standalone: true,
-  imports: [CommonModule, FormsModule, PdfViewerComponent],
+  imports: [CommonModule, FormsModule, PdfViewerComponent, ConfirmDialogComponent],
   templateUrl: './clients-tab.html',
   styleUrls: ['./clients-tab.css']
 })
@@ -38,6 +39,11 @@ export class ClientsTabComponent {
   editingNotesDocId: number | null = null;
   editingNotesText: string = '';
   savingNotes: boolean = false;
+
+  // Modale conferma eliminazione documento
+  showDeleteModal: boolean = false;
+  docToDelete: ClientDocument | null = null;
+  deletingDoc: boolean = false;
 
   openClientDetail(client: ClientBasicInfo): void {
     this.selectedClient = client;
@@ -169,11 +175,31 @@ export class ClientsTabComponent {
     );
   }
 
-deleteDocument(doc: ClientDocument): void {
-    if (!confirm(`Eliminare "${doc.fileName}"?`)) return;
+  openDeleteModal(doc: ClientDocument): void {
+    this.docToDelete = doc;
+    this.showDeleteModal = true;
+  }
+
+  closeDeleteModal(): void {
+    this.showDeleteModal = false;
+    this.docToDelete = null;
+    this.deletingDoc = false;
+  }
+
+  confirmDeleteDoc(): void {
+    if (!this.docToDelete) return;
+    const doc = this.docToDelete;
+    this.deletingDoc = true;
     this.authService.deleteDocument(doc.id).subscribe({
-      next: () => { this.loadClientDocuments(); },
-      error: () => { this.showPopup.emit({title: 'Errore', message: 'Impossibile eliminare il documento.', type: 'error'}); }
+      next: () => {
+        this.closeDeleteModal();
+        this.showPopup.emit({title: 'Eliminato', message: 'Documento eliminato con successo.', type: 'success'});
+        this.loadClientDocuments();
+      },
+      error: () => {
+        this.closeDeleteModal();
+        this.showPopup.emit({title: 'Errore', message: 'Impossibile eliminare il documento.', type: 'error'});
+      }
     });
   }
 
