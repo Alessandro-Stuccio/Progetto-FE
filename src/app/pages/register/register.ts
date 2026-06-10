@@ -64,7 +64,7 @@ export class RegisterComponent implements OnInit {
   private slotService = inject(SlotService);
   private reviewService = inject(ReviewService);
 
-  // Modal Vedi Recensioni
+  // Modale Vedi Recensioni
   reviewsModal: { prof: ProfessionalSummary; reviews: ReviewResponse[] } | null = null;
   reviewsLoading = false;
 
@@ -103,7 +103,7 @@ export class RegisterComponent implements OnInit {
       selectedNutritionistId: ['', [Validators.required]]
     });
 
-    // Re-validate confirmPassword when password changes
+    // Ri-valida confirmPassword quando cambia la password
     this.registerForm.get('password')?.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {

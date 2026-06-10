@@ -1,13 +1,13 @@
 <div class="ah-page">
 
-  <!-- Hero -->
+  <!-- Sezione hero -->
   <div class="ah-hero">
     <div class="ah-avatar">{{ getInitials() }}</div>
     <h2 class="ah-title">{{ isModerator ? 'Pannello Moderatore' : 'Pannello Admin' }}</h2>
     <p class="ah-subtitle">{{ isModerator ? 'Gestione utenti e supporto operativo' : 'Supervisione globale della piattaforma Kore' }}</p>
   </div>
 
-  <!-- KPI Cards -->
+  <!-- Schede KPI -->
   <div class="ah-kpi-grid" [ngClass]="isModerator ? 'ah-kpi-grid--3' : 'ah-kpi-grid--4'">
     <div class="ah-kpi-card">
       <div class="ah-kpi-num ah-kpi-num--navy">{{ totalUsers }}</div>

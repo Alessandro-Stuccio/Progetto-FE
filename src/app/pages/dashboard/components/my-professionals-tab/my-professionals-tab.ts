@@ -32,7 +32,7 @@ export class MyProfessionalsTabComponent implements OnChanges, OnInit {
     // Se l'utente può ancora lasciare una recensione.
     canReviewMap: Record<number, boolean> = {};
 
-    // Modal recensioni pubbliche
+    // Modale recensioni pubbliche
     publicReviewsModal: { prof: ProfessionalSummary; reviews: ReviewResponse[] } | null = null;
 
     // Form recensione
@@ -63,14 +63,14 @@ export class MyProfessionalsTabComponent implements OnChanges, OnInit {
                 this.reviewComment[p.id] = '';
             }
 
-            // Retrieve authoritative state from backend
+            // Recupera lo stato autorevole dal backend
             this.reviewService.canReview(p.id).subscribe(r => {
                 this.canReviewMap[p.id] = r.canReview;
                 this.hasReviewedServerMap[p.id] = r.hasReviewed;
                 this.cdr.detectChanges();
             });
 
-            // Load public reviews computing average rating and personal submission
+            // Carica le recensioni pubbliche calcolando la media e l'eventuale recensione personale
             this.reviewService.getReviewsForProfessional(p.id).subscribe(reviews => {
                 this.reviewsMap[p.id] = reviews;
                 const mine = reviews.find(r => r.authorName === this.currentUser.firstName);

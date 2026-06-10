@@ -230,8 +230,8 @@
 }
 
 /* evidenziazione del giorno corrente */
-/* day-name and day-number: explicit colors needed because the root div's
-   inherited color (var(--color-text-main)) overrides Tailwind's text-white/xx utilities */
+/* day-name e day-number: colori espliciti necessari perché il colore ereditato dal div radice
+   (var(--color-text-main)) sovrascrive le utility text-white/xx di Tailwind */
 .day-name {
   color: rgba(255, 255, 255, 0.42);
 }
@@ -322,7 +322,7 @@
   transform: translateX(0);
 }
 
-/* Gradient text (panel title — on white bg now uses navy→mid gradient) */
+/* Testo sfumato (titolo pannello — su sfondo bianco ora usa sfumatura navy→mid) */
 .panel-title {
   background: linear-gradient(90deg, var(--navy-primary), var(--navy-mid));
   -webkit-background-clip: text;
@@ -330,7 +330,7 @@
   -webkit-text-fill-color: transparent;
 }
 
-/* Avatar ring pulse */
+/* Pulsazione anello avatar */
 .panel-avatar-ring {
   position: absolute;
   border-radius: 50%;
@@ -344,13 +344,13 @@
   scrollbar-color: var(--color-border-subtle) transparent;
 }
 
-/* Detail row hover */
+/* Hover riga dettaglio */
 .detail-row:hover {
   background: #eef3fc;
   border-color: rgba(45, 95, 168, 0.30);
 }
 
-/* Subscription card */
+/* Scheda abbonamento */
 .subscription-card {
   background: rgba(var(--color-accent-gold-rgb), 0.07);
   border: 1px solid rgba(var(--color-accent-gold-rgb), 0.28);
@@ -366,13 +366,13 @@
   box-shadow: 0 0 6px rgba(45, 133, 168, 0.40);
 }
 
-/* Skeleton shimmer */
+/* Effetto shimmer scheletro */
 .skeleton-avatar,
 .skeleton-line {
   animation: shimmer 1.5s ease-in-out infinite;
 }
 
-/* Btn availability */
+/* Pulsante disponibilità */
 .btn-availability {
   width: 100%;
   padding: 0.75rem 1rem;
@@ -403,7 +403,7 @@
   font-weight: 700;
 }
 
-/* Btn logout */
+/* Pulsante logout */
 .btn-logout {
   width: 100%;
   padding: 0.8rem;
@@ -428,7 +428,7 @@
 
 /* modale disponibilità: scrollbar, stati degli slot, copia/incolla */
 
-/* Gradient text header modale */
+/* Testo sfumato - intestazione modale */
 .avail-title {
   background: linear-gradient(90deg, var(--color-accent-gold-light), var(--color-accent-gold));
   -webkit-background-clip: text;
@@ -445,7 +445,7 @@
   display: none;
 }
 
-/* Slot labels */
+/* Etichette slot */
 .avail-time-label {
   height: 28px;
   display: flex;
@@ -547,13 +547,13 @@
   z-index: 2;
 }
 
-/* Avail header day */
+/* Intestazione giorno disponibilità */
 .avail-day-header.is-copy-source {
   background: rgba(90, 180, 130, 0.08);
   border-radius: 4px 4px 0 0;
 }
 
-/* Copy/Paste buttons */
+/* Pulsanti copia/incolla */
 .btn-copy-day {
   margin-top: 0.1rem;
   padding: 0.1rem 0.38rem;
@@ -649,7 +649,7 @@
   transform: scale(1.1);
 }
 
-/* Paste target column */
+/* Colonna destinazione incolla */
 .avail-day-col.is-paste-target {
   background: rgba(var(--color-accent-gold-rgb), 0.035);
   position: relative;
@@ -681,7 +681,7 @@
   z-index: 1;
 }
 
-/* Avail modal buttons */
+/* Pulsanti modale disponibilità */
 .btn-avail-cancel {
   padding: 0.55rem 1.1rem;
   background: transparent;
@@ -801,7 +801,7 @@
   cursor: not-allowed;
 }
 
-/* Booking day card states */
+/* Stati scheda giorno prenotazione */
 .booking-day-card:hover {
   border-color: var(--gold-accent);
   transform: translateY(-2px);
@@ -824,7 +824,7 @@
   color: #ffffff;
 }
 
-/* Booking day selector scrollbar */
+/* Scrollbar selettore giorno prenotazione */
 .booking-day-selector {
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -834,7 +834,7 @@
   display: none;
 }
 
-/* Booking time pill states */
+/* Stati pillole orario prenotazione */
 .booking-time-pill:hover {
   border-color: var(--gold-accent);
   color: var(--gold-dark);
@@ -849,13 +849,13 @@
   transform: scale(1.05);
 }
 
-/* Booking close hover */
+/* Hover chiusura prenotazione */
 .booking-close:hover {
   background: rgba(255, 255, 255, 0.2);
   transform: scale(1.1);
 }
 
-/* Global popup */
+/* Popup globale */
 .global-popup {
   box-shadow: 0 24px 80px rgba(var(--color-primary-navy-rgb), 0.25);
 }
@@ -1007,7 +1007,7 @@
     font-size: 0.8rem;
   }
 
-  /* Avail modal slot sizing */
+  /* Dimensioni slot modale disponibilità */
   .avail-slot {
     height: 24px;
   }
@@ -1018,7 +1018,7 @@
     padding: 0.1rem 0.25rem 0 0;
   }
 
-  /* Availability footer */
+  /* Piè di pagina disponibilità */
   .btn-avail-cancel {
     padding: 0.5rem 0.9rem;
     font-size: 0.78rem;
@@ -1029,14 +1029,14 @@
     font-size: 0.78rem;
   }
 
-  /* Booking modal */
+  /* Modale prenotazione */
   .btn-book-confirm {
     padding: 0.5rem 1rem;
     font-size: 0.78rem;
   }
 }
 
-/* Small phones (<360px) */
+/* Telefoni piccoli (<360px) */
 @media (max-width: 360px) {
   .time-slot-label {
     font-size: 0.50rem;
@@ -1200,7 +1200,7 @@
   box-shadow: 0 1px 3px rgba(var(--color-primary-navy-rgb), 0.08);
 }
 
-/* Input textarea */
+/* Area di inserimento testo */
 .chat-input {
   font-family: var(--font-sans);
   line-height: 1.45;
@@ -1212,7 +1212,7 @@
   display: none;
 }
 
-/* Send button */
+/* Pulsante invia */
 .chat-send-btn {
   background: var(--color-border-subtle);
   color: var(--color-text-muted);

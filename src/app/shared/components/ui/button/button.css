@@ -5,12 +5,12 @@
   cursor: pointer;
 }
 
-/* Sizes */
+/* Dimensioni */
 .btn--sm  { @apply px-3 py-1.5 text-sm; }
 .btn--md  { @apply px-5 py-2.5 text-sm; }
 .btn--lg  { @apply px-7 py-3.5 text-base; }
 
-/* Variants */
+/* Varianti */
 .btn--primary {
   @apply bg-navy-primary text-white shadow-card-sm;
 }
@@ -42,12 +42,12 @@
   @apply opacity-90 -translate-y-px shadow-card-md;
 }
 
-/* Disabled */
+/* Disabilitato */
 .btn:disabled {
   @apply opacity-40 cursor-not-allowed pointer-events-none;
 }
 
-/* Loading */
+/* Caricamento */
 .btn--loading {
   @apply cursor-wait;
 }

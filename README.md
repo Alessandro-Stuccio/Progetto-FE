@@ -78,8 +78,7 @@ Progetto-FE/
     ├── index.html              # <title>Kore.</title>, meta PWA
     ├── styles.css              # direttive Tailwind + design token (:root)
     ├── environments/
-    │   ├── environment.ts             # produzione (apiUrl Render)
-    │   └── environment.development.ts # sviluppo (apiUrl localhost:8080)
+    │   └── environment.ts             # configurazione (apiUrl localhost:8080)
     └── app/
         ├── app.routes.ts       # definizione delle route (lazy-loaded)
         ├── core/
@@ -226,7 +225,7 @@ modifica dei file sorgente. In sviluppo punta al backend su `http://localhost:80
 | Comando | Descrizione |
 |---|---|
 | `npm start` | Avvia il dev server (`ng serve`) su `http://localhost:4200` |
-| `npm run build` | Build di produzione in `dist/` |
+| `npm run build` | Build (configurazione development) in `dist/` |
 | `npm run watch` | Build in watch mode (configurazione development) |
 | `npm test` | Esegue i test con Vitest |
 | `npm run ng` | Accesso diretto alla Angular CLI |
@@ -239,15 +238,11 @@ modifica dei file sorgente. In sviluppo punta al backend su `http://localhost:80
 npm run build
 ```
 
-Compila l'applicazione e genera gli artefatti in `dist/`. La build di produzione (default)
-ottimizza il bundle (output hashing, budget su initial bundle e stili).
+Compila l'applicazione e genera gli artefatti in `dist/` usando la configurazione `development`.
 
 | Configurazione | File | `apiUrl` |
 |---|---|---|
-| Sviluppo | `src/environments/environment.development.ts` | `http://localhost:8080` |
-| Produzione | `src/environments/environment.ts` | `https://backend-tesi-l6ca.onrender.com` |
-
-La sostituzione del file di environment avviene automaticamente in base alla configurazione di build.
+| Sviluppo | `src/environments/environment.ts` | `http://localhost:8080` |
 
 ---
 

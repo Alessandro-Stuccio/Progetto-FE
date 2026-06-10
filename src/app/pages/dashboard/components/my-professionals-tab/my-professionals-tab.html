@@ -1,15 +1,15 @@
 <div class="mp-page px-4 py-5 sm:max-w-[900px] sm:mx-auto sm:py-8 sm:px-8">
 
-  <!-- Header -->
+  <!-- Intestazione -->
   <h3 class="mp-title">I Miei Professionisti</h3>
   <p class="mp-subtitle">Prenota un appuntamento o lascia una recensione</p>
 
-  <!-- Cards professionisti -->
+  <!-- Schede professionisti -->
   @if (professionals.length > 0) {
     <div class="mp-grid">
       @for (p of professionals; track p) {
         <div class="mp-card">
-          <!-- Accent bar -->
+          <!-- Barra decorativa -->
           <div class="mp-card-accent" [class.blue]="p.role === 'PERSONAL_TRAINER'"
           [class.gold]="p.role !== 'PERSONAL_TRAINER'"></div>
           <div class="mp-card-body">
@@ -36,7 +36,7 @@
                 }
               </div>
             </div>
-            <!-- Rating aggregato -->
+            <!-- Valutazione aggregata -->
             @if (reviewsMap[p.id]?.length) {
               <div class="mp-rating-row">
                 <span class="mp-star">⭐</span>
@@ -49,7 +49,7 @@
                 Nessuna recensione ancora
               </div>
             }
-            <!-- Divider -->
+            <!-- Separatore -->
             <div class="mp-divider"></div>
             <!-- Bottone prenota -->
             <button class="mp-btn-book" [class.blue]="p.role === 'PERSONAL_TRAINER'"
@@ -84,7 +84,7 @@
                     <p class="mp-review-text">"{{ hasReviewedMap[p.id]!.comment }}"</p>
                   </div>
                 }
-                <!-- Fallback se il contenuto non è ancora caricato -->
+                <!-- Ripiego se il contenuto non è ancora caricato -->
                 @if (!hasReviewedMap[p.id]) {
                   <div class="mp-my-review">
                     <div class="mp-my-review-label">📝 La tua recensione</div>
@@ -95,7 +95,7 @@
               }
               <!-- NON HA ANCORA RECENSITO -->
               @if (!hasReviewedServerMap[p.id]) {
-                <!-- Può recensire: mostra form -->
+                <!-- Può recensire: mostra il modulo -->
                 @if (canReviewMap[p.id]) {
                   <div>
                     <button class="mp-btn-review-toggle" (click)="toggleReviewForm(p.id)"
@@ -161,7 +161,7 @@
 
 </div>
 
-<!-- MODAL RECENSIONI PUBBLICHE -->
+<!-- MODALE RECENSIONI PUBBLICHE -->
 @if (publicReviewsModal) {
   <div class="mp-modal-overlay" (click)="closePublicReviews()">
     <div class="mp-modal" (click)="$event.stopPropagation()">

@@ -71,12 +71,12 @@ export class AdminUsersTabComponent {
   userToDelete: UserProfile | null = null;
   deletingUser: boolean = false;
 
-  // Info Modal
+  // Modale info
   showInfoModal: boolean = false;
   selectedUserInfo: UserProfile | null = null;
   selectedSubscription: Subscription | null = null;
 
-  // Credits Modal
+  // Modale crediti
   showCreditsModal: boolean = false;
   updatingCredits: boolean = false;
   creditsForm = this.fb.group({
@@ -224,7 +224,7 @@ export class AdminUsersTabComponent {
     });
   }
 
-  // Delete user
+  // Eliminazione utente
   openDeleteModal(user: UserProfile): void {
     if (this.currentUser && user.id === this.currentUser.id) {
       this.toast.warning('Operazione non consentita', 'Non puoi eliminare il tuo stesso account.');
@@ -318,7 +318,7 @@ export class AdminUsersTabComponent {
     });
   }
 
-  // Edit user
+  // Modifica utente
   openEditModal(user: UserProfile): void {
     this.editUser = { ...user };
     this.editPassword = '';

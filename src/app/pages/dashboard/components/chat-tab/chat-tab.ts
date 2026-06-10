@@ -57,9 +57,9 @@ export class ChatTabComponent implements OnInit, OnDestroy {
   chatView: 'list' | 'conversation' = 'list';
   closingChat: boolean = false;
   private subscriptions: Subscription[] = [];
-  private conversationsLoaded = false;  // Flag: true dopo il primo load
+  private conversationsLoaded = false;  // Indicatore: true dopo il primo caricamento
 
-  // User picker (admin)
+  // Selettore utente (admin)
   showUserPicker: boolean = false;
   userPickerSearch: string = '';
 
@@ -233,14 +233,14 @@ export class ChatTabComponent implements OnInit, OnDestroy {
       const baseLocalContacts = this.buildLocalConversations();
       let storedEmpty = this.loadStoredEmptyConvs();
 
-      // Prune cached empty conversations now present on backend
+      // Rimuovi dalla cache le conversazioni vuote ora presenti sul backend
       const cachedLength = storedEmpty.length;
       storedEmpty = storedEmpty.filter(sc => !backendIds.has(sc.otherUserId));
       if (storedEmpty.length !== cachedLength) {
         this.saveStoredEmptyConvs(storedEmpty);
       }
 
-      // Unisci base local e stored
+      // Unisci la base locale e quelle salvate
       const localMap = new Map<number, Conversation>();
       [...baseLocalContacts, ...storedEmpty].forEach(c => localMap.set(c.otherUserId, c));
       const localContacts = Array.from(localMap.values());
@@ -270,7 +270,7 @@ export class ChatTabComponent implements OnInit, OnDestroy {
     // Subscribe a messaggi real-time dal WebSocket (per la conversazione attiva)
     const msgSub = this.chatService.messages$.subscribe(msgs => {
       if (this.activeConversation && msgs.length > 0) {
-        // Guard: ignora messaggi di un'altra chat (evita overlap durante transizione)
+        // Protezione: ignora messaggi di un'altra chat (evita sovrapposizioni durante la transizione)
         if (this.activeConversation.chatId && msgs.every(m => m.chatId !== this.activeConversation!.chatId)) return;
         // Mantieni i messaggi locali ottimistici (id < 0) non ancora confermati dal server
         const localOptimistic = this.chatMessages.filter(m => m.id < 0 &&
@@ -455,7 +455,7 @@ export class ChatTabComponent implements OnInit, OnDestroy {
       this.cdr.detectChanges();
       this.scrollToBottom();
 
-      // Aggiorna preview conversazione
+      // Aggiorna anteprima conversazione
       if (this.activeConversation) {
         this.activeConversation.lastMessage = text;
         this.activeConversation.lastMessageTime = localMsg.createdAt;

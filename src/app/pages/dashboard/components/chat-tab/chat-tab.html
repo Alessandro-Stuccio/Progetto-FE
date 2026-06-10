@@ -55,7 +55,7 @@
                     getConversationInitials(conv) }}</span>
                   }
                 </div>
-                <!-- Pallino notifica non letti con counter -->
+                <!-- Pallino notifica non letti con contatore -->
                 @if (conv.unreadCount > 0) {
                   <span
                     class="absolute -top-1 -right-1 min-w-[19px] h-[19px] px-[4px] rounded-full bg-[var(--color-accent-gold)] text-[var(--color-text-main)] text-[0.58rem] font-black flex items-center justify-center border-2 border-white shadow-sm">
@@ -156,7 +156,7 @@
         </div>
         <div class="chat-messages-area flex-1 overflow-y-auto px-4 sm:px-8 py-4 flex flex-col gap-[6px]"
           #messagesContainer>
-          <!-- Skeleton Loader -->
+          <!-- Segnaposto di caricamento -->
           @if (chatLoading) {
             <div class="flex flex-col gap-4 py-4 w-full">
               <div class="flex justify-start w-full px-2 sm:px-0">

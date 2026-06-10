@@ -1,6 +1,6 @@
 <div class="flex flex-col h-[100dvh] overflow-hidden bg-[var(--bg-base)] text-[var(--text-primary)]">
 
-  <!-- topbar: logo a sinistra, nav desktop al centro, profilo a destra -->
+  <!-- barra superiore: logo a sinistra, navigazione desktop al centro, profilo a destra -->
   <header class="flex-shrink-0 flex items-center justify-between relative
                  px-4 lg:px-7 h-[calc(3.5rem+env(safe-area-inset-top))] sm:h-[calc(4rem+env(safe-area-inset-top))]
                  pt-[env(safe-area-inset-top)]
@@ -12,7 +12,7 @@
       <span class="font-['Clash_Display'] text-[1.5rem] font-medium text-[var(--text-primary)] leading-none select-none">Kore<span class="text-[var(--gold-accent)]">.</span></span>
     </div>
 
-    <!-- Desktop navigation tabs (centrato) -->
+    <!-- Tab di navigazione desktop (centrato) -->
     <nav class="hidden sm:flex items-center gap-1 absolute left-1/2 -translate-x-1/2">
       <button class="desktop-nav-item px-3.5 py-[0.4rem] rounded-lg text-[0.82rem] font-semibold
                        transition-all whitespace-nowrap" [class.active]="activeTab === 'home'"
@@ -88,7 +88,7 @@
                       I Miei Servizi
                     </button>
                   }
-                  <!-- ADMIN tabs -->
+                  <!-- Tab ADMIN -->
                   @if (isAdmin() || isModerator()) {
 <button class="desktop-nav-item px-3.5 py-[0.4rem] rounded-lg text-[0.82rem] font-semibold
                        transition-all whitespace-nowrap" [class.active]="activeTab === 'admin-users'"
@@ -143,7 +143,7 @@
                         <!-- Destra -->
                         <div class="flex items-center gap-2 sm:gap-3 lg:gap-4 flex-shrink-0">
 
-                          <!-- Week stat (professionals only) — desktop only, visible on calendar tab -->
+                          <!-- Statistica settimana (solo professionisti) — solo desktop, visibile nel tab calendario -->
                           @if (!isLoading && isProfessional() && activeTab === 'calendar') {
                             <div class="hidden md:flex flex-col items-end gap-[1px]"
                               >
@@ -152,7 +152,7 @@
                             </div>
                           }
 
-                          <!-- Credits (clients — desktop only, visible on calendar tab) -->
+                          <!-- Crediti (clienti — solo desktop, visibile nel tab calendario) -->
                           @if (!isLoading && isClient() && subscription?.active && activeTab === 'calendar') {
                             <div class="hidden sm:flex items-center gap-2 pr-3 sm:pr-4 border-r border-white/15"
                               >
@@ -173,7 +173,7 @@
                             </div>
                           }
 
-                          <!-- Availability button (professionals — desktop only, calendar tab) -->
+                          <!-- Pulsante disponibilità (professionisti — solo desktop, tab calendario) -->
                           @if (isProfessional() && activeTab === 'calendar') {
                             <button class="hidden sm:flex btn-avail-topbar"
                               (click)="openAvailability()" title="Gestisci disponibilità settimana prossima">
@@ -182,7 +182,7 @@
                             </button>
                           }
 
-                          <!-- Profile button (clienti e professionisti) -->
+                          <!-- Pulsante profilo (clienti e professionisti) -->
                           @if (!isAdmin() && !isModerator() && !isInsuranceManager()) {
 <button class="profile-btn w-9 h-9 sm:w-[38px] sm:h-[38px] rounded-full border-2 border-[var(--border-medium)]
                      bg-[var(--bg-subtle)] cursor-pointer flex items-center justify-center
@@ -199,7 +199,7 @@
                             </button>
                           }
 
-                          <!-- Logout button (Admin e Insurance Manager) -->
+                          <!-- Pulsante logout (Admin e Insurance Manager) -->
                           @if (isAdmin() || isModerator() || isInsuranceManager()) {
 <button class="flex items-center gap-1.5 px-3 py-[0.35rem] rounded-lg border border-[var(--border-medium)]
                bg-[var(--bg-subtle)] text-[var(--text-secondary)] text-[0.78rem] font-semibold
@@ -219,7 +219,7 @@
                         <!-- contenuto principale: cosa mostrare lo decide activeTab -->
                         <div class="flex-1 flex flex-col overflow-hidden relative">
 
-                          <!-- Loading overlay -->
+                          <!-- Overlay di caricamento -->
                           @if (isLoading) {
 <div class="loading-overlay absolute inset-0 bg-[var(--bg-base)]/90 z-20
                 flex flex-col items-center justify-center gap-4 backdrop-blur-[6px]">

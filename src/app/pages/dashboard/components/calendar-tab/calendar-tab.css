@@ -31,7 +31,7 @@
   border-color: var(--border-medium);
 }
 
-/* Agenda view: booking row hover */
+/* Vista agenda: hover riga prenotazione */
 .agenda-booking-row {
   transition: box-shadow 0.15s, transform 0.1s;
   cursor: default;
@@ -141,7 +141,7 @@
   }
 }
 
-/* Today highlight */
+/* Evidenziazione giorno odierno */
 .day-name {
   color: var(--text-muted);
   letter-spacing: 0.16em;
@@ -166,7 +166,7 @@
   background: rgba(201, 169, 110, 0.04);
 }
 
-/* Booking cards */
+/* Schede prenotazione */
 .booking-card {
   border-radius: 5px;
   padding: 3px 7px;
@@ -222,7 +222,7 @@
   opacity: 0.78;
 }
 
-/* Small phones (<360px) */
+/* Telefoni piccoli (<360px) */
 @media (max-width: 360px) {
   .time-slot-label {
     font-size: 0.50rem;
@@ -239,7 +239,7 @@
   }
 }
 
-/* Loading spinner */
+/* Indicatore di caricamento */
 .loading-spinner {
   animation: spin 0.8s linear infinite;
 }

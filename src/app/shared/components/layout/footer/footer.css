@@ -8,7 +8,7 @@
          border-b border-white/10;
 }
 
-/* Brand col */
+/* Colonna brand */
 .footer__col--brand {
   @apply lg:col-span-1;
 }
@@ -28,7 +28,7 @@
   @apply mt-2 text-sm text-white/50 leading-relaxed max-w-xs;
 }
 
-/* Col headings */
+/* Intestazioni colonne */
 .footer__col-title {
   @apply font-mono text-[0.65rem] uppercase tracking-[0.15em] font-medium mb-5;
   color: var(--gold-accent);
@@ -52,7 +52,7 @@
   text-align: left;
 }
 
-/* Bottom bar */
+/* Barra inferiore */
 .footer__bottom {
   @apply max-w-7xl mx-auto px-6 pt-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2;
 }

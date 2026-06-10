@@ -161,7 +161,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private _popupMessage = signal('');
   get popupMessage(): string { return this._popupMessage(); }
 
-  // Flag interni per non ricaricare i dati admin già scaricati: non servono nel
+  // Indicatori interni per non ricaricare i dati admin già scaricati: non servono nel
   // template, quindi restano boolean normali e non signal.
   private usersLoaded = false;
   private plansLoaded = false;

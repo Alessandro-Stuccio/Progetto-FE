@@ -64,7 +64,7 @@
         }
       </div>
 
-      <!-- Filtri Mobile (Dropdown) -->
+      <!-- Filtri Mobile (Menu a tendina) -->
       <div class="sm:hidden relative">
         <button
           class="w-full flex items-center justify-between px-4 py-2.5 bg-white border border-[var(--color-border-subtle)] rounded-xl text-[0.82rem] text-[var(--color-text-main)] transition-all focus:outline-none focus:border-[var(--color-accent-gold)]"
@@ -84,7 +84,7 @@
             </svg>
           </button>
 
-          <!-- Dropdown Menu -->
+          <!-- Menu a tendina -->
           @if (showFilterDropdown) {
             <div
               class="absolute z-10 mt-2 w-full bg-white border border-[var(--color-border-subtle)] rounded-xl shadow-lg py-1">
@@ -198,7 +198,7 @@
             </div>
           }
 
-          <!-- Modale Crea Utente (Wizard) — Responsive -->
+          <!-- Modale Crea Utente (procedura guidata) — Responsive -->
           @if (showCreateModal) {
             <div
               class="fixed inset-0 bg-[var(--color-text-main)]/40 backdrop-blur-[4px] z-[200] flex items-start sm:items-center justify-center pt-[4vh] sm:pt-0 sm:p-4"
@@ -206,7 +206,7 @@
               <div
                 class="bg-white w-full sm:max-w-md sm:rounded-2xl rounded-t-2xl sm:rounded-b-2xl shadow-2xl flex flex-col max-h-[92vh] sm:max-h-[88vh] overflow-hidden"
                 (click)="$event.stopPropagation()">
-                <!-- Header -->
+                <!-- Intestazione -->
                 <div
                   class="px-5 sm:px-6 py-4 sm:py-5 bg-[var(--color-primary-navy)] flex items-center justify-between flex-shrink-0">
                   <div>
@@ -304,7 +304,7 @@
                                 </div>
                               </div>
                             }
-                            <!-- Footer Step 1 -->
+                            <!-- Piè di pagina Step 1 -->
                             @if (currentStep === 1) {
                               <div class="px-5 sm:px-6 pb-5 sm:pb-6 pt-0 flex-shrink-0">
                                 <button
@@ -458,7 +458,7 @@
                             </div>
                           </div>
                         }
-                        <!-- Footer Step 2 -->
+                        <!-- Piè di pagina Step 2 -->
                         @if (currentStep === 2) {
                           <div class="px-5 sm:px-6 pb-5 sm:pb-6 pt-2 flex-shrink-0 flex gap-2.5 sm:gap-3">
                             <button

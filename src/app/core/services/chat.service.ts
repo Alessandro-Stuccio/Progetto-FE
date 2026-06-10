@@ -108,7 +108,7 @@ export class ChatService {
   }
 
   // Avvia tutto il real-time. Prima ripuliamo con destroy(), altrimenti a ogni
-  // re-init resterebbero listener doppi e perdite di memoria. Poi apriamo il
+  // reinizializzazione resterebbero listener doppi e perdite di memoria. Poi apriamo il
   // WebSocket e ci agganciamo ai suoi stream: messaggi in arrivo, conteggio non
   // letti e cambi di stato. Infine accendiamo il polling globale come fallback.
   init(userId: number, email: string): void {

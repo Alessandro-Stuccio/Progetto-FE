@@ -7,7 +7,7 @@
     [class.w-[280px]]="!isMobile"
     [class.flex-shrink-0]="!isMobile">
 
-    <!-- Header sinistra -->
+    <!-- Intestazione sinistra -->
     <div class="flex-shrink-0 px-4 pt-4 pb-3">
       <h2 class="font-['Clash_Display'] text-[1.1rem] font-black text-[var(--color-primary-navy)] mb-2">Professionisti</h2>
       <div class="relative">
@@ -62,10 +62,10 @@
       }
 
       @if (selectedProfessional) {
-        <!-- Header destra -->
+        <!-- Intestazione destra -->
         <div class="flex-shrink-0 px-4 pt-4 pb-3 border-b border-[var(--color-border-subtle)]">
           <div class="flex items-center gap-2 mb-2">
-            <!-- Back button mobile -->
+            <!-- Pulsante indietro (mobile) -->
             @if (isMobile) {
               <button (click)="backToProfessionals()"
                 class="w-7 h-7 rounded-lg border border-[var(--color-border-subtle)] flex items-center justify-center text-[var(--color-text-muted)] hover:bg-[var(--color-bg-subtle)] transition-all flex-shrink-0">
@@ -93,7 +93,7 @@
             @for (client of linkedClients; track client) {
               <div
                 class="bg-white rounded-xl border border-[var(--color-border-subtle)] overflow-hidden shadow-sm">
-                <!-- Header accordion cliente -->
+                <!-- Intestazione accordion cliente -->
                 <div class="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-[var(--color-bg-subtle)] transition-all"
                   (click)="toggleClient(client.id)">
                   <div class="w-8 h-8 rounded-full bg-gradient-to-br from-[var(--navy-primary)] to-[var(--navy-mid)] flex items-center justify-center text-white text-[0.72rem] font-bold flex-shrink-0">
@@ -122,7 +122,7 @@
                 @if (isClientExpanded(client.id)) {
                   <div
                     class="border-t border-[var(--color-border-subtle)] px-4 py-3">
-                    <!-- Loading -->
+                    <!-- Caricamento -->
                     @if (isClientLoading(client.id)) {
                       <div class="flex justify-center py-4">
                         <div class="w-5 h-5 border-2 border-[var(--color-primary-navy)] border-t-transparent rounded-full animate-spin"></div>
@@ -177,7 +177,7 @@
                                 </button>
                               </div>
                             </div>
-                            <!-- Inline note edit -->
+                            <!-- Modifica note inline -->
                             @if (editingNotesDocId === doc.id) {
                               <div
                                 class="px-3 pb-3 flex flex-col gap-1.5 border-t border-[var(--color-border-subtle)] pt-2">
@@ -216,7 +216,7 @@
 
   </div>
 
-  <!-- PDF Viewer condiviso -->
+  <!-- Visualizzatore PDF condiviso -->
   <app-pdf-viewer #pdfViewer />
 
   <!-- Modale conferma eliminazione documento -->

@@ -4,7 +4,7 @@
   <p class="text-[0.78rem] sm:text-[0.85rem] text-[var(--color-text-muted)] mb-5 sm:mb-6">Visualizza la tua scheda, dieta e polizza
   assicurativa</p>
 
-  <!-- Modern Selector Cards -->
+  <!-- Schede selettore moderne -->
   <div class="grid grid-cols-3 gap-2 sm:gap-3 mb-8">
     @for (tab of ['scheda', 'dieta', 'polizza']; track tab) {
       <button
@@ -27,7 +27,7 @@
     }
   </div>
 
-  <!-- Loading -->
+  <!-- Caricamento -->
   @if (loading) {
     <div class="flex items-center justify-center py-12">
       <div class="w-8 h-8 border-2 border-[var(--color-accent-gold)] border-t-transparent rounded-full animate-spin"></div>
@@ -100,6 +100,6 @@
         </div>
       }
 
-      <!-- PDF Viewer condiviso -->
+      <!-- Visualizzatore PDF condiviso -->
       <app-pdf-viewer #pdfViewer />
     </div>

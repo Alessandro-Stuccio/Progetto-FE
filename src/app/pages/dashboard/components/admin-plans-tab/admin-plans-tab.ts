@@ -36,7 +36,7 @@ export class AdminPlansTabComponent {
   isPlanActive(plan: Plan): boolean { return plan?.active !== false; }
   canDisablePlan(plan: Plan): boolean { return this.getTotalSubsForPlan(plan.name) === 0; }
 
-  // Create
+  // Creazione
   openCreateModal(): void {
     this.newPlan = { name: '', duration: 'SEMESTRALE', fullPrice: 0, monthlyInstallmentPrice: 0, monthlyCreditsPT: 0, monthlyCreditsNutri: 0 };
     this.createError = '';
@@ -90,7 +90,7 @@ export class AdminPlansTabComponent {
     });
   }
 
-  // Edit
+  // Modifica
   openEditModal(plan: Plan): void {
     this.editPlan = { ...plan };
     this.editError = '';

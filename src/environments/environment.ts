@@ -1,4 +1,4 @@
 export const environment = {
-  production: true,
-  apiUrl: 'https://backend-tesi-l6ca.onrender.com'
+  production: false,
+  apiUrl: 'http://localhost:8080'
 };

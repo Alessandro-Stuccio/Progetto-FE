@@ -1,6 +1,6 @@
 <div class="px-5 py-6 flex flex-col gap-5 sm:max-w-[900px] sm:mx-auto sm:py-10 sm:px-8">
 
-  <!-- Header -->
+  <!-- Intestazione -->
   @if (!selectedClient) {
     <div class="text-center">
       <div class="relative inline-block mb-3">
@@ -115,7 +115,7 @@
     </div>
     <h4 class="text-[0.78rem] text-[var(--color-text-muted)] uppercase tracking-[0.10em] font-semibold mb-3">📄 Documenti assicurativi
     </h4>
-    <!-- Upload polizza (Drag & Drop) SOLO PC -->
+    <!-- Caricamento polizza (trascina e rilascia) SOLO PC -->
     <div
       class="relative border-2 border-dashed rounded-xl p-6 hidden sm:flex flex-col items-center justify-center gap-3 transition-all cursor-pointer mb-5"
       [class.border-[var(--color-primary-navy)]]="!isDragOver" [class.bg-[var(--color-bg-subtle)]]="!isDragOver" [class.border-[var(--color-accent-gold)]]="isDragOver"
@@ -135,7 +135,7 @@
           <div class="text-[0.7rem] text-[var(--color-text-muted)]">Dimensione massima suggerita 10MB</div>
         </div>
       </div>
-      <!-- Upload polizza (Pulsante classico) SOLO MOBILE -->
+      <!-- Caricamento polizza (Pulsante classico) SOLO MOBILE -->
       <label
         class="flex sm:hidden items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-[var(--color-primary-navy)] to-[#2d5fa8] text-white text-[0.85rem] font-bold cursor-pointer transition-all active:scale-[0.97] mb-5"
         [class.opacity-50]="isUploading" [class.pointer-events-none]="isUploading">
@@ -197,7 +197,7 @@
                           </button>
                         </div>
                       </div>
-                      <!-- Inline edit note -->
+                      <!-- Modifica note inline -->
                       @if (editingNotesDocId === doc.id) {
                         <div
                           class="px-4 pb-4 flex flex-col gap-2 border-t border-[var(--color-border-subtle)] pt-3">
@@ -229,7 +229,7 @@
               }
             }
 
-            <!-- PDF Viewer condiviso -->
+            <!-- Visualizzatore PDF condiviso -->
             <app-pdf-viewer #pdfViewer />
 
             <!-- Modale conferma eliminazione documento -->

@@ -1,4 +1,4 @@
-<!-- Mobile week nav -->
+<!-- Navigazione settimana (mobile) -->
 <div class="sm:hidden flex-shrink-0 flex items-center justify-center gap-2 px-4 py-2.5 bg-[var(--bg-panel)] border-b border-[var(--border-subtle)]">
   @if (!agendaView) {
     <button class="nav-btn w-8 h-8 flex items-center justify-center bg-[var(--bg-subtle)] border border-[var(--border-subtle)] rounded-lg text-[var(--text-secondary)] text-base cursor-pointer transition-all flex-shrink-0" (click)="prevWeek()">‹</button>
@@ -12,14 +12,14 @@
   <button class="today-btn px-3 py-1 bg-[var(--navy-primary)] rounded-[6px] text-white text-[0.7rem] font-bold uppercase tracking-[0.05em] cursor-pointer transition-all flex-shrink-0" (click)="goToToday()">Oggi</button>
   <button class="agenda-toggle-btn flex-shrink-0 flex items-center gap-1 px-2 py-1 rounded-[6px] text-[0.7rem] font-semibold tracking-[0.03em] cursor-pointer transition-all" [class.active]="agendaView" (click)="toggleAgendaView()"><span>☰</span></button>
 </div>
-<!-- Desktop week nav -->
+<!-- Navigazione settimana (desktop) -->
 <div class="hidden sm:flex flex-shrink-0 items-center justify-center gap-3 px-6 py-2.5 bg-[var(--bg-panel)] border-b border-[var(--border-subtle)]">
   <button class="nav-btn w-8 h-8 flex items-center justify-center bg-[var(--bg-subtle)] border border-[var(--border-subtle)] rounded-lg text-[var(--text-secondary)] text-base cursor-pointer transition-all flex-shrink-0" (click)="prevWeek()">‹</button>
   <span class="text-center text-[0.95rem] font-semibold text-[var(--text-primary)] tracking-[0.01em] whitespace-nowrap min-w-[200px]">{{ getWeekLabel() }}</span>
   <button class="nav-btn w-8 h-8 flex items-center justify-center bg-[var(--bg-subtle)] border border-[var(--border-subtle)] rounded-lg text-[var(--text-secondary)] text-base cursor-pointer transition-all flex-shrink-0" (click)="nextWeek()">›</button>
   <button class="today-btn px-5 py-2 bg-[var(--navy-primary)] rounded-lg text-white text-[0.78rem] font-bold uppercase tracking-[0.06em] cursor-pointer transition-all hover:bg-[var(--navy-deep)] flex-shrink-0" (click)="goToToday()">Oggi</button>
 </div>
-<!-- Calendar grid -->
+<!-- Griglia calendario -->
 <div class="calendar-container flex-1 flex flex-col overflow-hidden">
   <div class="calendar-header flex-shrink-0 bg-[var(--bg-panel)] border-b border-[var(--border-subtle)] grid grid-cols-[44px_repeat(3,1fr)] sm:grid-cols-[48px_repeat(3,1fr)] lg:grid-cols-[56px_repeat(7,1fr)]" [class.hidden]="agendaView">
     <div class="border-r border-[var(--border-subtle)]"></div>
@@ -66,7 +66,7 @@
       }
     </div>
   }
-  <!-- AGENDA VIEW mobile -->
+  <!-- VISTA AGENDA (mobile) -->
   @if (agendaView) {
     <div class="agenda-view sm:hidden flex-1 overflow-y-auto px-4 pt-4 pb-[calc(1rem+env(safe-area-inset-bottom)+4rem)] flex flex-col bg-[var(--color-bg-subtle)]">
       @if (isLoading) {

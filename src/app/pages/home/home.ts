@@ -17,21 +17,21 @@ import { Plan } from '../../shared/models/dashboard.model';
 })
 export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
-    // Plans (from backend)
+    // Piani (dal backend)
     semestralePlans: Plan[] = [];
     annualePlans: Plan[] = [];
     isAnnual = false;
 
-    // Intro
+    // Introduzione
     showIntro = true;
     introExiting = false;
 
-    // Nav
+    // Navigazione
     isMobileMenuOpen = false;
     navScrolled = false;
     navAtDark = true;
 
-    // Hero parallax + scroll fade
+    // Parallasse della sezione hero + dissolvenza allo scroll
     heroFade = 1;
     heroTranslateY = 0;
 

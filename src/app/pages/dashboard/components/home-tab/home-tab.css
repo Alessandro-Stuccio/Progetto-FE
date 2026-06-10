@@ -13,7 +13,7 @@
   .ht-page { padding: 2rem 2rem 2.5rem; }
 }
 
-/* Hero */
+/* Sezione hero */
 .ht-hero {
   display: flex;
   align-items: center;
@@ -192,7 +192,7 @@
 
 .ht-card-header svg { color: var(--gold-accent); flex-shrink: 0; }
 
-/* Appointment */
+/* Appuntamento */
 .ht-appt-row {
   display: flex;
   align-items: center;
@@ -251,7 +251,7 @@
   flex-shrink: 0;
 }
 
-/* Quick actions */
+/* Azioni rapide */
 .ht-actions {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -318,7 +318,7 @@
 .ht-sub-days-fill { height: 100%; background: var(--gold-accent); border-radius: 999px; transition: width 0.6s var(--ease-out-soft); }
 .ht-sub-days-label { font-size: 0.72rem; color: var(--gold-dark); font-weight: 500; }
 
-/* Activate plan */
+/* Attiva piano */
 .ht-activate-body { display: flex; flex-direction: column; gap: 1rem; }
 .ht-plan-list { display: flex; flex-direction: column; gap: 0.5rem; }
 
@@ -377,7 +377,7 @@
 .ht-btn-activate:hover:not(:disabled) { background: var(--navy-deep); transform: translateY(-1px); box-shadow: var(--shadow-md); }
 .ht-btn-activate:disabled { opacity: 0.45; cursor: not-allowed; }
 
-/* KPI professionist */
+/* KPI professionista */
 .ht-kpi-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -419,7 +419,7 @@
   color: var(--text-muted);
 }
 
-/* Activity feed */
+/* Feed attività */
 .ht-feed-list { display: flex; flex-direction: column; gap: 0.75rem; }
 
 .ht-feed-item {

@@ -50,7 +50,7 @@
   display: none;
 }
 
-/* Send button */
+/* Pulsante invia */
 .chat-send-btn {
   background: var(--color-border-subtle);
   color: var(--color-text-muted);

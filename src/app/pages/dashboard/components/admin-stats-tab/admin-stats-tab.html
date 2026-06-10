@@ -1,6 +1,6 @@
 <div class="px-5 py-6 flex flex-col gap-5 sm:max-w-[900px] sm:mx-auto sm:py-10 sm:px-8">
 
-  <!-- Loading -->
+  <!-- Caricamento -->
   @if (loading) {
     <div class="flex items-center justify-center py-16">
       <div class="w-8 h-8 border-3 border-[var(--color-accent-gold)] border-t-transparent rounded-full animate-spin"></div>
@@ -16,7 +16,7 @@
         <p class="text-[0.72rem] text-[var(--color-text-muted)]">Panoramica business di Kore</p>
       </div>
     </div>
-    <!-- KPI ROW -->
+    <!-- RIGA KPI -->
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
       <div class="bg-gradient-to-br from-[var(--color-primary-navy)] to-[#2d5fa8] rounded-2xl p-4 text-center relative overflow-hidden">
         <div class="absolute top-0 right-0 w-16 h-16 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
@@ -50,12 +50,12 @@
               [style.height.%]="getBarHeight(m.count)"
               [style.min-height.px]="4"
               [ngClass]="m.count > 0 ? 'bg-gradient-to-t from-[var(--color-primary-navy)] to-[#2d5fa8]' : 'bg-[var(--color-border-subtle)]/30'">
-              <!-- Tooltip -->
+              <!-- Suggerimento -->
               <div class="absolute -top-7 left-1/2 -translate-x-1/2 bg-[var(--color-text-main)] text-white text-[0.6rem] font-bold px-2 py-0.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
                 {{ m.count }}
               </div>
             </div>
-            <!-- Label -->
+            <!-- Etichetta -->
             <span class="text-[0.58rem] text-[var(--color-text-muted)] font-semibold uppercase">{{ m.month }}</span>
           </div>
         }
@@ -79,7 +79,7 @@
                 <span class="text-[0.82rem] font-bold text-[var(--color-text-main)] truncate">{{ plan.name }}</span>
                 <span class="text-[0.72rem] font-bold text-[var(--color-primary-navy)] flex-shrink-0 ml-2">{{ plan.activeCount }}</span>
               </div>
-              <!-- Progress bar -->
+              <!-- Barra di avanzamento -->
               <div class="h-2 bg-[var(--color-bg-subtle)] rounded-full overflow-hidden">
                 <div class="h-full rounded-full transition-all duration-700"
                   [style.width.%]="plan.percentage || 0"
@@ -104,13 +104,13 @@
         <span class="text-[0.72rem] text-[var(--color-text-muted)] uppercase tracking-[0.10em] font-semibold">Crediti mensili globali</span>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <!-- PT Credits -->
+        <!-- Crediti PT -->
         <div class="bg-[var(--color-bg-subtle)] rounded-xl p-4 border border-[var(--color-border-subtle)]/40">
           <div class="flex items-center gap-2 mb-3">
             <span class="text-[0.95rem]">💪</span>
             <span class="text-[0.78rem] font-bold text-[var(--color-text-main)]">Personal Trainer</span>
           </div>
-          <!-- Ring chart simulato -->
+          <!-- Grafico ad anello simulato -->
           <div class="flex items-center gap-4">
             <div class="relative w-16 h-16 flex-shrink-0">
               <svg class="w-16 h-16 -rotate-90" viewBox="0 0 36 36">
@@ -136,7 +136,7 @@
               </div>
             </div>
           </div>
-          <!-- Nutri Credits -->
+          <!-- Crediti Nutrizionisti -->
           <div class="bg-[var(--color-accent-gold)]/5 rounded-xl p-4 border border-[var(--color-accent-gold)]/15">
             <div class="flex items-center gap-2 mb-3">
               <span class="text-[0.95rem]">🥗</span>

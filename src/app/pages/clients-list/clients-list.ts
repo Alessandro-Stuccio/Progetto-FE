@@ -22,7 +22,7 @@ export class ClientsListComponent implements OnInit {
     const userStr = localStorage.getItem('user');
     if (userStr) {
       const user = JSON.parse(userStr);
-      // Extra check: only PTs and Nutritionists should see this
+      // Controllo extra: solo PT e Nutrizionisti devono vedere questa pagina
       if (user.role === UserRole.CLIENT) {
         this.router.navigate(['/dashboard']);
         return;

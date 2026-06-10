@@ -1,6 +1,6 @@
 <div class="register-page" [class.rp--step2]="currentStep === 2">
 
-  <!-- LEFT — Hero panel (step 1 only) -->
+  <!-- SINISTRA — Pannello hero (solo step 1) -->
   <div class="rp-left" aria-hidden="true">
     <div class="rp-left__orb rp-left__orb--gold glow-orb-gold"></div>
     <div class="rp-left__orb rp-left__orb--navy glow-orb-navy"></div>
@@ -33,7 +33,7 @@
     </div>
   </div>
 
-  <!-- RIGHT — Form -->
+  <!-- DESTRA — Modulo -->
   <div class="rp-right">
     <a routerLink="/" class="btn-back" aria-label="Torna alla home">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
@@ -49,14 +49,14 @@
 
       <form [formGroup]="registerForm" class="rp-form" [class.rp-form--wide]="currentStep === 2">
 
-        <!-- Stepper + heading (step 1 e 2) -->
+        <!-- Indicatore step + intestazione (step 1 e 2) -->
         @if (currentStep !== 3) {
           <div class="rp-head">
             <div class="rp-hd-text">
               <h1 class="card-title">Crea il tuo account</h1>
               <p class="card-subtitle">Completa la registrazione in due semplici passi</p>
             </div>
-            <!-- Stepper -->
+            <!-- Indicatore step -->
             <div class="rp-stepper" aria-label="Avanzamento registrazione">
               <div class="rp-step" [class.rp-step--active]="currentStep === 1" [class.rp-step--done]="currentStep > 1">
                 <div class="rp-step__dot">
@@ -83,7 +83,7 @@
         <!-- STEP 1 — Dati personali -->
         @if (currentStep === 1) {
           <div class="rp-step-body">
-            <!-- Avatar upload -->
+            <!-- Caricamento avatar -->
             <div class="rp-avatar-wrap">
               <input type="file" id="avatarInput" (change)="onFileSelected($event)" accept="image/*" hidden />
               <label for="avatarInput" class="rp-avatar" aria-label="Carica foto profilo">
@@ -422,7 +422,7 @@
             </div>
           }
 
-          <!-- Modal recensioni -->
+          <!-- Modale recensioni -->
           @if (reviewsModal) {
             <div class="rp-modal-overlay" (click)="closeReviewsModal()">
               <div class="rp-modal" (click)="$event.stopPropagation()" role="dialog" [attr.aria-label]="reviewsModal.prof.fullName + ' — Recensioni'">

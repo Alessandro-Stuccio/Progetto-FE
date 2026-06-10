@@ -3,7 +3,7 @@
  * Mappati 1:1 ai DTO Java del backend Spring Boot.
  */
 
-// Enums
+// Enumerazioni
 
 export enum UserRole {
   CLIENT = 'CLIENT',
@@ -34,7 +34,7 @@ export type TabId =
   | 'admin-documents'
   | 'insurance';
 
-// User & Auth
+// Utente e autenticazione
 
 export type UserManagementMode = 'admin' | 'moderator';
 
@@ -104,7 +104,7 @@ export interface ClientAttentionItem {
   daysSinceLastDoc: number;
 }
 
-// Subscription & Plan
+// Abbonamento e piano
 
 /** Stato abbonamento (da SubscriptionResponse.java). */
 export interface Subscription {
@@ -135,7 +135,7 @@ export interface Plan {
   active?: boolean;
 }
 
-// Professional
+// Professionista
 
 /** Riepilogo professionista (da ProfessionalSummaryDTO.java + campi UI extra). */
 export interface ProfessionalSummary {
@@ -143,7 +143,7 @@ export interface ProfessionalSummary {
   fullName: string;
   averageRating?: number;
   currentActiveClients?: number;
-  /** Jackson serializza `isSoldOut()` come `soldOut` (strips `is` prefix). */
+  /** Jackson serializza `isSoldOut()` come `soldOut` (rimuove il prefisso `is`). */
   soldOut?: boolean;
   isSoldOut?: boolean;
   role: UserRole;
@@ -157,7 +157,7 @@ export interface ProfessionalSummary {
   email?: string;
 }
 
-// Booking
+// Prenotazioni
 
 /** Prenotazione (da BookingResponse.java). */
 export interface Booking {
@@ -186,9 +186,9 @@ export interface BookingRequest {
 /** Slot di disponibilità (da SlotDTO.java). */
 export interface ProfessionalSlot {
   id: number;
-  /** ISO datetime string. */
+  /** Stringa data/ora in formato ISO. */
   startTime: string;
-  /** ISO datetime string. */
+  /** Stringa data/ora in formato ISO. */
   endTime: string;
   /**
    * Jackson serializza `isAvailable` (boolean primitivo Java) come `available`.
@@ -216,7 +216,7 @@ export interface DashboardData {
   upcomingBookings: Booking[];
 }
 
-// Statistiche & Activity
+// Statistiche & Attività
 
 /** Singolo appuntamento di oggi (da TodayBookingItem.java). */
 export interface TodayBookingItem {
@@ -248,7 +248,7 @@ export interface ActivityFeedItem {
   timeAgo: string;
 }
 
-// Profilo edit
+// Modifica profilo
 
 /** Dati form modifica profilo. */
 export interface ProfileEditData {
@@ -258,7 +258,7 @@ export interface ProfileEditData {
   profilePicture: string;
 }
 
-// Error handling
+// Gestione errori
 
 /**
  * Struttura standard per errori API del backend.
@@ -273,7 +273,7 @@ export interface ApiErrorResponse {
   validationErrors?: Record<string, string>;
 }
 
-// Admin Statistics
+// Statistiche admin
 
 export interface AdminStatsCredits {
   ptAvailable: number;

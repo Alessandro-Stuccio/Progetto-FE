@@ -20,20 +20,20 @@ export class ResetPasswordComponent {
   // Stato della vista: 'request' (inserisci email) oppure 'reset' (inserisci nuova password, con token)
   mode: 'request' | 'reset' = 'request';
 
-  // Form fields
+  // Campi del modulo
   email: string = '';
   newPassword: string = '';
   confirmPassword: string = '';
   token: string = '';
   showPassword = false;
 
-  // UI state
+  // Stato dell'interfaccia
   loading: boolean = false;
   successMessage: string = '';
   errorMessage: string = '';
 
   ngOnInit(): void {
-    // Handle query string token
+    // Gestione del token presente nella query string
     this.route.queryParams.subscribe(params => {
       if (params['token']) {
         this.token = params['token'];

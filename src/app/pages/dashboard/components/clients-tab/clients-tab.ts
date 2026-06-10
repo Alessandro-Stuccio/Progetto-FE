@@ -31,7 +31,7 @@ export class ClientsTabComponent {
   docFilterType: string = 'ALL';
   isUploading: boolean = false;
 
-  // Drag & Drop
+  // Trascina e rilascia
   isDragOver: boolean = false;
   dragCounter: number = 0;
 
@@ -88,7 +88,7 @@ export class ClientsTabComponent {
     });
   }
 
-  // Drag & Drop
+  // Trascina e rilascia
 
   onDragEnter(event: DragEvent): void {
     event.preventDefault();

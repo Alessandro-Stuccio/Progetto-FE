@@ -1,7 +1,7 @@
 <div class="min-h-screen bg-[var(--bg-base)] text-[var(--text-primary)] px-5 py-8 md:px-10 md:py-12">
   <div class="max-w-7xl mx-auto">
 
-    <!-- Header -->
+    <!-- Intestazione -->
     <div class="mb-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
       <div>
         <h1 class="font-['Clash_Display'] text-[2.2rem] md:text-[2.8rem] font-medium text-[var(--text-primary)] leading-tight tracking-[-0.02em]">
@@ -20,14 +20,14 @@
       </a>
     </div>
 
-    <!-- Grid Clienti -->
+    <!-- Griglia clienti -->
     @if (clients && clients.length > 0) {
       <div
         class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
         @for (client of clients; track client) {
           <div
             class="client-card group bg-[var(--bg-panel)] rounded-2xl border border-[var(--border-subtle)] overflow-hidden shadow-[var(--shadow-sm)] cursor-pointer">
-            <!-- Accent strip -->
+            <!-- Striscia decorativa -->
             <div class="h-1.5 w-full bg-gradient-to-r from-[var(--navy-primary)] to-[var(--navy-mid)]"></div>
             <div class="p-6 flex flex-col items-center text-center">
               <!-- Avatar -->
@@ -44,7 +44,7 @@
                       </svg>
                     }
                   </div>
-                  <!-- Gold ring on hover -->
+                  <!-- Anello dorato al passaggio del mouse -->
                   <div class="absolute inset-[-5px] rounded-full border border-[var(--gold-accent)]/0 group-hover:border-[var(--gold-accent)]/40 transition-all duration-300 group-hover:animate-spin-slow"></div>
                 </div>
                 <!-- Info -->
@@ -57,9 +57,9 @@
                 <p class="text-[0.78rem] text-[var(--text-muted)] truncate w-full px-1">
                   {{ client.email }}
                 </p>
-                <!-- Divider -->
+                <!-- Separatore -->
                 <div class="w-full h-px bg-[var(--border-subtle)] my-5"></div>
-                <!-- Action -->
+                <!-- Azione -->
                 <button class="card-action-btn w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-[var(--border-medium)] text-[var(--text-secondary)] text-[0.82rem] font-semibold">
                   Vedi Scheda
                   <svg class="w-4 h-4 transform group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -87,7 +87,7 @@
           </div>
         }
 
-        <!-- Empty State -->
+        <!-- Stato vuoto -->
 
       </div>
     </div>

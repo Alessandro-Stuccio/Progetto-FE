@@ -6,7 +6,7 @@
       <span class="navbar__logo-word">Kore</span><span class="navbar__logo-dot">.</span>
     </a>
 
-    <!-- Nav links — desktop -->
+    <!-- Link di navigazione — desktop -->
     <nav class="navbar__links" aria-label="Navigazione principale">
       <a class="navbar__link" routerLink="/" fragment="come-funziona" (click)="closeMenu()">Come funziona</a>
       <a class="navbar__link" routerLink="/" fragment="piani" (click)="closeMenu()">Piani</a>
@@ -33,7 +33,7 @@
     </button>
   </div>
 
-  <!-- Mobile menu -->
+  <!-- Menu mobile -->
   <div class="navbar__mobile-menu" [class.navbar__mobile-menu--open]="menuOpen" aria-hidden="{{ !menuOpen }}">
     <nav class="navbar__mobile-links">
       <a class="navbar__mobile-link" routerLink="/" fragment="come-funziona" (click)="closeMenu()">Come funziona</a>

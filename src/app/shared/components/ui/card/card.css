@@ -2,13 +2,13 @@
   @apply bg-bg-panel rounded-lg;
 }
 
-/* Padding variants */
+/* Varianti di padding */
 .card--pad-none { @apply p-0; }
 .card--pad-sm   { @apply p-4; }
 .card--pad-md   { @apply p-6; }
 .card--pad-lg   { @apply p-8; }
 
-/* Card variants */
+/* Varianti scheda */
 .card--flat {
   @apply border border-line-subtle shadow-card-sm;
 }
