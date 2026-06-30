@@ -10,7 +10,7 @@
         <div class="intro__logo-wrap">
           <span class="intro__logo">Kore<span class="intro__dot">.</span></span>
         </div>
-        <p class="intro__tag">personal trainer · nutrizionista · assicurazione</p>
+        <p class="intro__tag">personal trainer · nutrizionista · psicologo · polizza</p>
       </div>
       <button class="intro__skip" (click)="skipIntro()" aria-label="Salta intro">Salta →</button>
     </div>
@@ -62,13 +62,13 @@
 
     <div class="hero__inner container">
       <div class="hero__copy">
-        <span class="eyebrow hero__eyebrow">personal trainer · nutrizionista · polizza sportiva</span>
+        <span class="eyebrow hero__eyebrow">personal trainer · nutrizionista · psicologo · polizza sportiva</span>
         <h1 class="hero__title">
           <span class="hero__line-wrap"><span class="hero__line" style="animation-delay:.35s">Il tuo team,</span></span>
           <span class="hero__line-wrap"><span class="hero__line" style="animation-delay:.52s"><span class="hero__mark">Il tuo benessere.</span></span></span>
         </h1>
         <p class="hero__sub">
-          Non un marketplace. Un percorso continuo con un team coordinato: il tuo Personal Trainer, il tuo Nutrizionista, una polizza inclusa dal primo giorno.
+          Non un marketplace. Un percorso continuo con un team coordinato: il tuo Personal Trainer, il tuo Nutrizionista e il tuo Psicologo, con una polizza inclusa dal primo giorno.
         </p>
         <div class="hero__cta">
           <a routerLink="/register" class="btn btn-gold-lg">Scegli il tuo piano
@@ -130,7 +130,7 @@
       <div class="section-hd" data-reveal>
         <span class="eyebrow">I piani</span>
         <h2 class="section-heading">Due pack.<br>Una sola filosofia.</h2>
-        <p class="section-sub">Tutti i piani includono PT + Nutrizionista dedicati e polizza sportiva.</p>
+        <p class="section-sub">Tutti i piani includono PT, Nutrizionista e Psicologo dedicati e polizza sportiva.</p>
       </div>
 
       <div class="plans-toggle" data-reveal>
@@ -152,7 +152,7 @@
             <h3 class="plan-name">{{ plan.name }}</h3>
             <p class="plan-desc">
               {{ plan.monthlyCreditsPT === 1
-                ? 'Un PT e un nutrizionista dedicati, una sessione al mese ciascuno. Per costruire una base solida.'
+                ? 'Un PT, un nutrizionista e uno psicologo dedicati, una sessione al mese ciascuno, e una polizza sportiva inclusa. Per costruire una base solida.'
                 : 'Due sessioni al mese per professionista. Per chi vuole accelerare senza compromessi.' }}
             </p>
             <div class="plan-price-row">
@@ -172,6 +172,11 @@
               <div class="plan-cred-item">
                 <span class="plan-cred-num">{{ plan.monthlyCreditsNutri }}</span>
                 <span class="plan-cred-lbl">sessioni Nutri/mese</span>
+              </div>
+              <div class="plan-cred-sep"></div>
+              <div class="plan-cred-item">
+                <span class="plan-cred-num">{{ plan.monthlyCreditsPsico }}</span>
+                <span class="plan-cred-lbl">sessioni Psico/mese</span>
               </div>
             </div>
             <button class="plan-cta" [class.plan-cta--featured]="isFeaturedPlan(plan)" [class.plan-cta--default]="!isFeaturedPlan(plan)" (click)="goToRegister(plan.id)">
@@ -197,7 +202,7 @@
       <div class="section-hd" data-reveal>
         <span class="eyebrow">Il team</span>
         <h2 class="section-heading">Tre figure.<br>Una sola visione.</h2>
-        <p class="section-sub">Personal Trainer, Nutrizionista, copertura assicurativa. Un team coordinato che lavora insieme, per te.</p>
+        <p class="section-sub">Personal Trainer, Nutrizionista, Psicologo e copertura assicurativa. Un team coordinato che lavora insieme, per te.</p>
       </div>
       <div class="prof-grid">
         <div class="tilt-wrap prof-card" data-reveal data-reveal-delay="1">
@@ -531,7 +536,7 @@
             Il tuo percorso<br><em>inizia ora.</em>
           </h2>
           <p class="final-cta__sub" data-reveal data-reveal-delay="2">
-            PT, Nutrizionista e polizza sportiva. Un team coordinato che lavora solo per te. Da oggi, ogni giorno.
+            PT, Nutrizionista, Psicologo e polizza sportiva. Un team coordinato che lavora solo per te. Da oggi, ogni giorno.
           </p>
           <div class="final-cta__buttons" data-reveal data-reveal-delay="3">
             <a routerLink="/register" class="btn btn-gold-lg">

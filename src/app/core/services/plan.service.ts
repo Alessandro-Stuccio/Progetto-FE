@@ -15,6 +15,7 @@ export interface PlanPayload {
   monthlyInstallmentPrice: number;
   monthlyCreditsPT: number;
   monthlyCreditsNutri: number;
+  monthlyCreditsPsico: number;
 }
 
 @Injectable({

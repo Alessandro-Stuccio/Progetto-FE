@@ -36,15 +36,22 @@
               <div class="text-[1.2rem] font-black text-[var(--color-accent-gold)]">{{ plan.monthlyCreditsNutri }}</div>
               <div class="text-[0.58rem] text-[var(--color-text-muted)] uppercase tracking-[0.06em] font-semibold mt-0.5">🥗 Crediti Nutri/mese</div>
             </div>
+            <div class="flex-1 bg-teal-500/8 rounded-xl p-3 text-center">
+              <div class="text-[1.2rem] font-black text-teal-600">{{ plan.monthlyCreditsPsico }}</div>
+              <div class="text-[0.58rem] text-[var(--color-text-muted)] uppercase tracking-[0.06em] font-semibold mt-0.5">🧠 Crediti Psico/mese</div>
+            </div>
           </div>
           <div class="flex items-center justify-between pt-3 border-t border-[var(--color-border-subtle)]/60">
             <span class="text-[0.72rem] text-[var(--color-text-muted)]">👑 {{ getActiveSubsForPlan(plan.name) }} abbonati attivi</span>
             <div class="flex items-center gap-1.5">
-              <button
-                class="text-[0.68rem] font-semibold px-2.5 py-1 rounded-lg bg-blue-50 border border-blue-200 text-blue-500 hover:bg-blue-500 hover:text-white hover:border-blue-500 transition-all"
-                (click)="openEditModal(plan)">
-                ✏️ Modifica
-              </button>
+              <!-- Modifica permessa solo senza abbonati attivi: altrimenti cambierebbe i piani in corso -->
+              @if (canEditPlan(plan)) {
+                <button
+                  class="text-[0.68rem] font-semibold px-2.5 py-1 rounded-lg bg-blue-50 border border-blue-200 text-blue-500 hover:bg-blue-500 hover:text-white hover:border-blue-500 transition-all"
+                  (click)="openEditModal(plan)">
+                  ✏️ Modifica
+                </button>
+              }
               <!-- Piano attivo: disabilitabile solo senza abbonamenti -->
               @if (isPlanActive(plan) && canDisablePlan(plan)) {
                 <button
@@ -79,13 +86,13 @@
 
   <!-- Modale Crea Piano -->
   @if (showCreateModal) {
-    <div class="fixed inset-0 bg-[var(--color-text-main)]/40 backdrop-blur-[4px] z-[200] flex items-center justify-center p-4" (click)="closeCreateModal()">
-      <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden" (click)="$event.stopPropagation()">
-        <div class="px-6 py-5 bg-[var(--color-accent-gold)] flex items-center justify-between">
+    <div class="fixed inset-0 bg-[var(--color-text-main)]/40 backdrop-blur-[4px] z-[200] flex items-end sm:items-center justify-center p-0 sm:p-4" (click)="closeCreateModal()">
+      <div class="bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl w-full max-w-md max-h-[92vh] sm:max-h-[88vh] flex flex-col overflow-hidden" (click)="$event.stopPropagation()">
+        <div class="px-6 py-5 bg-[var(--color-accent-gold)] flex-shrink-0 flex items-center justify-between">
           <h3 class="font-['Clash_Display'] text-[1.3rem] font-black text-white">Nuovo Piano</h3>
           <button class="w-7 h-7 bg-black/10 border border-black/10 rounded-lg text-white/70 text-[0.75rem] flex items-center justify-center" (click)="closeCreateModal()">✕</button>
         </div>
-        <div class="p-6 flex flex-col gap-4">
+        <div class="p-6 flex flex-col gap-4 overflow-y-auto">
           <div>
             <label for="np-name" class="text-[0.65rem] text-[var(--color-text-muted)] uppercase tracking-[0.08em] font-semibold mb-1 block">Nome Piano</label>
             <input id="np-name" type="text" [(ngModel)]="newPlan.name" class="w-full px-3 py-2.5 rounded-xl bg-[var(--color-bg-subtle)] border border-[var(--color-border-subtle)] text-[0.85rem] text-[var(--color-text-main)] focus:outline-none focus:border-[var(--color-accent-gold)]" placeholder="Es. Gold Annuale">
@@ -116,6 +123,10 @@
               <label for="np-nutri" class="text-[0.65rem] text-[var(--color-text-muted)] uppercase tracking-[0.08em] font-semibold mb-1 block">Crediti Nutri/mese</label>
               <input id="np-nutri" type="number" [(ngModel)]="newPlan.monthlyCreditsNutri" class="w-full px-3 py-2.5 rounded-xl bg-[var(--color-bg-subtle)] border border-[var(--color-border-subtle)] text-[0.85rem] text-[var(--color-text-main)] focus:outline-none focus:border-[var(--color-accent-gold)]" placeholder="0">
             </div>
+            <div>
+              <label for="np-psico" class="text-[0.65rem] text-[var(--color-text-muted)] uppercase tracking-[0.08em] font-semibold mb-1 block">Crediti Psico/mese</label>
+              <input id="np-psico" type="number" [(ngModel)]="newPlan.monthlyCreditsPsico" class="w-full px-3 py-2.5 rounded-xl bg-[var(--color-bg-subtle)] border border-[var(--color-border-subtle)] text-[0.85rem] text-[var(--color-text-main)] focus:outline-none focus:border-[var(--color-accent-gold)]" placeholder="0">
+            </div>
           </div>
           @if (createError) {
             <div class="text-[0.78rem] text-red-500 font-medium">{{ createError }}</div>
@@ -131,13 +142,13 @@
 
   <!-- Modale Modifica Piano -->
   @if (showEditModal) {
-    <div class="fixed inset-0 bg-[var(--color-text-main)]/40 backdrop-blur-[4px] z-[200] flex items-center justify-center p-4" (click)="closeEditModal()">
-      <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden" (click)="$event.stopPropagation()">
-        <div class="px-6 py-5 bg-[var(--color-primary-navy)] flex items-center justify-between">
+    <div class="fixed inset-0 bg-[var(--color-text-main)]/40 backdrop-blur-[4px] z-[200] flex items-end sm:items-center justify-center p-0 sm:p-4" (click)="closeEditModal()">
+      <div class="bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl w-full max-w-md max-h-[92vh] sm:max-h-[88vh] flex flex-col overflow-hidden" (click)="$event.stopPropagation()">
+        <div class="px-6 py-5 bg-[var(--color-primary-navy)] flex-shrink-0 flex items-center justify-between">
           <h3 class="font-['Clash_Display'] text-[1.3rem] font-black text-white">Modifica Piano</h3>
           <button class="w-7 h-7 bg-white/10 border border-white/20 rounded-lg text-white/60 text-[0.75rem] flex items-center justify-center" (click)="closeEditModal()">✕</button>
         </div>
-        <div class="p-6 flex flex-col gap-4">
+        <div class="p-6 flex flex-col gap-4 overflow-y-auto">
           <div>
             <label for="ep-name" class="text-[0.65rem] text-[var(--color-text-muted)] uppercase tracking-[0.08em] font-semibold mb-1 block">Nome Piano</label>
             <input id="ep-name" type="text" [(ngModel)]="editPlan.name" class="w-full px-3 py-2.5 rounded-xl bg-[var(--color-bg-subtle)] border border-[var(--color-border-subtle)] text-[0.85rem] text-[var(--color-text-main)] focus:outline-none focus:border-[var(--color-accent-gold)]" placeholder="Es. Gold Annuale">
@@ -167,6 +178,10 @@
             <div>
               <label for="ep-nutri" class="text-[0.65rem] text-[var(--color-text-muted)] uppercase tracking-[0.08em] font-semibold mb-1 block">Crediti Nutri/mese</label>
               <input id="ep-nutri" type="number" [(ngModel)]="editPlan.monthlyCreditsNutri" class="w-full px-3 py-2.5 rounded-xl bg-[var(--color-bg-subtle)] border border-[var(--color-border-subtle)] text-[0.85rem] text-[var(--color-text-main)] focus:outline-none focus:border-[var(--color-accent-gold)]" placeholder="0">
+            </div>
+            <div>
+              <label for="ep-psico" class="text-[0.65rem] text-[var(--color-text-muted)] uppercase tracking-[0.08em] font-semibold mb-1 block">Crediti Psico/mese</label>
+              <input id="ep-psico" type="number" [(ngModel)]="editPlan.monthlyCreditsPsico" class="w-full px-3 py-2.5 rounded-xl bg-[var(--color-bg-subtle)] border border-[var(--color-border-subtle)] text-[0.85rem] text-[var(--color-text-main)] focus:outline-none focus:border-[var(--color-accent-gold)]" placeholder="0">
             </div>
           </div>
           @if (editError) {

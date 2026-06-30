@@ -83,7 +83,7 @@ export class ClientsTabComponent {
     if (!check.valid) { this.showPopup.emit({title: 'Errore', message: check.error!, type: 'error'}); input.value = ''; return; }
     this.isUploading = true;
     this.authService.uploadDocument(file, this.selectedClient.id, type).subscribe({
-      next: () => { this.isUploading = false; this.showPopup.emit({title: 'Caricato!', message: `${type === 'WORKOUT_PLAN' ? 'Scheda' : 'Dieta'} caricata con successo.`, type: 'success'}); this.loadClientDocuments(); input.value = ''; },
+      next: () => { this.isUploading = false; this.showPopup.emit({title: 'Caricato!', message: `${this.getDocTypeLabel(type)} caricato con successo.`, type: 'success'}); this.loadClientDocuments(); input.value = ''; },
       error: () => { this.isUploading = false; this.showPopup.emit({title: 'Errore', message: 'Impossibile caricare il file. Riprova.', type: 'error'}); input.value = ''; }
     });
   }
@@ -143,7 +143,7 @@ export class ClientsTabComponent {
     this.authService.uploadDocument(file, this.selectedClient.id, type).subscribe({
       next: () => {
         this.isUploading = false;
-        this.showPopup.emit({ title: 'Caricato!', message: `${type === 'WORKOUT_PLAN' ? 'Scheda' : 'Dieta'} caricata con successo.`, type: 'success' });
+        this.showPopup.emit({ title: 'Caricato!', message: `${this.getDocTypeLabel(type)} caricato con successo.`, type: 'success' });
         this.loadClientDocuments();
         this.cdr.detectChanges();
       },
@@ -158,12 +158,14 @@ export class ClientsTabComponent {
   getUploadType(): string | null {
     if (this.currentUser?.role === 'PERSONAL_TRAINER') return 'WORKOUT_PLAN';
     if (this.currentUser?.role === 'NUTRITIONIST') return 'DIET_PLAN';
+    if (this.currentUser?.role === 'PSYCHOLOGIST') return 'PSYCHOLOGY_PLAN';
     return null;
   }
 
   getDropzoneLabel(): string {
     if (this.currentUser?.role === 'PERSONAL_TRAINER') return 'Trascina qui una scheda PDF';
     if (this.currentUser?.role === 'NUTRITIONIST') return 'Trascina qui una dieta PDF';
+    if (this.currentUser?.role === 'PSYCHOLOGIST') return 'Trascina qui un percorso PDF';
     return 'Trascina qui un PDF';
   }
 
@@ -204,11 +206,11 @@ export class ClientsTabComponent {
   }
 
   getDocTypeLabel(type: string): string {
-    switch (type) { case 'WORKOUT_PLAN': return 'Scheda'; case 'DIET_PLAN': return 'Dieta'; case 'MEDICAL_CERT': return 'Certificato'; case 'INSURANCE_POLICE': return 'Polizza'; default: return type; }
+    switch (type) { case 'WORKOUT_PLAN': return 'Scheda'; case 'DIET_PLAN': return 'Dieta'; case 'MEDICAL_CERT': return 'Certificato'; case 'PSYCHOLOGY_PLAN': return 'Percorso'; case 'INSURANCE_POLICE': return 'Polizza'; default: return type; }
   }
 
   getDocTypeIcon(type: string): string {
-    switch (type) { case 'WORKOUT_PLAN': return '💪'; case 'DIET_PLAN': return '🥗'; case 'MEDICAL_CERT': return '🏥'; case 'INSURANCE_POLICE': return '📋'; default: return '📄'; }
+    switch (type) { case 'WORKOUT_PLAN': return '💪'; case 'DIET_PLAN': return '🥗'; case 'MEDICAL_CERT': return '🏥'; case 'PSYCHOLOGY_PLAN': return '🧠'; case 'INSURANCE_POLICE': return '📋'; default: return '📄'; }
   }
 
   formatDocDate(dateStr: string): string {
@@ -225,10 +227,16 @@ export class ClientsTabComponent {
     return this.currentUser?.role === 'NUTRITIONIST';
   }
 
+  // Lo psicologo carica solo percorsi psicologici.
+  canUploadPsychology(): boolean {
+    return this.currentUser?.role === 'PSYCHOLOGIST';
+  }
+
   // Ognuno può cancellare solo il tipo di documento che gli compete caricare.
   canDeleteDoc(doc: ClientDocument): boolean {
     if (this.currentUser?.role === 'PERSONAL_TRAINER') return doc.type === 'WORKOUT_PLAN';
     if (this.currentUser?.role === 'NUTRITIONIST') return doc.type === 'DIET_PLAN';
+    if (this.currentUser?.role === 'PSYCHOLOGIST') return doc.type === 'PSYCHOLOGY_PLAN';
     return false;
   }
 
@@ -236,6 +244,7 @@ export class ClientsTabComponent {
   canEditNotes(doc: ClientDocument): boolean {
     if (this.currentUser?.role === 'PERSONAL_TRAINER') return doc.type === 'WORKOUT_PLAN';
     if (this.currentUser?.role === 'NUTRITIONIST') return doc.type === 'DIET_PLAN';
+    if (this.currentUser?.role === 'PSYCHOLOGIST') return doc.type === 'PSYCHOLOGY_PLAN';
     return false;
   }
 

@@ -19,6 +19,7 @@ interface NewUserForm {
   paymentFrequency: string;
   assignedPTId: number | null;
   assignedNutritionistId: number | null;
+  assignedPsychologistId: number | null;
 }
 
 @Component({
@@ -53,7 +54,7 @@ export class AdminUsersTabComponent {
   // Modale creazione utente
   showCreateModal: boolean = false;
   currentStep: number = 1;
-  newUser: NewUserForm = { firstName: '', lastName: '', email: '', password: '', role: 'CLIENT', planId: null, paymentFrequency: 'UNICA_SOLUZIONE', assignedPTId: null, assignedNutritionistId: null };
+  newUser: NewUserForm = { firstName: '', lastName: '', email: '', password: '', role: 'CLIENT', planId: null, paymentFrequency: 'UNICA_SOLUZIONE', assignedPTId: null, assignedNutritionistId: null, assignedPsychologistId: null };
   createError: string = '';
   creating: boolean = false;
   showPassword: boolean = false;
@@ -81,10 +82,11 @@ export class AdminUsersTabComponent {
   updatingCredits: boolean = false;
   creditsForm = this.fb.group({
     creditsPT: [0, [Validators.required, Validators.min(0)]],
-    creditsNutri: [0, [Validators.required, Validators.min(0)]]
+    creditsNutri: [0, [Validators.required, Validators.min(0)]],
+    creditsPsico: [0, [Validators.required, Validators.min(0)]]
   });
 
-  private readonly moderatorAllowedRoles = ['CLIENT', 'PERSONAL_TRAINER', 'NUTRITIONIST'];
+  private readonly moderatorAllowedRoles = ['CLIENT', 'PERSONAL_TRAINER', 'NUTRITIONIST', 'PSYCHOLOGIST'];
 
   private getErrorMessage(err: unknown, fallback: string): string {
     const e = err as { error?: { message?: string; error?: string }; message?: string };
@@ -102,7 +104,7 @@ export class AdminUsersTabComponent {
 
   get creatableRoles(): string[] {
     return this.isAdminMode()
-      ? ['CLIENT', 'PERSONAL_TRAINER', 'NUTRITIONIST', 'MODERATOR', 'INSURANCE_MANAGER']
+      ? ['CLIENT', 'PERSONAL_TRAINER', 'NUTRITIONIST', 'PSYCHOLOGIST', 'MODERATOR', 'INSURANCE_MANAGER']
       : this.moderatorAllowedRoles;
   }
 
@@ -112,6 +114,7 @@ export class AdminUsersTabComponent {
       case 'CLIENT': return 'Clienti';
       case 'PERSONAL_TRAINER': return 'Personal Trainer';
       case 'NUTRITIONIST': return 'Nutrizionisti';
+      case 'PSYCHOLOGIST': return 'Psicologi';
       case 'ADMIN': return 'Amministratori';
       case 'MODERATOR': return 'Moderatori';
       case 'INSURANCE_MANAGER': return 'Assicuratori';
@@ -142,6 +145,10 @@ export class AdminUsersTabComponent {
     return this.allUsers.filter(u => u.role === 'NUTRITIONIST');
   }
 
+  get availablePsychologists(): UserProfile[] {
+    return this.allUsers.filter(u => u.role === 'PSYCHOLOGIST');
+  }
+
   get isClientRole(): boolean {
     return this.newUser.role === 'CLIENT';
   }
@@ -151,7 +158,7 @@ export class AdminUsersTabComponent {
   }
 
   openCreateModal(): void {
-    this.newUser = { firstName: '', lastName: '', email: '', password: '', role: 'CLIENT', planId: null, paymentFrequency: 'UNICA_SOLUZIONE', assignedPTId: null, assignedNutritionistId: null };
+    this.newUser = { firstName: '', lastName: '', email: '', password: '', role: 'CLIENT', planId: null, paymentFrequency: 'UNICA_SOLUZIONE', assignedPTId: null, assignedNutritionistId: null, assignedPsychologistId: null };
     this.createError = '';
     this.currentStep = 1;
     this.showCreateModal = true;
@@ -181,8 +188,8 @@ export class AdminUsersTabComponent {
   }
 
   createUser(): void {
-    if (this.isClientRole && (!this.newUser.planId || !this.newUser.assignedPTId || !this.newUser.assignedNutritionistId)) {
-      this.createError = 'Seleziona Piano, Personal Trainer e Nutrizionista';
+    if (this.isClientRole && (!this.newUser.planId || !this.newUser.assignedPTId || !this.newUser.assignedNutritionistId || !this.newUser.assignedPsychologistId)) {
+      this.createError = 'Seleziona Piano, Personal Trainer, Nutrizionista e Psicologo';
       return;
     }
     this.creating = true;
@@ -207,6 +214,7 @@ export class AdminUsersTabComponent {
       if (this.newUser.paymentFrequency) payload.paymentFrequency = this.newUser.paymentFrequency;
       if (this.newUser.assignedPTId) payload.assignedPTId = this.newUser.assignedPTId;
       if (this.newUser.assignedNutritionistId) payload.assignedNutritionistId = this.newUser.assignedNutritionistId;
+      if (this.newUser.assignedPsychologistId) payload.assignedPsychologistId = this.newUser.assignedPsychologistId;
     }
 
     this.authService.createUserByMode(this.mode, payload).subscribe({
@@ -279,7 +287,8 @@ export class AdminUsersTabComponent {
       this.selectedSubscription = sub;
       this.creditsForm.patchValue({
         creditsPT: sub.currentCreditsPT || 0,
-        creditsNutri: sub.currentCreditsNutri || 0
+        creditsNutri: sub.currentCreditsNutri || 0,
+        creditsPsico: sub.currentCreditsPsico || 0
       });
       this.showCreditsModal = true;
     } else {
@@ -300,8 +309,9 @@ export class AdminUsersTabComponent {
 
     const pt = this.creditsForm.value.creditsPT || 0;
       const nutri = this.creditsForm.value.creditsNutri || 0;
+      const psico = this.creditsForm.value.creditsPsico || 0;
 
-      this.subscriptionService.updateSubscriptionCredits(this.mode, sub.id, pt, nutri).subscribe({
+      this.subscriptionService.updateSubscriptionCredits(this.mode, sub.id, pt, nutri, psico).subscribe({
         next: () => {
         this.updatingCredits = false;
         this.closeCreditsModal();
@@ -309,6 +319,7 @@ export class AdminUsersTabComponent {
 
         sub.currentCreditsPT = pt;
         sub.currentCreditsNutri = nutri;
+        sub.currentCreditsPsico = psico;
         this.usersChanged.emit();
       },
       error: (err: unknown) => {
@@ -380,6 +391,7 @@ export class AdminUsersTabComponent {
       case 'CLIENT': return '🧑';
       case 'PERSONAL_TRAINER': return '💪';
       case 'NUTRITIONIST': return '🥗';
+      case 'PSYCHOLOGIST': return '🧠';
       case 'ADMIN': return '🛡️';
       case 'MODERATOR': return '🧭';
       case 'INSURANCE_MANAGER': return '📋';
@@ -401,5 +413,10 @@ export class AdminUsersTabComponent {
     if (!this.newUser.assignedNutritionistId) return 'Non selezionato';
     const n = this.allUsers.find(u => u.id === this.newUser.assignedNutritionistId);
     return n ? `${n.firstName} ${n.lastName}` : 'Non selezionato';
+  }
+  getSelectedPsyName(): string {
+    if (!this.newUser.assignedPsychologistId) return 'Non selezionato';
+    const p = this.allUsers.find(u => u.id === this.newUser.assignedPsychologistId);
+    return p ? `${p.firstName} ${p.lastName}` : 'Non selezionato';
   }
 }

@@ -33,10 +33,12 @@ export class RegisterComponent implements OnInit {
   plans: Plan[] = [];
   personalTrainers: ProfessionalSummary[] = [];
   nutritionists: ProfessionalSummary[] = [];
+  psychologists: ProfessionalSummary[] = [];
 
   // Ricerca Professionisti
   ptSearch: string = '';
   nutSearch: string = '';
+  psySearch: string = '';
 
   get filteredPts(): ProfessionalSummary[] {
     const q = this.ptSearch.toLowerCase().trim();
@@ -48,6 +50,12 @@ export class RegisterComponent implements OnInit {
     const q = this.nutSearch.toLowerCase().trim();
     return this.nutritionists.filter(n =>
       !q || n.fullName?.toLowerCase().includes(q));
+  }
+
+  get filteredPsychologists(): ProfessionalSummary[] {
+    const q = this.psySearch.toLowerCase().trim();
+    return this.psychologists.filter(p =>
+      !q || p.fullName?.toLowerCase().includes(q));
   }
 
   profilePictureBase64: string | null = null;
@@ -100,7 +108,8 @@ export class RegisterComponent implements OnInit {
       selectedPlanId: ['', [Validators.required]],
       paymentFrequency: ['UNICA_SOLUZIONE', [Validators.required]],
       selectedPtId: ['', [Validators.required]],
-      selectedNutritionistId: ['', [Validators.required]]
+      selectedNutritionistId: ['', [Validators.required]],
+      selectedPsychologistId: ['', [Validators.required]]
     });
 
     // Ri-valida confirmPassword quando cambia la password
@@ -124,6 +133,9 @@ export class RegisterComponent implements OnInit {
     this.slotService.getProfessionals('NUTRITIONIST')
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(res => this.nutritionists = res);
+    this.slotService.getProfessionals('PSYCHOLOGIST')
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(res => this.psychologists = res);
 
     this.registerForm.get('role')?.valueChanges.subscribe(role => {
       const isTrainer = role === 'PERSONAL_TRAINER';
@@ -204,6 +216,11 @@ export class RegisterComponent implements OnInit {
   selectNut(id: number): void {
     this.registerForm.patchValue({ selectedNutritionistId: id });
     this.registerForm.get('selectedNutritionistId')?.markAsTouched();
+  }
+
+  selectPsy(id: number): void {
+    this.registerForm.patchValue({ selectedPsychologistId: id });
+    this.registerForm.get('selectedPsychologistId')?.markAsTouched();
   }
 
   getInitials(fullName: string): string {

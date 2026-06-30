@@ -87,7 +87,8 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
         { stars: 5, text: 'Il mio PT mi conosce davvero. Non sono un numero su una lista — è la prima volta che mi capita.', name: 'Marco F.', meta: 'Cliente da 8 mesi' },
         { stars: 5, text: 'La differenza si è vista già nel primo mese. Programma su misura, niente cose copiate da internet.', name: 'Sofia R.', meta: 'Cliente da 4 mesi' },
         { stars: 5, text: 'Finalmente un posto dove PT e nutrizionista parlano davvero tra loro. Cambia tutto.', name: 'Alessandro M.', meta: 'Cliente da 1 anno' },
-        { stars: 5, text: "L'app è super semplice. E la polizza è davvero inclusa — verificato dopo una distorsione.", name: 'Giulia T.', meta: 'Cliente da 6 mesi' },
+        { stars: 5, text: "L'app è super semplice. E avere uno psicologo incluso ha fatto davvero la differenza per la mia costanza.", name: 'Giulia T.', meta: 'Cliente da 6 mesi' },
+        { stars: 5, text: "E la polizza è davvero inclusa — verificato dopo una distorsione. Zero pensieri, tutto coperto.", name: 'Davide P.', meta: 'Cliente da 5 mesi' },
         { stars: 5, text: 'Risultati reali, accompagnamento vero. Non ho mai trovato un servizio così completo.', name: 'Luca B.', meta: 'Cliente da 7 mesi' },
         { stars: 5, text: 'Nessun trucco, nessuna promessa esagerata. Solo professionisti veri che lavorano per te.', name: 'Elena C.', meta: 'Cliente da 3 mesi' }
     ];
@@ -95,6 +96,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     readonly faqItems = [
         { q: 'Posso scegliere il mio Personal Trainer e Nutrizionista?', a: 'Sì, durante la registrazione scegli tu i tuoi professionisti tra quelli certificati disponibili. Li avrai sempre tu, per tutto il percorso.' },
         { q: 'Le sessioni sono online o in presenza?', a: 'Entrambe. Ogni professionista offre sessioni online e, a seconda della disponibilità e della città, anche in presenza.' },
+        { q: 'Lo psicologo è davvero incluso?', a: 'Sì, ogni piano include un percorso con uno psicologo dedicato dal primo giorno. Zero costi extra, zero burocrazia.' },
         { q: 'La polizza assicurativa è davvero inclusa?', a: 'Sì, ogni piano include una polizza sportiva attiva dal primo giorno. Zero costi extra, zero burocrazia.' },
         { q: 'Come funzionano i crediti sessione?', a: 'I crediti si rinnovano ogni mese. Se un mese non li utilizzi tutti, rimangono disponibili fino alla scadenza del tuo abbonamento.' },
         { q: 'Posso cambiare professionista?', a: 'Sì, se per qualsiasi motivo vuoi cambiare il tuo PT o Nutrizionista, contatta il nostro team e gestiamo noi il trasferimento senza costi aggiuntivi.' },

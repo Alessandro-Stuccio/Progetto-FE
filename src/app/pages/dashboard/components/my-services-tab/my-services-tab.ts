@@ -36,7 +36,7 @@ export class MyServicesTabComponent implements OnInit {
 
   loadDocs(tab: string): void {
     if (!this.currentUser) return;
-    const typeMap: Record<string, string> = { scheda: 'WORKOUT_PLAN', dieta: 'DIET_PLAN', polizza: 'INSURANCE_POLICE' };
+    const typeMap: Record<string, string> = { scheda: 'WORKOUT_PLAN', dieta: 'DIET_PLAN', percorso: 'PSYCHOLOGY_PLAN', polizza: 'INSURANCE_POLICE' };
     const type = typeMap[tab];
     if (!type || this.loadedType === type) return;
     this.loading = true;
@@ -56,11 +56,11 @@ export class MyServicesTabComponent implements OnInit {
   }
 
   getTabIcon(tab: string): string {
-    switch (tab) { case 'scheda': return '💪'; case 'dieta': return '🥗'; case 'polizza': return '🛡️'; default: return '📄'; }
+    switch (tab) { case 'scheda': return '💪'; case 'dieta': return '🥗'; case 'percorso': return '🧠'; case 'polizza': return '🛡️'; default: return '📄'; }
   }
 
   getTabLabel(tab: string): string {
-    switch (tab) { case 'scheda': return 'Scheda'; case 'dieta': return 'Dieta'; case 'polizza': return 'Polizza'; default: return tab; }
+    switch (tab) { case 'scheda': return 'Scheda'; case 'dieta': return 'Dieta'; case 'percorso': return 'Percorso'; case 'polizza': return 'Polizza'; default: return tab; }
   }
 }
 

@@ -1,0 +1,32 @@
+# =====================================================================
+#  ESEMPIO di Dockerfile per il BACKEND (Spring Boot).
+#  Copialo nella RADICE del tuo repo backend con nome "Dockerfile".
+#  Questo esempio è per Maven; in fondo trovi la variante Gradle.
+#  Adatta la versione di Java (17/21) a quella del tuo progetto.
+# =====================================================================
+
+# ---- build (Maven) ----
+FROM maven:3.9-eclipse-temurin-21 AS build
+WORKDIR /app
+COPY pom.xml .
+RUN mvn -q -e -B dependency:go-offline
+COPY src ./src
+RUN mvn -q -B clean package -DskipTests
+
+# ---- run ----
+FROM eclipse-temurin:21-jre
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
+EXPOSE 8080
+# MaxRAMPercentage tiene la JVM dentro la RAM del container (utile su VM piccole)
+ENTRYPOINT ["java", "-XX:MaxRAMPercentage=70", "-jar", "app.jar"]
+
+# =====================================================================
+#  VARIANTE GRADLE (sostituisci lo stage "build" qui sopra):
+#
+#  FROM gradle:8-jdk21 AS build
+#  WORKDIR /app
+#  COPY . .
+#  RUN gradle bootJar --no-daemon
+#  # poi nello stage run:  COPY --from=build /app/build/libs/*.jar app.jar
+# =====================================================================

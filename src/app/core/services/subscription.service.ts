@@ -36,8 +36,8 @@ export class SubscriptionService {
     return this.http.get<Subscription[]>(url);
   }
 
-  updateSubscriptionCredits(mode: UserManagementMode, subscriptionId: number, creditsPT: number, creditsNutri: number): Observable<void> {
+  updateSubscriptionCredits(mode: UserManagementMode, subscriptionId: number, creditsPT: number, creditsNutri: number, creditsPsico: number): Observable<void> {
     const url = `${this.usersBaseByMode(mode).replace('/users', '')}/subscriptions/${subscriptionId}/credits`;
-    return this.http.put<void>(url, { creditsPT, creditsNutri });
+    return this.http.put<void>(url, { creditsPT, creditsNutri, creditsPsico });
   }
 }

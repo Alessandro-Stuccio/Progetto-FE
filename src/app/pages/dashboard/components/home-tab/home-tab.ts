@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PlanService } from '../../../../core/services/plan.service';
 import { SubscriptionService, PaymentFrequency } from '../../../../core/services/subscription.service';
+import { RoleService } from '../../../../core/services/role.service';
 import {
   Plan, Subscription, DashboardData, AuthUser, UserProfile,
   Booking, ClientBasicInfo, ProfessionalSummary, ProStats, ActivityFeedItem
@@ -19,6 +20,7 @@ import { getInitials } from '../../../../shared/utils/user.util';
 export class HomeTabComponent implements OnInit {
   private planService = inject(PlanService);
   private subscriptionService = inject(SubscriptionService);
+  private roleService = inject(RoleService);
 
   @Input() isLoading: boolean = true;
   @Input() dashboardData: DashboardData | null = null;
@@ -92,6 +94,12 @@ export class HomeTabComponent implements OnInit {
     return getInitials(this.currentUser);
   }
 
+  /** Etichetta del ruolo mostrata sotto il saluto (gestisce PT, Nutrizionista, Psicologo e Cliente). */
+  getRoleBadgeLabel(): string {
+    const role = this._currentUser?.role ?? this.profile?.role;
+    return role ? this.roleService.getRoleLabel(role) : '';
+  }
+
   getSubscriptionDaysLeft(): number {
     if (!this.subscription?.endDate) return 0;
     const end = new Date(this.subscription.endDate);
@@ -104,13 +112,18 @@ export class HomeTabComponent implements OnInit {
 
   getBookingLabel(b: Booking): string {
     if (this.isClient) {
-      const role = b.professionalRole === 'PERSONAL_TRAINER' ? 'PT' : 'Nutr.';
+      const role = b.professionalRole === 'PERSONAL_TRAINER' ? 'PT'
+        : b.professionalRole === 'PSYCHOLOGIST' ? 'Psi.' : 'Nutr.';
       return `${role} – ${b.professionalName ?? ''}`;
     }
     return b.clientName ?? '';
   }
 
   getDocTypeLabel(): string {
-    return this.currentUser?.role === 'PERSONAL_TRAINER' ? 'scheda' : 'dieta';
+    switch (this._currentUser?.role) {
+      case 'PERSONAL_TRAINER': return 'scheda';
+      case 'PSYCHOLOGIST': return 'percorso';
+      default: return 'dieta';
+    }
   }
 }

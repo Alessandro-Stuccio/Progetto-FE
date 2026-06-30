@@ -1,0 +1,70 @@
+# ============================================================
+#  kore — stack completo su UNA macchina (Oracle Always Free VM)
+#  Servizi: web (Caddy+Angular) · backend (Spring Boot) · db (Postgres)
+#
+#  Layout cartelle atteso sulla VM:
+#    ~/kore/
+#      docker-compose.yml   <- questo file
+#      .env                 <- copia da .env.example e compila
+#      frontend/            <- questo repo (kore-frontend)
+#      backend/             <- repo Spring Boot (con il suo Dockerfile)
+#
+#  Avvio:  cd ~/kore && docker compose up -d --build
+# ============================================================
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: kore
+      POSTGRES_USER: kore
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kore -d kore"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend            # repo Spring Boot (deve avere un Dockerfile)
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      # Spring Boot legge questi env (relaxed binding -> spring.datasource.*)
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/kore
+      SPRING_DATASOURCE_USERNAME: kore
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      JWT_SECRET: ${JWT_SECRET}
+      APP_UPLOAD_DIR: /data/uploads
+      PORT: 8080
+    volumes:
+      - uploads:/data/uploads   # PDF/file caricati: persistono ai riavvii
+    expose:
+      - "8080"                  # solo interno: ci arriva Caddy, non internet
+
+  web:
+    build: ./frontend           # questo repo: Dockerfile multi-stage + Caddyfile
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      SITE_ADDRESS: ${SITE_ADDRESS}   # es. tuonome.duckdns.org
+      BACKEND_ORIGIN: backend:8080
+    ports:
+      - "80:80"                 # HTTP (serve a Caddy per ottenere il certificato)
+      - "443:443"               # HTTPS
+    volumes:
+      - caddy_data:/data        # certificati Let's Encrypt (non perderli!)
+      - caddy_config:/config
+
+volumes:
+  db_data:
+  uploads:
+  caddy_data:
+  caddy_config:

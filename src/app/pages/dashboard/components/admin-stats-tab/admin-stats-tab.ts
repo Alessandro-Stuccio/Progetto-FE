@@ -41,6 +41,7 @@ export class AdminStatsTabComponent implements OnInit {
       case 'CLIENT': return 'Clienti';
       case 'PERSONAL_TRAINER': return 'Personal Trainer';
       case 'NUTRITIONIST': return 'Nutrizionisti';
+      case 'PSYCHOLOGIST': return 'Psicologi';
       case 'ADMIN': return 'Admin';
       case 'INSURANCE_MANAGER': return 'Assicurazione';
       default: return role;
@@ -52,6 +53,7 @@ export class AdminStatsTabComponent implements OnInit {
       case 'CLIENT': return '#2d5fa8';
       case 'PERSONAL_TRAINER': return '#059669';
       case 'NUTRITIONIST': return 'var(--color-accent-gold)';
+      case 'PSYCHOLOGIST': return '#0d9488';
       case 'ADMIN': return '#7c3aed';
       case 'INSURANCE_MANAGER': return '#4f46e5';
       default: return 'var(--color-text-muted)';

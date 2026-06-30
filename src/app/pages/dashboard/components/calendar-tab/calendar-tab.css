@@ -97,10 +97,18 @@
   border-top: 1px dashed rgba(204, 216, 237, 0.45);
 }
 
-/* nth-child: nascondi colonne eccedenti per breakpoint */
-@media (max-width: 1023px) and (min-width: 640px) {
+/* nth-child: nascondi colonne eccedenti per breakpoint (rete di sicurezza) */
+/* Tablet piccolo / telefono orizzontale (640–767px): max 3 giorni */
+@media (max-width: 767px) and (min-width: 640px) {
   .day-header:nth-child(n+5),
   .day-col:nth-child(n+5) {
+    display: none;
+  }
+}
+/* Tablet (768–1023px): max 5 giorni */
+@media (max-width: 1023px) and (min-width: 768px) {
+  .day-header:nth-child(n+7),
+  .day-col:nth-child(n+7) {
     display: none;
   }
 }

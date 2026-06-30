@@ -9,6 +9,7 @@ export enum UserRole {
   CLIENT = 'CLIENT',
   PERSONAL_TRAINER = 'PERSONAL_TRAINER',
   NUTRITIONIST = 'NUTRITIONIST',
+  PSYCHOLOGIST = 'PSYCHOLOGIST',
   MODERATOR = 'MODERATOR',
   INSURANCE_MANAGER = 'INSURANCE_MANAGER',
   ADMIN = 'ADMIN'
@@ -48,6 +49,7 @@ export interface ManagedUserPayload {
   paymentFrequency?: string;
   assignedPTId?: number;
   assignedNutritionistId?: number;
+  assignedPsychologistId?: number;
 }
 
 /** Dati utente salvati in localStorage dopo il login (da AuthResponse.java). */
@@ -77,6 +79,7 @@ export interface UserProfile {
   height?: number;
   assignedPtName?: string;
   assignedNutritionistName?: string;
+  assignedPsychologistName?: string;
   bio?: string;
   specialization?: string;
   averageRating?: number;
@@ -118,6 +121,7 @@ export interface Subscription {
   isActive?: boolean;
   currentCreditsPT: number;
   currentCreditsNutri: number;
+  currentCreditsPsico: number;
   monthlyPrice?: number;
   userId?: number;
 }
@@ -131,6 +135,7 @@ export interface Plan {
   monthlyInstallmentPrice: number;
   monthlyCreditsPT: number;
   monthlyCreditsNutri: number;
+  monthlyCreditsPsico: number;
   /** Stato del piano: false = disabilitato (non sottoscrivibile, ma mantenuto in DB). */
   active?: boolean;
 }
@@ -284,6 +289,10 @@ export interface AdminStatsCredits {
   nutriTotal: number;
   nutriConsumed: number;
   nutriPercentUsed: number;
+  psicoAvailable: number;
+  psicoTotal: number;
+  psicoConsumed: number;
+  psicoPercentUsed: number;
 }
 
 export interface AdminStatsMonthlyUserCount {

@@ -9,7 +9,7 @@ export class RoleService {
 
   isProfessional(user: AuthUser | null): boolean {
     const r = user?.role;
-    return r === UserRole.PERSONAL_TRAINER || r === UserRole.NUTRITIONIST;
+    return r === UserRole.PERSONAL_TRAINER || r === UserRole.NUTRITIONIST || r === UserRole.PSYCHOLOGIST;
   }
 
   isAdmin(user: AuthUser | null): boolean {
@@ -35,6 +35,7 @@ export class RoleService {
       case 'CLIENT': return 'Cliente';
       case 'PERSONAL_TRAINER': return 'Personal Trainer';
       case 'NUTRITIONIST': return 'Nutrizionista';
+      case 'PSYCHOLOGIST': return 'Psicologo';
       case 'ADMIN': return 'Admin';
       case 'MODERATOR': return 'Moderatore';
       case 'INSURANCE_MANAGER': return 'Assicurazione';
@@ -48,6 +49,7 @@ export class RoleService {
       case 'CLIENT': return 'bg-blue-50 text-blue-600';
       case 'PERSONAL_TRAINER': return 'bg-emerald-50 text-emerald-600';
       case 'NUTRITIONIST': return 'bg-amber-50 text-amber-700';
+      case 'PSYCHOLOGIST': return 'bg-teal-50 text-teal-600';
       case 'ADMIN': return 'bg-purple-50 text-purple-600';
       case 'MODERATOR': return 'bg-fuchsia-50 text-fuchsia-700';
       case 'INSURANCE_MANAGER': return 'bg-indigo-50 text-indigo-600';

@@ -19,7 +19,7 @@
   overflow: hidden;
   background: var(--navy-deep);
 }
-@media (min-width: 1024px) {
+@media (min-width: 900px) {
   .rp-left {
     display: flex;
     flex: 0 0 40%;

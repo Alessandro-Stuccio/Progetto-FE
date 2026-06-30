@@ -75,7 +75,10 @@ export class SocketService {
     this.currentUserId = userId;
     this.currentUserEmail = email;
 
-    const wsUrl = environment.apiUrl.replace(/^http/, 'ws') + '/ws/websocket';
+    // Con apiUrl vuoto (deploy a dominio unico) si usa l'origine corrente:
+    // -> wss://<dominio>/ws/websocket. In locale usa http://localhost:8080.
+    const httpBase = environment.apiUrl || window.location.origin;
+    const wsUrl = httpBase.replace(/^http/, 'ws') + '/ws/websocket';
 
     this.client = new Client({
       brokerURL: wsUrl,

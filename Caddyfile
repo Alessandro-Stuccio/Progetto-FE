@@ -1,0 +1,22 @@
+# Caddy: HTTPS automatico (Let's Encrypt) + serve il sito Angular +
+# inoltra le API e la WebSocket al backend Spring Boot.
+# Le variabili {$SITE_ADDRESS} e {$BACKEND_ORIGIN} arrivano da docker-compose.
+
+{$SITE_ADDRESS} {
+	encode gzip zstd
+
+	# API REST e WebSocket della chat -> backend (stesso dominio, niente CORS).
+	# Caddy gestisce da solo l'upgrade WebSocket su /ws.
+	@backend path /api/* /ws/*
+	reverse_proxy @backend {$BACKEND_ORIGIN}
+
+	# Sito Angular (Single Page App): file statici, con fallback su index.html
+	# per far funzionare il routing lato client (es. /dashboard, /login).
+	root * /srv
+	try_files {path} /index.html
+	file_server
+}
+
+# NOTA: se le foto profilo o i documenti non si caricassero perché il backend
+# li serve da un percorso diverso (es. /uploads/*), aggiungilo al matcher:
+#   @backend path /api/* /ws/* /uploads/*

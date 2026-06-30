@@ -53,6 +53,12 @@
         @if (isAdminMode()) {
           <button
             class="px-3 py-2 rounded-lg text-[0.72rem] font-semibold border whitespace-nowrap transition-all"
+            [ngClass]="roleFilter === 'PSYCHOLOGIST' ? 'bg-teal-600 text-white border-teal-600' : 'bg-white text-[var(--color-text-muted)] border-[var(--color-border-subtle)]'"
+          (click)="roleFilter = 'PSYCHOLOGIST'">🧠 Psicologi</button>
+        }
+        @if (isAdminMode()) {
+          <button
+            class="px-3 py-2 rounded-lg text-[0.72rem] font-semibold border whitespace-nowrap transition-all"
             [ngClass]="roleFilter === 'INSURANCE_MANAGER' ? 'bg-[var(--color-primary-navy)] text-white border-[var(--color-primary-navy)]' : 'bg-white text-[var(--color-text-muted)] border-[var(--color-border-subtle)]'"
           (click)="roleFilter = 'INSURANCE_MANAGER'">📋 Assicuratori</button>
         }
@@ -105,6 +111,12 @@
                   class="w-full text-left px-4 py-2.5 text-[0.82rem] hover:bg-[var(--color-bg-subtle)]"
                   [ngClass]="{'font-bold text-fuchsia-700 bg-fuchsia-50': roleFilter === 'MODERATOR'}"
                 (click)="roleFilter = 'MODERATOR'; showFilterDropdown = false">🧭 Moderatori</button>
+              }
+              @if (isAdminMode()) {
+                <button
+                  class="w-full text-left px-4 py-2.5 text-[0.82rem] hover:bg-[var(--color-bg-subtle)]"
+                  [ngClass]="{'font-bold text-[var(--color-primary-navy)] bg-[var(--color-bg-subtle)]': roleFilter === 'PSYCHOLOGIST'}"
+                (click)="roleFilter = 'PSYCHOLOGIST'; showFilterDropdown = false">🧠 Psicologi</button>
               }
               @if (isAdminMode()) {
                 <button
@@ -290,6 +302,7 @@
                                       <option value="CLIENT">🧑 Cliente</option>
                                       <option value="PERSONAL_TRAINER">💪 Personal Trainer</option>
                                       <option value="NUTRITIONIST">🥗 Nutrizionista</option>
+                                      <option value="PSYCHOLOGIST">🧠 Psicologo</option>
                                       @if (isAdminMode()) {
                                         <option value="MODERATOR">🧭 Moderatore</option>
                                       }
@@ -353,7 +366,7 @@
                                               plan.name }}</div>
                                               <div class="text-[0.6rem] sm:text-[0.65rem] text-[var(--color-text-muted)] truncate">€{{
                                                 plan.fullPrice }} · {{
-                                              plan.monthlyCreditsPT }} PT · {{ plan.monthlyCreditsNutri }} Nutri</div>
+                                              plan.monthlyCreditsPT }} PT · {{ plan.monthlyCreditsNutri }} Nutri · {{ plan.monthlyCreditsPsico }} Psi</div>
                                             </div>
                                           </button>
                                         }
@@ -428,6 +441,34 @@
                                             }
                                           </div>
                                         </div>
+                                        <!-- Psicologo -->
+                                        <div>
+                                          <label
+                                            class="text-[0.62rem] sm:text-[0.65rem] text-[var(--color-text-muted)] uppercase tracking-[0.08em] font-semibold mb-1.5 block">🧠
+                                            Psicologo <span class="text-red-400">*</span></label>
+                                            <div class="flex flex-col gap-1.5 sm:gap-2">
+                                              @for (psy of availablePsychologists; track psy) {
+                                                <button
+                                                  class="flex items-center gap-2.5 sm:gap-3 p-2.5 sm:p-3 rounded-xl border transition-all text-left w-full"
+                                                  [ngClass]="newUser.assignedPsychologistId === psy.id ? 'border-teal-400 bg-teal-50/50' : 'border-[var(--color-border-subtle)] bg-white'"
+                                                  (click)="newUser.assignedPsychologistId = psy.id">
+                                                  <div class="w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0"
+                                                    [ngClass]="newUser.assignedPsychologistId === psy.id ? 'border-teal-500 bg-teal-500' : 'border-[var(--color-border-subtle)]'">
+                                                    @if (newUser.assignedPsychologistId === psy.id) {
+                                                      <div class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-white"
+                                                      ></div>
+                                                    }
+                                                  </div>
+                                                  <div
+                                                    class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-teal-500 flex items-center justify-center text-white text-[0.5rem] sm:text-[0.55rem] font-bold flex-shrink-0">
+                                                  {{ psy.firstName.charAt(0) }}{{ psy.lastName.charAt(0) }}</div>
+                                                  <span class="text-[0.78rem] sm:text-[0.82rem] font-medium text-[var(--color-text-main)] truncate">{{
+                                                    psy.firstName }}
+                                                  {{ psy.lastName }}</span>
+                                                </button>
+                                              }
+                                            </div>
+                                          </div>
                                         <!-- Riepilogo selezioni -->
                                         <div class="bg-[var(--color-bg-subtle)] rounded-xl p-3 border border-[var(--color-border-subtle)]/60">
                                           <div class="text-[0.6rem] text-[var(--color-text-muted)] uppercase tracking-[0.08em] font-semibold mb-1.5">
@@ -450,6 +491,11 @@
                                     class="text-[0.68rem] sm:text-[0.72rem] font-bold truncate ml-3 text-right"
                                     [ngClass]="newUser.assignedNutritionistId ? 'text-[var(--color-text-main)]' : 'text-red-400'">{{
                                   getSelectedNutriName() }}</span></div>
+                                    <div class="flex items-center justify-between"><span
+                                    class="text-[0.68rem] sm:text-[0.72rem] text-[var(--color-text-muted)]">Psicologo</span><span
+                                    class="text-[0.68rem] sm:text-[0.72rem] font-bold truncate ml-3 text-right"
+                                    [ngClass]="newUser.assignedPsychologistId ? 'text-[var(--color-text-main)]' : 'text-red-400'">{{
+                                  getSelectedPsyName() }}</span></div>
                                 </div>
                               </div>
                               @if (createError) {
@@ -637,6 +683,10 @@
                                           <span class="text-[0.9rem] font-black text-gray-700">{{ selectedSubscription.currentCreditsNutri }}</span>
                                         </div>
                                         <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                                          <span class="text-[0.85rem] font-bold text-gray-500">Crediti Psicologo Inclusi</span>
+                                          <span class="text-[0.9rem] font-black text-gray-700">{{ selectedSubscription.currentCreditsPsico }}</span>
+                                        </div>
+                                        <div class="flex justify-between items-center py-2 border-b border-gray-100">
                                           <span class="text-[0.85rem] font-bold text-gray-500">Costo Mensile</span>
                                           <span class="text-[0.9rem] font-black text-emerald-600">€{{ selectedSubscription.monthlyPrice }} / mese</span>
                                         </div>
@@ -648,33 +698,14 @@
                                           <span class="text-[0.85rem] font-bold text-gray-500">Data Scadenza</span>
                                           <span class="text-[0.9rem] font-bold text-gray-700">{{ selectedSubscription.endDate | date:'dd/MM/yyyy' }}</span>
                                         </div>
-                                      } @else {
-                                        <!-- Se non è un cliente, mostriamo info sul professionista -->
-                                        @if (selectedUserInfo?.role !== 'CLIENT') {
-                                          <div class="space-y-4">
-                                            <h4 class="text-[0.8rem] font-black text-[var(--color-primary-navy)] uppercase tracking-wide">Dati Professionali</h4>
-                                            <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                                              <span class="text-[0.85rem] font-bold text-gray-500">Data Registrazione</span>
-                                              <span class="text-[0.9rem] font-bold text-gray-700">{{ selectedUserInfo?.createdAt | date:'dd/MM/yyyy' }}</span>
-                                            </div>
-                                            @if (selectedUserInfo?.professionalBio) {
-                                              <div class="py-2">
-                                                <span class="text-[0.85rem] font-bold text-gray-500 block mb-2">Biografia</span>
-                                                <p class="text-[0.85rem] text-gray-600 leading-relaxed bg-white border border-gray-100 p-3 rounded-xl italic">
-                                                  "{{ selectedUserInfo?.professionalBio }}"
-                                                </p>
-                                              </div>
-                                            }
-                                          </div>
-                                        } @else {
-                                          <div class="bg-gray-50 p-3.5 rounded-xl border border-gray-200 flex flex-col items-center justify-center gap-2">
-                                            <span class="text-[1.2rem] opacity-40">📝</span>
-                                            <span class="text-[0.8rem] font-bold text-gray-400">Nessun piano o abbonamento attivo.</span>
-                                          </div>
-                                        }
+                                      } @else if (selectedUserInfo?.role === 'CLIENT') {
+                                        <div class="bg-gray-50 p-3.5 rounded-xl border border-gray-200 flex flex-col items-center justify-center gap-2">
+                                          <span class="text-[1.2rem] opacity-40">📝</span>
+                                          <span class="text-[0.8rem] font-bold text-gray-400">Nessun piano o abbonamento attivo.</span>
+                                        </div>
                                       }
                                       <!-- Professionisti assegnati (Facoltativo per i Clienti) -->
-                                      @if (selectedUserInfo?.role === 'CLIENT' && (selectedUserInfo?.assignedPtName || selectedUserInfo?.assignedNutritionistName)) {
+                                      @if (selectedUserInfo?.role === 'CLIENT' && (selectedUserInfo?.assignedPtName || selectedUserInfo?.assignedNutritionistName || selectedUserInfo?.assignedPsychologistName)) {
                                         <div class="mt-4 pt-4 border-t border-dashed border-gray-200">
                                           <h4 class="text-[0.8rem] font-black text-[var(--color-primary-navy)] uppercase tracking-wide mb-3">Team Assegnato</h4>
                                           @if (selectedUserInfo?.assignedPtName) {
@@ -687,6 +718,12 @@
                                             <div class="flex justify-between items-center py-1">
                                               <span class="text-[0.82rem] font-semibold text-gray-400">Nutrizionista</span>
                                               <span class="text-[0.85rem] font-bold text-gray-700">{{ selectedUserInfo?.assignedNutritionistName }}</span>
+                                            </div>
+                                          }
+                                          @if (selectedUserInfo?.assignedPsychologistName) {
+                                            <div class="flex justify-between items-center py-1">
+                                              <span class="text-[0.82rem] font-semibold text-gray-400">Psicologo</span>
+                                              <span class="text-[0.85rem] font-bold text-gray-700">{{ selectedUserInfo?.assignedPsychologistName }}</span>
                                             </div>
                                           }
                                         </div>
@@ -732,6 +769,12 @@
                                               Crediti Nutri
                                             </label>
                                             <input type="number" formControlName="creditsNutri" class="w-full px-4 py-2.5 rounded-xl border border-[var(--color-border-subtle)] bg-white text-[var(--color-text-main)] text-[0.9rem] focus:outline-none focus:border-[var(--color-primary-navy)] focus:ring-1 focus:ring-[var(--color-primary-navy)] transition-all font-medium" />
+                                          </div>
+                                          <div>
+                                            <label class="block text-[0.75rem] font-bold text-[var(--color-text-main)] uppercase tracking-wider mb-2">
+                                              Crediti Psico
+                                            </label>
+                                            <input type="number" formControlName="creditsPsico" class="w-full px-4 py-2.5 rounded-xl border border-[var(--color-border-subtle)] bg-white text-[var(--color-text-main)] text-[0.9rem] focus:outline-none focus:border-[var(--color-primary-navy)] focus:ring-1 focus:ring-[var(--color-primary-navy)] transition-all font-medium" />
                                           </div>
                                         </div>
                                         <div class="pt-2">

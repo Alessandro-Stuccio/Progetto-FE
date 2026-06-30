@@ -21,7 +21,7 @@
 </div>
 <!-- Griglia calendario -->
 <div class="calendar-container flex-1 flex flex-col overflow-hidden">
-  <div class="calendar-header flex-shrink-0 bg-[var(--bg-panel)] border-b border-[var(--border-subtle)] grid grid-cols-[44px_repeat(3,1fr)] sm:grid-cols-[48px_repeat(3,1fr)] lg:grid-cols-[56px_repeat(7,1fr)]" [class.hidden]="agendaView">
+  <div class="calendar-header flex-shrink-0 bg-[var(--bg-panel)] border-b border-[var(--border-subtle)] grid grid-cols-[44px_repeat(3,1fr)] sm:grid-cols-[48px_repeat(3,1fr)] md:grid-cols-[52px_repeat(5,1fr)] lg:grid-cols-[56px_repeat(7,1fr)]" [class.hidden]="agendaView">
     <div class="border-r border-[var(--border-subtle)]"></div>
     @for (day of weekDays; track day) {
       <div class="day-header flex flex-col items-center py-[0.7rem] border-r border-[var(--border-subtle)] gap-[0.3rem]" [class.today]="isToday(day)">
@@ -31,7 +31,7 @@
     }
   </div>
   <div class="calendar-grid-scroll flex-1 overflow-y-scroll overflow-x-hidden pb-[calc(env(safe-area-inset-bottom)+4rem)] sm:pb-[env(safe-area-inset-bottom)]" [class.hidden]="agendaView">
-    <div class="calendar-grid min-h-full bg-[var(--color-bg-subtle)] grid grid-cols-[44px_repeat(3,1fr)] sm:grid-cols-[48px_repeat(3,1fr)] lg:grid-cols-[56px_repeat(7,1fr)]">
+    <div class="calendar-grid min-h-full bg-[var(--color-bg-subtle)] grid grid-cols-[44px_repeat(3,1fr)] sm:grid-cols-[48px_repeat(3,1fr)] md:grid-cols-[52px_repeat(5,1fr)] lg:grid-cols-[56px_repeat(7,1fr)]">
       <div class="time-col border-r border-[var(--color-border-subtle)] sticky left-0 bg-white z-[5] shadow-[4px_0_12px_rgba(26,52,98,0.12)]">
         @for (slot of timeSlots; track slot) {
           <div class="time-slot-label" [class.full-hour]="isFullHour(slot)" [class.half-hour]="!isFullHour(slot)">{{ slot }}</div>

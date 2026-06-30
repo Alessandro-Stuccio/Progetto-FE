@@ -133,6 +133,17 @@
                       class="text-[1.1rem]">🥗</span><span>Carica Dieta</span></div>
                     </label>
                   }
+                  <!-- Carica Percorso: visibile solo allo Psicologo -->
+                  @if (canUploadPsychology()) {
+                    <label class="flex-1 relative cursor-pointer">
+                      <input type="file" accept="application/pdf" class="hidden" (change)="onFileSelected($event, 'PSYCHOLOGY_PLAN')"
+                        [disabled]="isUploading">
+                        <div
+                          class="flex items-center justify-center gap-2 py-3 rounded-xl bg-teal-600 text-white text-[0.82rem] font-bold transition-all active:scale-[0.97] hover:bg-teal-700"
+                          [class.opacity-50]="isUploading" [class.pointer-events-none]="isUploading"><span
+                          class="text-[1.1rem]">🧠</span><span>Carica Percorso</span></div>
+                        </label>
+                      }
                 </div>
               </div>
               @if (isUploading) {
@@ -152,6 +163,9 @@
                 <button class="px-3 py-1.5 rounded-lg text-[0.75rem] font-semibold transition-all border"
                   [ngClass]="docFilterType === 'DIET_PLAN' ? 'bg-[var(--color-accent-gold)] text-[var(--color-text-main)] border-[var(--color-accent-gold)]' : 'bg-white text-[var(--color-text-muted)] border-[var(--color-border-subtle)] hover:border-[var(--color-accent-gold)]/30'"
                 (click)="onDocFilterChange('DIET_PLAN')">🥗 Diete</button>
+                <button class="px-3 py-1.5 rounded-lg text-[0.75rem] font-semibold transition-all border"
+                  [ngClass]="docFilterType === 'PSYCHOLOGY_PLAN' ? 'bg-teal-600 text-white border-teal-600' : 'bg-white text-[var(--color-text-muted)] border-[var(--color-border-subtle)] hover:border-teal-600/30'"
+                (click)="onDocFilterChange('PSYCHOLOGY_PLAN')">🧠 Percorsi</button>
               </div>
               @if (!clientDocsLoading && clientDocuments.length > 0) {
                 <div class="flex flex-col gap-2.5">

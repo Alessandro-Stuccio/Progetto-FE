@@ -1,12 +1,12 @@
 <div class="px-4 py-5 sm:max-w-[900px] sm:mx-auto sm:py-8 sm:px-8">
   <h3 class="font-['Clash_Display'] text-[1.4rem] sm:text-[1.8rem] font-medium tracking-[-0.02em] text-[var(--color-text-main)] mb-1">I Miei Servizi
   </h3>
-  <p class="text-[0.78rem] sm:text-[0.85rem] text-[var(--color-text-muted)] mb-5 sm:mb-6">Visualizza la tua scheda, dieta e polizza
-  assicurativa</p>
+  <p class="text-[0.78rem] sm:text-[0.85rem] text-[var(--color-text-muted)] mb-5 sm:mb-6">Visualizza la tua scheda, dieta, percorso
+  psicologico e polizza assicurativa</p>
 
   <!-- Schede selettore moderne -->
-  <div class="grid grid-cols-3 gap-2 sm:gap-3 mb-8">
-    @for (tab of ['scheda', 'dieta', 'polizza']; track tab) {
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mb-8">
+    @for (tab of ['scheda', 'dieta', 'percorso', 'polizza']; track tab) {
       <button
       class="flex flex-col items-center justify-center gap-1 sm:gap-2 p-3 sm:p-5 rounded-xl sm:rounded-2xl transition-all border-2" [ngClass]="activeTab === tab
         ? 'border-[var(--color-primary-navy)] bg-[var(--color-primary-navy)]/5 shadow-sm transform scale-[1.02]'
@@ -21,7 +21,7 @@
           {{ getTabLabel(tab) }}
         </div>
         <div class="hidden sm:block text-[0.7rem] text-center" [ngClass]="activeTab === tab ? 'text-[var(--color-text-main)]/70' : 'text-[var(--color-text-muted)]/70'">
-          {{ tab === 'scheda' ? 'Il tuo piano di allenamento' : tab === 'dieta' ? 'Il tuo piano nutrizionale' : 'Le tue polizze' }}
+          {{ tab === 'scheda' ? 'Il tuo piano di allenamento' : tab === 'dieta' ? 'Il tuo piano nutrizionale' : tab === 'percorso' ? 'Il tuo percorso psicologico' : 'Le tue polizze' }}
         </div>
       </button>
     }

@@ -12,8 +12,8 @@
         <div class="ht-avatar-ring"></div>
       </div>
       <div class="ht-hero-text">
-        <h2 class="ht-hero-name">Ciao, {{ profile?.firstName }}!</h2>
-        <span class="ht-role-badge">{{ isProfessional ? (profile?.role === 'PERSONAL_TRAINER' ? 'Personal Trainer' : 'Nutrizionista') : 'Cliente' }}</span>
+        <h2 class="ht-hero-name">Ciao, {{ profile?.firstName || currentUser.firstName }}!</h2>
+        <span class="ht-role-badge">{{ getRoleBadgeLabel() }}</span>
       </div>
     </div>
     <!-- Crediti (solo clienti con abbonamento attivo) -->
@@ -37,6 +37,16 @@
           <div class="ht-credit-label">Crediti Nutriz.</div>
           <div class="ht-credit-bar">
             <div class="ht-credit-bar-fill ht-credit-bar-fill--gold" [style.width.%]="(subscription?.currentCreditsNutri || 0) * 50"></div>
+          </div>
+        </div>
+        <div class="ht-credit-card">
+          <div class="ht-credit-icon">
+            <span style="font-size:18px">🧠</span>
+          </div>
+          <div class="ht-credit-number">{{ subscription?.currentCreditsPsico }}</div>
+          <div class="ht-credit-label">Crediti Psico</div>
+          <div class="ht-credit-bar">
+            <div class="ht-credit-bar-fill ht-credit-bar-fill--navy" [style.width.%]="(subscription?.currentCreditsPsico || 0) * 50"></div>
           </div>
         </div>
       </div>
@@ -117,7 +127,7 @@
               <label class="ht-plan-option" [class.ht-plan-option--selected]="selectedPlanId === plan.id">
                 <input type="radio" name="plan" [value]="plan.id" [(ngModel)]="selectedPlanId" class="sr-only">
                 <div class="ht-plan-name">{{ plan.name }}</div>
-                <div class="ht-plan-meta">{{ plan.duration === 'SEMESTRALE' ? '6 mesi' : '12 mesi' }} · {{ plan.monthlyCreditsPT }}+{{ plan.monthlyCreditsNutri }} cr./mese</div>
+                <div class="ht-plan-meta">{{ plan.duration === 'SEMESTRALE' ? '6 mesi' : '12 mesi' }} · {{ plan.monthlyCreditsPT }}+{{ plan.monthlyCreditsNutri }}+{{ plan.monthlyCreditsPsico }} cr./mese</div>
                 <div class="ht-plan-price">{{ plan.fullPrice.toFixed(2) }} € <span>o {{ getInstallmentLabel(plan) }}</span></div>
               </label>
             }

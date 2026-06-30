@@ -15,7 +15,7 @@
   padding: 1.5rem;
   overflow-y: auto;
 }
-@media (min-width: 1024px) {
+@media (min-width: 900px) {
   .login-left { flex: 0 0 50%; max-width: 50%; }
 }
 
@@ -25,7 +25,7 @@
   overflow: hidden;
   background: var(--navy-deep);
 }
-@media (min-width: 1024px) {
+@media (min-width: 900px) {
   .login-right {
     display: flex;
     flex: 0 0 50%;

@@ -7,7 +7,6 @@
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-06B6D4?logo=tailwindcss&logoColor=white)
 ![RxJS](https://img.shields.io/badge/RxJS-7.8-B7178C?logo=reactivex&logoColor=white)
 ![STOMP](https://img.shields.io/badge/WebSocket-STOMP-010101?logo=socketdotio&logoColor=white)
-![Vitest](https://img.shields.io/badge/tests-Vitest-6E9F18?logo=vitest&logoColor=white)
 
 Frontend di **Kore**, la piattaforma SaaS che riunisce in un unico abbonamento Personal Trainer,
 Nutrizionisti e copertura assicurativa. È una **Single Page Application** Angular 21 a *standalone
@@ -30,7 +29,6 @@ design system su misura in Tailwind CSS.
 10. [Quick Start](#quick-start)
 11. [Script disponibili](#script-disponibili)
 12. [Build & Environments](#build--environments)
-13. [Testing](#testing)
 
 ---
 
@@ -60,7 +58,6 @@ Caratteristiche principali:
 | Reattività / stato | RxJS 7.8 (`BehaviorSubject` / `Subject`, no NgRx) |
 | Styling | Tailwind CSS 3.4.19 + PostCSS + Autoprefixer |
 | Real-time | `@stomp/stompjs` 7.3 (con fallback polling) |
-| Testing | Vitest 4.0.8 + jsdom |
 | Build / CLI | Angular CLI 21.1 (`@angular/build`) |
 | Locale | Italiano (`it`) |
 
@@ -69,7 +66,7 @@ Caratteristiche principali:
 ## Struttura del progetto
 
 ```
-Progetto-FE/
+kore-frontend/
 ├── package.json
 ├── angular.json
 ├── tailwind.config.js
@@ -99,9 +96,8 @@ Progetto-FE/
             └── models/         # interfacce TypeScript (dashboard.model.ts)
 ```
 
-I tab della **dashboard** comprendono: home, calendario, chat, clienti, prenotazione consulti,
-"i miei professionisti", servizi, directory professionisti, e i pannelli amministrativi
-(utenti, piani, statistiche, documenti) e assicurativo.
+I tab della **dashboard** comprendono: home, calendario, chat, clienti, "i miei professionisti",
+servizi, e i pannelli amministrativi (utenti, piani, statistiche, documenti) e assicurativo.
 
 ---
 
@@ -111,7 +107,7 @@ I tab della **dashboard** comprendono: home, calendario, chat, clienti, prenotaz
 - **Lazy-loading** di tutte le route via `loadComponent()` per il code-splitting.
 - **Stato** gestito con RxJS (`BehaviorSubject` / `Subject`); nessuna libreria esterna (no NgRx/Akita).
 - **Interceptor funzionali** (`HttpInterceptorFn`) e **guardie funzionali** (`CanActivateFn`).
-- **Signals** usati dove utile (es. titolo applicazione).
+- **Signals** usati dove utile (es. stato locale di alcuni componenti).
 
 ---
 
@@ -175,16 +171,16 @@ In `src/app/core/services/`:
 
 La chat usa **STOMP su WebSocket** tramite `@stomp/stompjs`.
 
-- **`socket.service.ts`** — gestisce il ciclo di vita della connessione STOMP: token JWT negli header del frame **CONNECT**, heartbeat 10s, riconnessione automatica dopo 3s.
+- **`socket.service.ts`** — gestisce il ciclo di vita della connessione STOMP: token JWT negli header del frame **CONNECT**, heartbeat 10s (in entrata e in uscita), riconnessione automatica dopo 3s.
 - **`chat.service.ts`** — API di alto livello sopra `socket.service`; se il WebSocket cade, attiva un **fallback in polling** ogni 3 secondi.
 
 Canali STOMP:
 
 - `/topic/chat/{roomId}` — messaggi della stanza (broadcast)
 - `/user/queue/notifications` — notifiche private (nuovo messaggio, conteggio non letti, delivered/read)
-- `/app/chat.join`, `/app/chat.leave`, `/app/chat.send`, `/app/chat.typing`, `/app/chat.read` — comandi client → server
+- `/app/chat.join`, `/app/chat.leave`, `/app/chat.send`, `/app/chat.read` — comandi client → server
 
-Funzionalità: aggiornamenti ottimistici della UI, indicatori di digitazione, stati messaggio
+Funzionalità: aggiornamenti ottimistici della UI, stati messaggio
 (`SENT`, `DELIVERED`, `READ`), sincronizzazione dei non letti, anteprima dell'ultimo messaggio.
 
 ---
@@ -227,7 +223,6 @@ modifica dei file sorgente. In sviluppo punta al backend su `http://localhost:80
 | `npm start` | Avvia il dev server (`ng serve`) su `http://localhost:4200` |
 | `npm run build` | Build (configurazione development) in `dist/` |
 | `npm run watch` | Build in watch mode (configurazione development) |
-| `npm test` | Esegue i test con Vitest |
 | `npm run ng` | Accesso diretto alla Angular CLI |
 
 ---
@@ -244,12 +239,4 @@ Compila l'applicazione e genera gli artefatti in `dist/` usando la configurazion
 |---|---|---|
 | Sviluppo | `src/environments/environment.ts` | `http://localhost:8080` |
 
----
 
-## Testing
-
-```powershell
-npm test
-```
-
-I test girano con **Vitest** + **jsdom** sui file `*.spec.ts`.

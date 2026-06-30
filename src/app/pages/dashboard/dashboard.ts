@@ -91,6 +91,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   @ViewChild(ProfileEditModalComponent) profileModal!: ProfileEditModalComponent;
 
+  // Esiste solo quando il tab Statistiche è attivo (reso via @if): serve per ricaricarlo al pull-to-refresh.
+  @ViewChild(AdminStatsTabComponent) statsTab?: AdminStatsTabComponent;
+
   private authService = inject(AuthService);
   private userService = inject(UserService);
   private planService = inject(PlanService);
@@ -263,12 +266,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   updateVisibleDays(): void {
     const w = window.innerWidth;
-    if (w < 640) {
-      this.visibleDayCount = 3;
+    if (w < 768) {
+      this.visibleDayCount = 3; // telefoni
     } else if (w < 1024) {
-      this.visibleDayCount = 3;
+      this.visibleDayCount = 5; // tablet
     } else {
-      this.visibleDayCount = 7;
+      this.visibleDayCount = 7; // desktop (settimana intera)
     }
     this.buildWeekDays();
   }
@@ -384,7 +387,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   private loadAdminPlans(): void {
     if (this.plansLoaded || this.isInsuranceManager()) return;
-    this.planService.getAdminPlans()
+    // Admin: lista completa (anche disabilitati) per la gestione piani.
+    // Moderatore: solo piani pubblici attivi, gli bastano per assegnare un abbonamento
+    // creando un cliente, e così non chiama l'endpoint admin (niente 403).
+    const plans$ = this.isAdmin()
+      ? this.planService.getAdminPlans()
+      : this.planService.getPlans();
+    plans$
       .pipe(catchError(() => of([])), takeUntilDestroyed(this.destroyRef))
       .subscribe(plans => {
         this._allPlans.set(plans || []);
@@ -436,6 +445,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   onPullRefresh(): void {
+    // Sul tab Statistiche ricarichiamo le statistiche (il componente non si auto-aggiorna)
+    // invece dei dati admin generici.
+    if (this.activeTab === 'admin-stats') {
+      this.statsTab?.loadStats();
+      return;
+    }
     if (this.isAdmin() || this.isModerator() || this.isInsuranceManager()) {
       this.reloadAdminData();
     } else {
@@ -502,7 +517,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   getBookingLabel(b: Booking): string {
     if (this.isClient()) {
-      const role = b.professionalRole === UserRole.PERSONAL_TRAINER ? 'PT' : 'Nutr.';
+      const role = b.professionalRole === UserRole.PERSONAL_TRAINER ? 'PT'
+        : b.professionalRole === UserRole.PSYCHOLOGIST ? 'Psi.' : 'Nutr.';
       return `${role} – ${b.professionalName ?? ''}`;
     }
     return b.clientName ?? '';
@@ -625,7 +641,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   isMobileChatOpen(): boolean {
-    return this.activeTab === 'chat' && this.chatTabComponent?.chatView === 'conversation';
+    // Solo su telefoni (<640px) la chat è a pannello singolo a tutto schermo:
+    // lì nascondiamo la bottom-nav. Su tablet la chat è a due pannelli, la nav resta.
+    return (
+      this.activeTab === 'chat' &&
+      this.chatTabComponent?.chatView === 'conversation' &&
+      window.innerWidth < 640
+    );
   }
 
   get isCallModalOpen(): boolean { return this.dashboardFacade.currentCallState.isCallModalOpen; }

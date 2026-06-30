@@ -27,6 +27,10 @@
         </li>
         <li class="rp-trust-item">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+          Supporto psicologico incluso
+        </li>
+        <li class="rp-trust-item">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
           Polizza sportiva inclusa
         </li>
       </ul>
@@ -371,6 +375,59 @@
                         @if (registerForm.get('selectedNutritionistId')?.invalid && registerForm.get('selectedNutritionistId')?.touched) {
                           <div class="field-error">
                             Seleziona un Nutrizionista
+                          </div>
+                        }
+                      </div>
+                      <!-- Psicologo -->
+                      <div class="rp-section">
+                        <h3 class="rp-section__title">Scegli il tuo Psicologo</h3>
+                        <div class="rp-search">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                          <input type="text" class="rp-search__input" placeholder="Cerca per nome..." [(ngModel)]="psySearch" [ngModelOptions]="{standalone: true}">
+                        </div>
+                        <div class="rp-prof-grid">
+                          @for (psy of filteredPsychologists; track psy) {
+                            <div
+                              class="rp-prof"
+                              [class.rp-prof--selected]="registerForm.value.selectedPsychologistId === psy.id"
+                              [class.rp-prof--full]="psy.soldOut"
+                              (click)="!psy.soldOut && selectPsy(psy.id)"
+                              [attr.aria-disabled]="psy.soldOut"
+                              role="button">
+                              <div class="rp-prof__avatar">
+                                @if (psy.profilePicture) {
+                                  <img [src]="psy.profilePicture" [alt]="psy.fullName" class="rp-prof__img">
+                                }
+                                @if (!psy.profilePicture) {
+                                  <span class="rp-prof__initials">{{ getInitials(psy.fullName) }}</span>
+                                }
+                              </div>
+                              <div class="rp-prof__info">
+                                <span class="rp-prof__name">{{ psy.fullName }}</span>
+                                <span class="rp-prof__rating">★ {{ psy.averageRating | number:'1.1-1' }}/5</span>
+                              </div>
+                              @if (psy.soldOut) {
+                                <span class="rp-prof__sold">Completo</span>
+                              }
+                              @if (registerForm.value.selectedPsychologistId === psy.id) {
+                                <div class="rp-prof__tick" aria-hidden="true">
+                                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                </div>
+                              }
+                              <button type="button" class="rp-prof__reviews"
+                                (click)="$event.stopPropagation(); openReviewsModal(psy)">
+                                Recensioni
+                              </button>
+                            </div>
+                          }
+                          @if (filteredPsychologists.length === 0) {
+                            <div class="rp-prof-empty">Nessun risultato</div>
+                          }
+                        </div>
+                        <input type="hidden" formControlName="selectedPsychologistId">
+                        @if (registerForm.get('selectedPsychologistId')?.invalid && registerForm.get('selectedPsychologistId')?.touched) {
+                          <div class="field-error">
+                            Seleziona uno Psicologo
                           </div>
                         }
                       </div>

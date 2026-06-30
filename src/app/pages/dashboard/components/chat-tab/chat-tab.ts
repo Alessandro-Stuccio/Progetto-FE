@@ -181,12 +181,12 @@ export class ChatTabComponent implements OnInit, OnDestroy {
     }
     if (myRole === 'MODERATOR') {
       return targetRole === 'CLIENT' || targetRole === 'PERSONAL_TRAINER'
-          || targetRole === 'NUTRITIONIST' || targetRole === 'ADMIN' || targetRole === 'MODERATOR';
+          || targetRole === 'NUTRITIONIST' || targetRole === 'PSYCHOLOGIST' || targetRole === 'ADMIN' || targetRole === 'MODERATOR';
     }
     if (myRole === 'CLIENT') {
-      return targetRole === 'PERSONAL_TRAINER' || targetRole === 'NUTRITIONIST' || targetRole === 'MODERATOR';
+      return targetRole === 'PERSONAL_TRAINER' || targetRole === 'NUTRITIONIST' || targetRole === 'PSYCHOLOGIST' || targetRole === 'MODERATOR';
     }
-    if (myRole === 'PERSONAL_TRAINER' || myRole === 'NUTRITIONIST') {
+    if (myRole === 'PERSONAL_TRAINER' || myRole === 'NUTRITIONIST' || myRole === 'PSYCHOLOGIST') {
       return targetRole === 'CLIENT' || targetRole === 'MODERATOR';
     }
     return false;
@@ -357,7 +357,7 @@ export class ChatTabComponent implements OnInit, OnDestroy {
     const convs: Conversation[] = [];
     if (this.isClient && this.professionals?.length > 0) {
       this.professionals.forEach((p) => {
-        convs.push({ otherUserId: p.id, otherUserName: p.fullName, otherUserRole: p.role === 'PERSONAL_TRAINER' ? 'Personal Trainer' : 'Nutrizionista', lastMessage: undefined, lastMessageTime: undefined, unreadCount: 0 });
+        convs.push({ otherUserId: p.id, otherUserName: p.fullName, otherUserRole: p.role === 'PERSONAL_TRAINER' ? 'Personal Trainer' : p.role === 'PSYCHOLOGIST' ? 'Psicologo' : 'Nutrizionista', lastMessage: undefined, lastMessageTime: undefined, unreadCount: 0 });
       });
     }
     if (this.isProfessional && this.myClients?.length > 0) {

@@ -50,7 +50,7 @@ export class AdminDocumentsTabComponent {
   get isMobile(): boolean { return window.innerWidth < 640; }
 
   get professionals(): UserProfile[] {
-    const roles = ['PERSONAL_TRAINER', 'NUTRITIONIST', 'INSURANCE_MANAGER'];
+    const roles = ['PERSONAL_TRAINER', 'NUTRITIONIST', 'PSYCHOLOGIST', 'INSURANCE_MANAGER'];
     return this.allUsers
       .filter(u => roles.includes(u.role as string))
       .filter(u => matchesUserSearch(u, this.profSearch));
@@ -136,6 +136,7 @@ export class AdminDocumentsTabComponent {
     const role = this.selectedProfessional?.role as string;
     if (role === 'PERSONAL_TRAINER') return 'WORKOUT_PLAN';
     if (role === 'NUTRITIONIST') return 'DIET_PLAN';
+    if (role === 'PSYCHOLOGIST') return 'PSYCHOLOGY_PLAN';
     return 'INSURANCE_POLICE';
   }
 
@@ -221,6 +222,7 @@ export class AdminDocumentsTabComponent {
     switch (role) {
       case 'PERSONAL_TRAINER': return '💪';
       case 'NUTRITIONIST': return '🥗';
+      case 'PSYCHOLOGIST': return '🧠';
       case 'INSURANCE_MANAGER': return '🛡️';
       default: return '👤';
     }
@@ -230,6 +232,7 @@ export class AdminDocumentsTabComponent {
     switch (type) {
       case 'WORKOUT_PLAN': return '💪';
       case 'DIET_PLAN': return '🥗';
+      case 'PSYCHOLOGY_PLAN': return '🧠';
       case 'INSURANCE_POLICE': return '📋';
       default: return '📄';
     }
@@ -239,6 +242,7 @@ export class AdminDocumentsTabComponent {
     switch (type) {
       case 'WORKOUT_PLAN': return 'Scheda';
       case 'DIET_PLAN': return 'Dieta';
+      case 'PSYCHOLOGY_PLAN': return 'Percorso';
       case 'INSURANCE_POLICE': return 'Polizza';
       default: return type;
     }
